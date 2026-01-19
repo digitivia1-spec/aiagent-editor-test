@@ -6,8 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Agent Command Center</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="lang/en.js"></script>
-    <script src="lang/ar.js"></script>
     <style>
         :root {
             /* --- CALM PALETTE --- */
@@ -2925,11 +2923,52 @@
         const CALENDAR_URL = 'https://calendar.app.google/XdqxGf6QDTHr4xts9';
 
         // --- INTERNATIONALIZATION (i18n) SYSTEM ---
+
+        // English Language Strings
+        const LANG_EN = {
+            auth: { app_title: "DIGITIVIA AI AGENT", sign_in_google: "Sign in with Google", sign_in_linkedin: "Sign in with LinkedIn", separator_or: "OR", input_email_placeholder: "Email Address", input_password_placeholder: "Password", btn_login: "LOGIN", btn_register: "REGISTER", btn_loading_login: "LOGGING IN...", btn_loading_register: "REGISTERING..." },
+            sidebar: { nav_website: "Website Agent", nav_whatsapp: "WhatsApp Agent", nav_messenger: "Messenger Agent", nav_instagram: "Instagram Agent", nav_insights: "Live Insights", nav_inbox: "Live Inbox", nav_leads: "Leads Area", nav_reviews: "Customer Reviews", nav_followups: "Follow-ups", nav_logout: "Logout" },
+            top_bar: { btn_pricing: "Pricing", btn_docs: "Docs", btn_help: "Help" },
+            agent_config: { btn_connect_channel: "🔗 Connect Channel", label_live: "LIVE", header_role: "Agent Role (System Prompt)", header_tone: "Agent Tone", header_kb: "Knowledge Base (Links)", header_chat_test: "Test Chat Window", btn_locked: "🔒 Locked - Click to Edit", placeholder_prompt: "Define how your agent should behave...", btn_save: "Save Role", btn_save_changes: "Save Changes *", btn_saving: "Saving..." },
+            insights: { title: "Live Insights", empty_title: "No Data Available", empty_text: "Connect your platform accounts to see live performance insights.", btn_connect: "Connect Insights", empty_posts_title: "No Posts Yet", btn_connect_posts: "Connect Posts" },
+            inbox: { empty_title: "No Conversations Yet", empty_text: "Connect your social channels to start chatting with your customers.", btn_connect: "Connect Channels" },
+            leads: { title: "Leads Area", btn_export_csv: "Export CSV", btn_export_excel: "Export Excel", empty_title: "No Leads Yet", btn_connect: "Connect Your Channels" },
+            reviews: { title: "Customer Reviews", empty_title: "No Reviews Connected" },
+            followups: { title: "Scheduled Follow-ups", empty_title: "No Scheduled Tasks", btn_setup: "Set Up Automations" },
+            modals: {
+                pricing: { header_title: "Choose Your Plan" },
+                docs: { title: "Documentation & User Guide" },
+                profile: { label_org: "Organization", label_plan: "Current Plan", btn_save: "Save Organization Name", btn_upgrade: "Upgrade Plan", btn_logout: "Logout" },
+                help: { title: "Free Consultation Meeting", btn_book: "Book Consultation" }
+            },
+            messages: { toast_saved: "Saved Successfully!", toast_org_updated: "Organization name updated!", loading_config: "Fetching Agent Configurations..." }
+        };
+
+        // Arabic Language Strings (RTL)
+        const LANG_AR = {
+            auth: { app_title: "وكيل الذكاء الاصطناعي ديجيتيفيا", sign_in_google: "تسجيل الدخول عبر Google", sign_in_linkedin: "تسجيل الدخول عبر LinkedIn", separator_or: "أو", input_email_placeholder: "البريد الإلكتروني", input_password_placeholder: "كلمة المرور", btn_login: "دخول", btn_register: "إنشاء حساب", btn_loading_login: "جاري الدخول...", btn_loading_register: "جاري التسجيل..." },
+            sidebar: { nav_website: "وكيل الموقع", nav_whatsapp: "وكيل واتساب", nav_messenger: "وكيل ماسنجر", nav_instagram: "وكيل انستغرام", nav_insights: "رؤى مباشرة", nav_inbox: "صندوق الوارد", nav_leads: "العملاء المحتملين", nav_reviews: "آراء العملاء", nav_followups: "المتابعات", nav_logout: "تسجيل خروج" },
+            top_bar: { btn_pricing: "الأسعار", btn_docs: "الوثائق", btn_help: "مساعدة" },
+            agent_config: { btn_connect_channel: "🔗 ربط القناة", label_live: "نشط", header_role: "دور الوكيل", header_tone: "نبرة المحادثة", header_kb: "قاعدة المعرفة", header_chat_test: "نافذة الاختبار", btn_locked: "🔒 مقفل - اضغط للتعديل", placeholder_prompt: "حدد كيف يجب أن يتصرف وكيلك...", btn_save: "حفظ الدور", btn_save_changes: "حفظ التغييرات *", btn_saving: "جاري الحفظ..." },
+            insights: { title: "رؤى مباشرة", empty_title: "لا توجد بيانات", empty_text: "قم بربط حساباتك لرؤية الأداء.", btn_connect: "ربط الرؤى", empty_posts_title: "لا توجد منشورات", btn_connect_posts: "ربط المنشورات" },
+            inbox: { empty_title: "لا توجد محادثات", empty_text: "قم بربط قنواتك للبدء في الدردشة.", btn_connect: "ربط القنوات" },
+            leads: { title: "العملاء المحتملين", btn_export_csv: "تصدير CSV", btn_export_excel: "تصدير Excel", empty_title: "لا يوجد عملاء", btn_connect: "ربط القنوات" },
+            reviews: { title: "آراء العملاء", empty_title: "التقييمات غير متصلة" },
+            followups: { title: "المتابعات المجدولة", empty_title: "لا توجد مهام", btn_setup: "إعداد الأتمتة" },
+            modals: {
+                pricing: { header_title: "اختر خطتك" },
+                docs: { title: "التوثيق ودليل المستخدم" },
+                profile: { label_org: "الشركة", label_plan: "الخطة الحالية", btn_save: "حفظ اسم الشركة", btn_upgrade: "ترقية الخطة", btn_logout: "تسجيل خروج" },
+                help: { title: "استشارة مجانية", btn_book: "حجز استشارة" }
+            },
+            messages: { toast_saved: "تم الحفظ بنجاح!", toast_org_updated: "تم تحديث اسم الشركة!", loading_config: "جاري جلب الإعدادات..." }
+        };
+
         let currentLang = localStorage.getItem('app_language') || 'en';
 
         // Get current language strings
         function getLangStrings() {
-            return currentLang === 'ar' ? window.LANG_AR : window.LANG_EN;
+            return currentLang === 'ar' ? LANG_AR : LANG_EN;
         }
 
         // Translation function - get string by dot notation path
