@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,15 +9,15 @@
     <style>
         :root {
             /* --- CALM PALETTE --- */
-            --theme-color: #5BAEB0; 
-            
+            --theme-color: #5BAEB0;
+
             --glass-bg: rgba(93, 93, 91, 0.25);
             --glass-border: rgba(255, 255, 255, 0.1);
             --bg-dark: #0f1014;
             --text-main: #ffffff;
             --text-muted: #a0a0a0;
-            --success: #66BB6A; 
-            --error: #EF5350;     
+            --success: #66BB6A;
+            --error: #EF5350;
             --warning-bg: rgba(255, 193, 7, 0.15);
             --warning-border: rgba(255, 193, 7, 0.4);
             --warning-text: #ffca28;
@@ -34,7 +35,7 @@
 
         body {
             background-color: var(--bg-dark);
-            background-image: 
+            background-image:
                 radial-gradient(circle at 10% 20%, rgba(255, 255, 255, 0.03) 0%, transparent 40%),
                 radial-gradient(circle at 90% 80%, var(--theme-color) 0%, transparent 60%);
             color: var(--text-main);
@@ -56,7 +57,10 @@
         /* --- LOGIN PAGE STYLES --- */
         #login-container {
             position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             z-index: 3000;
             display: flex;
             justify-content: center;
@@ -64,6 +68,7 @@
             background: var(--bg-dark);
             background-image: radial-gradient(circle at 50% 50%, rgba(91, 174, 176, 0.1) 0%, transparent 50%);
         }
+
         .login-card {
             width: 100%;
             max-width: 400px;
@@ -71,43 +76,113 @@
             text-align: center;
             border-radius: 20px;
         }
-        .login-title { margin-bottom: 2rem; font-size: 1.5rem; font-weight: 700; color: var(--theme-color); letter-spacing: 1px; }
-        .login-input { margin-bottom: 1rem; text-align: center; }
-        
+
+        .login-title {
+            margin-bottom: 2rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--theme-color);
+            letter-spacing: 1px;
+        }
+
+        .login-input {
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
         .login-btn-group {
-            display: flex; gap: 10px; margin-top: 1rem;
+            display: flex;
+            gap: 10px;
+            margin-top: 1rem;
         }
+
         .login-btn {
-            flex: 1; padding: 1rem; border-radius: 50px; border: none;
-            background: var(--theme-color); color: white; font-weight: bold; font-size: 1rem;
-            cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;
+            flex: 1;
+            padding: 1rem;
+            border-radius: 50px;
+            border: none;
+            background: var(--theme-color);
+            color: white;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
         }
-        .login-btn.secondary { background: rgba(255,255,255,0.1); border: 1px solid var(--glass-border); }
-        .login-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+
+        .login-btn.secondary {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--glass-border);
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
 
         /* Social Login Buttons */
-        .social-login-divider { margin: 1.5rem 0; position: relative; color: var(--text-muted); font-size: 0.8rem; }
-        .social-login-divider::before, .social-login-divider::after {
-            content: ""; position: absolute; top: 50%; width: 30%; height: 1px; background: var(--glass-border);
+        .social-login-divider {
+            margin: 1.5rem 0;
+            position: relative;
+            color: var(--text-muted);
+            font-size: 0.8rem;
         }
-        .social-login-divider::before { left: 0; }
-        .social-login-divider::after { right: 0; }
+
+        .social-login-divider::before,
+        .social-login-divider::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            width: 30%;
+            height: 1px;
+            background: var(--glass-border);
+        }
+
+        .social-login-divider::before {
+            left: 0;
+        }
+
+        .social-login-divider::after {
+            right: 0;
+        }
 
         .social-btn {
-            width: 100%; padding: 0.8rem; border-radius: 50px; border: 1px solid var(--glass-border);
-            background: rgba(255,255,255,0.05); color: white; font-weight: 500; font-size: 0.9rem;
-            cursor: pointer; transition: all 0.2s; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 10px;
+            width: 100%;
+            padding: 0.8rem;
+            border-radius: 50px;
+            border: 1px solid var(--glass-border);
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+            font-weight: 500;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
-        .social-btn:hover { background: rgba(255,255,255,0.1); }
-        .social-btn.google { border-color: rgba(234, 67, 53, 0.5); }
-        .social-btn.linkedin { border-color: rgba(0, 119, 181, 0.5); }
+
+        .social-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .social-btn.google {
+            border-color: rgba(234, 67, 53, 0.5);
+        }
+
+        .social-btn.linkedin {
+            border-color: rgba(0, 119, 181, 0.5);
+        }
 
 
         /* --- MOBILE TOP BAR --- */
         .mobile-top-bar {
-            display: none; /* Hidden on desktop */
+            display: none;
+            /* Hidden on desktop */
             position: fixed;
-            top: 0; left: 0;
+            top: 0;
+            left: 0;
             width: 100%;
             height: var(--mobile-header-height);
             background: rgba(15, 16, 20, 0.95);
@@ -118,7 +193,7 @@
             justify-content: space-between;
             padding: 0 20px;
         }
-        
+
         .mobile-hamburger-btn {
             font-size: 1.5rem;
             cursor: pointer;
@@ -135,7 +210,8 @@
         /* --- SIDEBAR NAVIGATION --- */
         .sidebar {
             position: fixed;
-            left: 0; top: 0;
+            left: 0;
+            top: 0;
             height: 100vh;
             width: var(--sidebar-width);
             background: rgba(0, 0, 0, 0.4);
@@ -158,11 +234,12 @@
             height: 70px;
             display: flex;
             align-items: center;
-            justify-content: center; /* Center icon initially */
+            justify-content: center;
+            /* Center icon initially */
             padding: 0 20px;
             white-space: nowrap;
         }
-        
+
         /* Show content on Hover OR when Mobile Menu is Open */
         .sidebar:hover .sidebar-header,
         .sidebar.mobile-open .sidebar-header {
@@ -174,7 +251,9 @@
             font-size: 1.5rem;
             color: var(--theme-color);
             cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .logo-text {
@@ -184,9 +263,10 @@
             opacity: 0;
             transition: opacity 0.2s;
             color: white;
-            display: flex; align-items: center;
+            display: flex;
+            align-items: center;
         }
-        
+
         .sidebar-logo-img {
             height: 25px;
             width: auto;
@@ -202,10 +282,14 @@
             list-style: none;
             flex: 1;
             padding-top: 20px;
-            overflow-y: auto; /* Allow scroll if list is long */
+            overflow-y: auto;
+            /* Allow scroll if list is long */
         }
+
         /* Hide scrollbar for nav list */
-        .nav-list::-webkit-scrollbar { width: 0px; }
+        .nav-list::-webkit-scrollbar {
+            width: 0px;
+        }
 
         .nav-item {
             display: flex;
@@ -225,7 +309,7 @@
 
         .nav-item.active {
             color: white;
-            background: linear-gradient(90deg, rgba(255,255,255,0.05) 0%, transparent 100%);
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0.05) 0%, transparent 100%);
             border-left: 3px solid var(--theme-color);
         }
 
@@ -236,10 +320,10 @@
             align-items: center;
             justify-content: center;
         }
-        
+
         .nav-icon svg {
-            width: 20px; 
-            height: 20px; 
+            width: 20px;
+            height: 20px;
             fill: currentColor;
         }
 
@@ -266,7 +350,8 @@
         #app-container {
             display: none;
             flex: 1;
-            margin-left: var(--sidebar-width); /* Push content */
+            margin-left: var(--sidebar-width);
+            /* Push content */
             transition: margin-left 0.3s;
             width: calc(100% - var(--sidebar-width));
         }
@@ -274,54 +359,138 @@
         main {
             flex: 1;
             padding: 2rem;
-            max-width: 1400px; /* Increased slightly for Grid */
+            max-width: 1400px;
+            /* Increased slightly for Grid */
             width: 100%;
             margin: 0 auto;
         }
 
-        .tab-content { display: none; animation: fadeIn 0.4s ease; width: 100%; }
-        .tab-content.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.4s ease;
+            width: 100%;
+        }
 
-        .card { border-radius: 20px; padding: 2rem; position: relative; }
-        h2 { margin-bottom: 1.5rem; font-weight: 500; display: flex; align-items: center; gap: 10px; }
-        .icon-circle { width: 12px; height: 12px; border-radius: 50%; background: var(--theme-color); display: inline-block; transition: background 0.3s; }
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card {
+            border-radius: 20px;
+            padding: 2rem;
+            position: relative;
+        }
+
+        h2 {
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .icon-circle {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--theme-color);
+            display: inline-block;
+            transition: background 0.3s;
+        }
 
         /* --- TOGGLE SWITCH STYLES (NEW & FIXED) --- */
         .agent-header-row {
-            display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
         }
+
         .agent-title {
-            display: flex; align-items: center; gap: 10px; font-size: 1.5rem; font-weight: 500; margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+            font-weight: 500;
+            margin: 0;
         }
+
         .agent-toggle-container {
-            display: flex; align-items: center; gap: 12px; 
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
-        .toggle-label { 
-            font-size: 0.9rem; 
-            color: var(--text-muted); 
-            text-transform: uppercase; 
-            letter-spacing: 1px; 
+
+        .toggle-label {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
             font-weight: 600;
-            line-height: 1; /* Fixes vertical alignment */
-            transform: translateY(1px); /* Optical center fix */
+            line-height: 1;
+            /* Fixes vertical alignment */
+            transform: translateY(1px);
+            /* Optical center fix */
         }
-        
+
         .switch {
-            position: relative; display: inline-block; width: 50px; height: 26px;
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 26px;
         }
-        .switch input { opacity: 0; width: 0; height: 0; }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
         .slider {
-            position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
-            background-color: #333; transition: .4s; border-radius: 34px;
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #333;
+            transition: .4s;
+            border-radius: 34px;
             border: 1px solid var(--glass-border);
         }
+
         .slider:before {
-            position: absolute; content: ""; height: 20px; width: 20px; left: 3px; bottom: 2px;
-            background-color: white; transition: .4s; border-radius: 50%;
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 3px;
+            bottom: 2px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
         }
-        input:checked + .slider { background-color: var(--success); border-color: var(--success); }
-        input:checked + .slider:before { transform: translateX(22px); }
+
+        input:checked+.slider {
+            background-color: var(--success);
+            border-color: var(--success);
+        }
+
+        input:checked+.slider:before {
+            transform: translateX(22px);
+        }
 
         /* --- INSIGHTS STYLES --- */
         .insights-controls {
@@ -345,7 +514,7 @@
             align-items: center;
             gap: 8px;
             padding: 8px 16px;
-            background: rgba(255,255,255,0.05);
+            background: rgba(255, 255, 255, 0.05);
             border: 1px solid var(--glass-border);
             border-radius: 50px;
             cursor: pointer;
@@ -353,15 +522,16 @@
             color: var(--text-muted);
         }
 
-        .platform-chip:hover, .platform-chip.active {
+        .platform-chip:hover,
+        .platform-chip.active {
             background: var(--theme-color);
             color: white;
             border-color: var(--theme-color);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
 
         .period-select {
-            background: rgba(0,0,0,0.3);
+            background: rgba(0, 0, 0, 0.3);
             border: 1px solid var(--glass-border);
             color: white;
             padding: 8px 16px;
@@ -370,11 +540,11 @@
             outline: none;
             min-width: 150px;
         }
-        
+
         .period-select:disabled {
             opacity: 0.5;
             cursor: not-allowed;
-            background: rgba(0,0,0,0.5);
+            background: rgba(0, 0, 0, 0.5);
         }
 
         .stats-grid {
@@ -385,7 +555,7 @@
         }
 
         .stat-card {
-            background: linear-gradient(145deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 100%);
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%);
             border: 1px solid var(--glass-border);
             border-radius: 16px;
             padding: 25px;
@@ -422,12 +592,22 @@
         }
 
         /* --- POSTS LIST STYLES --- */
-        .posts-container { margin-top: 3rem; }
-        .posts-header { font-size: 1.2rem; font-weight: 600; margin-bottom: 1rem; color: white; border-left: 4px solid var(--theme-color); padding-left: 15px; }
+        .posts-container {
+            margin-top: 3rem;
+        }
+
+        .posts-header {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: white;
+            border-left: 4px solid var(--theme-color);
+            padding-left: 15px;
+        }
 
         .post-row {
             display: flex;
-            background: rgba(255,255,255,0.03);
+            background: rgba(255, 255, 255, 0.03);
             border: 1px solid var(--glass-border);
             border-radius: 12px;
             margin-bottom: 15px;
@@ -436,10 +616,15 @@
             transition: transform 0.2s;
             cursor: pointer;
         }
-        .post-row:hover { transform: translateX(5px); background: rgba(255,255,255,0.06); }
+
+        .post-row:hover {
+            transform: translateX(5px);
+            background: rgba(255, 255, 255, 0.06);
+        }
 
         .post-thumb {
-            width: 80px; height: 80px;
+            width: 80px;
+            height: 80px;
             border-radius: 8px;
             background-size: cover;
             background-position: center;
@@ -447,324 +632,1022 @@
             flex-shrink: 0;
         }
 
-        .post-content { flex: 1; display: flex; flex-direction: column; justify-content: center; }
-        .post-date { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 5px; }
-        .post-text { font-size: 0.95rem; line-height: 1.4; color: #eee; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; unicode-bidi: plaintext; text-align: start; }
+        .post-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .post-date {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 5px;
+        }
+
+        .post-text {
+            font-size: 0.95rem;
+            line-height: 1.4;
+            color: #eee;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            unicode-bidi: plaintext;
+            text-align: start;
+        }
 
         .post-stats {
-            display: flex; gap: 20px;
+            display: flex;
+            gap: 20px;
             align-items: center;
-            border-left: 1px solid rgba(255,255,255,0.1);
+            border-left: 1px solid rgba(255, 255, 255, 0.1);
             padding-left: 20px;
             min-width: 200px;
         }
-        .p-stat { text-align: center; }
-        .p-stat-val { font-size: 1.1rem; font-weight: 700; color: white; }
-        .p-stat-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; }
+
+        .p-stat {
+            text-align: center;
+        }
+
+        .p-stat-val {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: white;
+        }
+
+        .p-stat-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
 
         /* --- POST DETAILS MODAL (NEW) --- */
         .modal-overlay {
             display: none;
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(8px);
-            z-index: 4000; justify-content: center; align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+            z-index: 4000;
+            justify-content: center;
+            align-items: center;
             padding: 20px;
             animation: fadeIn 0.3s ease;
         }
 
         .modal-content {
             background: #1a1b20;
-            width: 100%; max-width: 900px; height: 80vh;
-            border-radius: 20px; border: 1px solid var(--glass-border);
-            display: flex; overflow: hidden;
+            width: 100%;
+            max-width: 900px;
+            height: 80vh;
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            display: flex;
+            overflow: hidden;
             position: relative;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
         }
 
         .modal-close {
-            position: absolute; top: 15px; right: 20px;
-            font-size: 1.5rem; color: white; cursor: pointer; z-index: 10;
-            background: rgba(0,0,0,0.5); width: 35px; height: 35px;
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 1.5rem;
+            color: white;
+            cursor: pointer;
+            z-index: 10;
+            background: rgba(0, 0, 0, 0.5);
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         /* Split Layout */
         .modal-media {
-            flex: 1.2; background: black;
-            display: flex; align-items: center; justify-content: center;
+            flex: 1.2;
+            background: black;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-        .modal-img { max-width: 100%; max-height: 100%; object-fit: contain; }
+
+        .modal-img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
 
         .modal-info {
-            flex: 1; display: flex; flex-direction: column;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
             border-left: 1px solid var(--glass-border);
             background: #1a1b20;
         }
 
-        .modal-header { padding: 20px; border-bottom: 1px solid var(--glass-border); }
-        .m-date { font-size: 0.8rem; color: var(--text-muted); }
-        .m-caption { margin-top: 10px; font-size: 0.95rem; line-height: 1.5; max-height: 150px; overflow-y: auto; unicode-bidi: plaintext; text-align: start; }
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .m-date {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .m-caption {
+            margin-top: 10px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            max-height: 150px;
+            overflow-y: auto;
+            unicode-bidi: plaintext;
+            text-align: start;
+        }
 
         .modal-stats {
-            padding: 15px 20px; display: flex; gap: 20px;
-            background: rgba(255,255,255,0.02); border-bottom: 1px solid var(--glass-border);
+            padding: 15px 20px;
+            display: flex;
+            gap: 20px;
+            background: rgba(255, 255, 255, 0.02);
+            border-bottom: 1px solid var(--glass-border);
         }
-        .m-stat { display: flex; align-items: center; gap: 8px; font-size: 0.9rem; color: #ddd; }
 
-        .comments-section { flex: 1; overflow-y: auto; padding: 20px; }
-        .comment-row { margin-bottom: 15px; display: flex; gap: 10px; }
-        .comment-avatar { width: 30px; height: 30px; border-radius: 50%; background: var(--theme-color); flex-shrink: 0; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:0.7rem;}
-        .comment-bubble { background: rgba(255,255,255,0.05); padding: 10px 15px; border-radius: 12px; font-size: 0.9rem; flex: 1; }
-        .comment-user { font-weight: 700; font-size: 0.8rem; margin-bottom: 3px; color: var(--theme-color); }
-        .comment-text { unicode-bidi: plaintext; text-align: start; }
+        .m-stat {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            color: #ddd;
+        }
+
+        .comments-section {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .comment-row {
+            margin-bottom: 15px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .comment-avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: var(--theme-color);
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.7rem;
+        }
+
+        .comment-bubble {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 10px 15px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            flex: 1;
+        }
+
+        .comment-user {
+            font-weight: 700;
+            font-size: 0.8rem;
+            margin-bottom: 3px;
+            color: var(--theme-color);
+        }
+
+        .comment-text {
+            unicode-bidi: plaintext;
+            text-align: start;
+        }
 
         /* --- Accordion Styles --- */
-        .section-wrapper { margin-bottom: 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 1.5rem; }
-        .section-header {
-            display: flex; justify-content: space-between; align-items: center; cursor: pointer;
-            padding: 0.5rem 0; color: var(--text-main); font-weight: 600; font-size: 1rem; transition: color 0.3s;
+        .section-wrapper {
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding-bottom: 1.5rem;
         }
-        .section-header:hover { color: var(--theme-color); }
-        .section-header::after { content: '▼'; font-size: 0.8rem; transition: transform 0.3s; }
-        .section-header.active::after { transform: rotate(180deg); }
-        .section-content { max-height: 0; overflow: hidden; transition: max-height 0.4s ease-out, opacity 0.3s ease; opacity: 0; }
-        .section-content.open { max-height: 1000px; opacity: 1; margin-top: 1rem; }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            padding: 0.5rem 0;
+            color: var(--text-main);
+            font-weight: 600;
+            font-size: 1rem;
+            transition: color 0.3s;
+        }
+
+        .section-header:hover {
+            color: var(--theme-color);
+        }
+
+        .section-header::after {
+            content: '▼';
+            font-size: 0.8rem;
+            transition: transform 0.3s;
+        }
+
+        .section-header.active::after {
+            transform: rotate(180deg);
+        }
+
+        .section-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out, opacity 0.3s ease;
+            opacity: 0;
+        }
+
+        .section-content.open {
+            max-height: 1000px;
+            opacity: 1;
+            margin-top: 1rem;
+        }
 
         /* --- Inputs --- */
-        label { display: block; margin-bottom: 0.5rem; color: var(--text-muted); font-size: 0.9rem; }
-        textarea, input[type="text"], select, input[type="password"], input[type="email"] {
-            width: 100%; background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border);
-            border-radius: 12px; padding: 1rem; color: white; font-size: 1rem; outline: none; transition: border 0.3s;
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-muted);
+            font-size: 0.9rem;
         }
-        textarea { height: 200px; resize: vertical; line-height: 1.5; }
-        textarea:focus, input:focus, select:focus { border-color: var(--theme-color); }
-        select { appearance: none; cursor: pointer; }
-        select option { background: #1a1b20; color: white; }
+
+        textarea,
+        input[type="text"],
+        select,
+        input[type="password"],
+        input[type="email"] {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 1rem;
+            color: white;
+            font-size: 1rem;
+            outline: none;
+            transition: border 0.3s;
+        }
+
+        textarea {
+            height: 200px;
+            resize: vertical;
+            line-height: 1.5;
+        }
+
+        textarea:focus,
+        input:focus,
+        select:focus {
+            border-color: var(--theme-color);
+        }
+
+        select {
+            appearance: none;
+            cursor: pointer;
+        }
+
+        select option {
+            background: #1a1b20;
+            color: white;
+        }
 
         /* --- NEW PROMPT WARNING & LOCK STYLES --- */
         .prompt-warning {
-            background: var(--warning-bg); 
+            background: var(--warning-bg);
             border: 1px solid var(--warning-border);
             color: var(--warning-text);
             padding: 10px;
             border-radius: 8px;
             font-size: 0.85rem;
             margin-bottom: 10px;
-            display: none; /* Hidden by default */
+            display: none;
+            /* Hidden by default */
             align-items: center;
             gap: 10px;
             animation: fadeIn 0.3s ease;
         }
-        .prompt-warning.show { display: flex; }
+
+        .prompt-warning.show {
+            display: flex;
+        }
 
         /* Lock Button & Disabled State */
         .edit-lock-btn {
-            background: rgba(255, 193, 7, 0.1); 
-            border: 1px solid var(--warning-text); 
+            background: rgba(255, 193, 7, 0.1);
+            border: 1px solid var(--warning-text);
             color: var(--warning-text);
-            padding: 5px 12px; 
-            border-radius: 20px; 
-            font-size: 0.75rem; 
-            cursor: pointer; 
-            margin-bottom: 10px; 
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            margin-bottom: 10px;
             display: inline-flex;
             align-items: center;
             gap: 5px;
             transition: all 0.3s;
         }
-        .edit-lock-btn:hover { background: rgba(255, 193, 7, 0.2); }
-        .textarea-locked { opacity: 0.6; cursor: not-allowed; }
+
+        .edit-lock-btn:hover {
+            background: rgba(255, 193, 7, 0.2);
+        }
+
+        .textarea-locked {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
 
         /* --- CONFIRMATION MODAL --- */
-        .confirm-modal-overlay { 
-            display: none; 
-            position: fixed; top:0; left:0; width:100%; height:100%; 
-            background: rgba(0,0,0,0.7); z-index: 5000; 
-            align-items:center; justify-content:center; 
-            backdrop-filter: blur(5px); 
+        .confirm-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 5000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
         }
-        .confirm-modal { 
-            background: #1a1b20; 
-            border: 1px solid var(--error); 
-            padding: 30px; 
-            border-radius: 16px; 
-            max-width: 400px; 
-            text-align: center; 
-            box-shadow: 0 10px 40px rgba(0,0,0,0.6); 
-            animation: popIn 0.3s ease; 
+
+        .confirm-modal {
+            background: #1a1b20;
+            border: 1px solid var(--error);
+            padding: 30px;
+            border-radius: 16px;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+            animation: popIn 0.3s ease;
         }
-        .confirm-title { 
-            font-size: 1.2rem; font-weight: bold; margin-bottom: 10px; 
-            color: var(--error); display: flex; align-items: center; justify-content: center; gap: 10px; 
+
+        .confirm-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: var(--error);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
-        .confirm-text { color: #ccc; margin-bottom: 25px; line-height: 1.5; font-size: 0.95rem; }
-        .confirm-actions { display: flex; gap: 10px; justify-content: center; }
-        .btn-cancel { background: rgba(255,255,255,0.1); color: white; border: none; padding: 10px 20px; border-radius: 50px; cursor: pointer; }
-        .btn-confirm { background: var(--error); color: white; border: none; padding: 10px 20px; border-radius: 50px; cursor: pointer; font-weight: bold; }
-        .btn-cancel:hover { background: rgba(255,255,255,0.2); }
-        .btn-confirm:hover { filter: brightness(1.2); }
-        @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+        .confirm-text {
+            color: #ccc;
+            margin-bottom: 25px;
+            line-height: 1.5;
+            font-size: 0.95rem;
+        }
+
+        .confirm-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .btn-cancel {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+        }
+
+        .btn-confirm {
+            background: var(--error);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .btn-cancel:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-confirm:hover {
+            filter: brightness(1.2);
+        }
+
+        @keyframes popIn {
+            from {
+                transform: scale(0.9);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
 
 
         /* --- Dynamic Links --- */
-        .link-row { display: flex; gap: 10px; margin-bottom: 10px; }
-        .remove-link { background: rgba(231, 76, 60, 0.2); color: #ff6b6b; border: 1px solid rgba(231, 76, 60, 0.3); width: 45px; display: flex; align-items: center; justify-content: center; border-radius: 12px; cursor: pointer; font-size: 1.2rem; }
-        .add-link-btn { width: 100%; margin-top: 5px; text-align: center; cursor: pointer; background: rgba(255,255,255,0.05); padding: 0.5rem; border-radius: 50px; border: 1px solid var(--glass-border); color: var(--text-muted); font-size: 0.85rem; }
+        .link-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .remove-link {
+            background: rgba(231, 76, 60, 0.2);
+            color: #ff6b6b;
+            border: 1px solid rgba(231, 76, 60, 0.3);
+            width: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+
+        .add-link-btn {
+            width: 100%;
+            margin-top: 5px;
+            text-align: center;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 0.5rem;
+            border-radius: 50px;
+            border: 1px solid var(--glass-border);
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
 
         /* --- Chat Window (Shared) --- */
-        .chat-container { background: rgba(0, 0, 0, 0.3); border-radius: 12px; border: 1px solid var(--glass-border); overflow: hidden; display: flex; flex-direction: column; height: 400px; }
-        .chat-history { flex: 1; padding: 1rem; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
-        
-        /* Updated Message Style for Arabic Fix */
-        .message { 
-            max-width: 80%; 
-            padding: 0.8rem 1rem; 
-            border-radius: 12px; 
-            font-size: 0.95rem; 
-            line-height: 1.4; 
-            word-wrap: break-word;
-            unicode-bidi: plaintext; /* AUTO DETECT RTL/LTR */
-            text-align: start;       /* ALIGN BASED ON CONTENT */
+        .chat-container {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            border: 1px solid var(--glass-border);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 400px;
         }
-        
-        .msg-ai { align-self: flex-start; background: #2d2d2d; border-bottom-left-radius: 2px; color: #ddd; }
-        .msg-user { align-self: flex-end; background: var(--theme-color); border-bottom-right-radius: 2px; color: white; transition: background 0.3s; }
-        .chat-input-area { padding: 10px; background: rgba(255,255,255,0.03); display: flex; gap: 10px; border-top: 1px solid var(--glass-border); }
-        .chat-input-area input { padding: 0.8rem; border-radius: 50px; flex: 1; }
-        .send-chat-btn { width: 45px; height: 45px; border-radius: 50%; background: var(--theme-color); color: white; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; transition: background 0.3s; }
-        
+
+        .chat-history {
+            flex: 1;
+            padding: 1rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        /* Updated Message Style for Arabic Fix */
+        .message {
+            max-width: 80%;
+            padding: 0.8rem 1rem;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            line-height: 1.4;
+            word-wrap: break-word;
+            unicode-bidi: plaintext;
+            /* AUTO DETECT RTL/LTR */
+            text-align: start;
+            /* ALIGN BASED ON CONTENT */
+        }
+
+        .msg-ai {
+            align-self: flex-start;
+            background: #2d2d2d;
+            border-bottom-left-radius: 2px;
+            color: #ddd;
+        }
+
+        .msg-user {
+            align-self: flex-end;
+            background: var(--theme-color);
+            border-bottom-right-radius: 2px;
+            color: white;
+            transition: background 0.3s;
+        }
+
+        .chat-input-area {
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.03);
+            display: flex;
+            gap: 10px;
+            border-top: 1px solid var(--glass-border);
+        }
+
+        .chat-input-area input {
+            padding: 0.8rem;
+            border-radius: 50px;
+            flex: 1;
+        }
+
+        .send-chat-btn {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: var(--theme-color);
+            color: white;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            transition: background 0.3s;
+        }
+
         /* --- LIVE INBOX SPECIFIC STYLES --- */
-        .inbox-layout { display: flex; height: 75vh; gap: 0; }
-        .inbox-sidebar { width: 300px; border-right: 1px solid var(--glass-border); display: flex; flex-direction: column; background: rgba(0,0,0,0.2); }
-        .inbox-main { flex: 1; display: flex; flex-direction: column; }
-        
-        .platform-selector { display: flex; justify-content: space-around; padding: 15px; border-bottom: 1px solid var(--glass-border); }
-        .platform-btn { 
-            width: 45px; height: 45px; border-radius: 50%; border: none; cursor: pointer; 
-            display: flex; align-items: center; justify-content: center; 
-            transition: transform 0.2s; background: rgba(255,255,255,0.1); 
+        .inbox-layout {
+            display: flex;
+            height: 75vh;
+            gap: 0;
+        }
+
+        .inbox-sidebar {
+            width: 300px;
+            border-right: 1px solid var(--glass-border);
+            display: flex;
+            flex-direction: column;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .inbox-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .platform-selector {
+            display: flex;
+            justify-content: space-around;
+            padding: 15px;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .platform-btn {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s;
+            background: rgba(255, 255, 255, 0.1);
             fill: white;
         }
-        .platform-btn:hover, .platform-btn.active { transform: scale(1.1); filter: brightness(1.2); box-shadow: 0 0 10px rgba(0,0,0,0.2); }
-        .platform-btn svg { width: 24px; height: 24px; }
 
-        .contact-list { flex: 1; overflow-y: auto; padding: 10px; }
-        .contact-item { padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); cursor: pointer; border-radius: 8px; transition: background 0.2s; display: flex; align-items: center; gap: 10px; }
-        .contact-item:hover, .contact-item.active { background: rgba(255,255,255,0.05); }
-        .contact-item.active { border-left: 3px solid var(--theme-color); }
-        .contact-avatar { width: 35px; height: 35px; background: #333; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.8rem; }
-        .contact-info { margin-left: 10px; overflow: hidden; }
-        .contact-name { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 0.95rem; }
-        .contact-id { font-size: 0.75rem; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        
-        .inbox-header { padding: 15px; border-bottom: 1px solid var(--glass-border); font-weight: bold; background: rgba(0,0,0,0.1); }
+        .platform-btn:hover,
+        .platform-btn.active {
+            transform: scale(1.1);
+            filter: brightness(1.2);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .platform-btn svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .contact-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .contact-item {
+            padding: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            cursor: pointer;
+            border-radius: 8px;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .contact-item:hover,
+        .contact-item.active {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .contact-item.active {
+            border-left: 3px solid var(--theme-color);
+        }
+
+        .contact-avatar {
+            width: 35px;
+            height: 35px;
+            background: #333;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.8rem;
+        }
+
+        .contact-info {
+            margin-left: 10px;
+            overflow: hidden;
+        }
+
+        .contact-name {
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-size: 0.95rem;
+        }
+
+        .contact-id {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .inbox-header {
+            padding: 15px;
+            border-bottom: 1px solid var(--glass-border);
+            font-weight: bold;
+            background: rgba(0, 0, 0, 0.1);
+        }
 
         /* --- LEADS GRID STYLES (NEW) --- */
-        .leads-controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .leads-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
         .leads-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
             gap: 20px;
         }
+
         .lead-card {
-            background: linear-gradient(145deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%);
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
             border: 1px solid var(--glass-border);
             border-radius: 16px;
             padding: 20px;
             position: relative;
             transition: all 0.3s;
         }
+
         .lead-card:hover {
             border-color: var(--theme-color);
             transform: translateY(-3px);
-            background: rgba(255,255,255,0.05);
+            background: rgba(255, 255, 255, 0.05);
         }
-        .lead-header { display: flex; justify-content: space-between; margin-bottom: 15px; align-items: flex-start; }
-        .lead-name { font-weight: 700; font-size: 1.1rem; color: white; display: flex; align-items: center; gap: 8px;}
-        .lead-platform { font-size: 0.75rem; padding: 4px 8px; border-radius: 20px; background: rgba(255,255,255,0.1); color: var(--text-muted); text-transform: capitalize; }
-        .lead-info-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; font-size: 0.9rem; color: #ddd; }
-        .lead-info-icon { opacity: 0.6; width: 16px; text-align: center; }
+
+        .lead-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            align-items: flex-start;
+        }
+
+        .lead-name {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .lead-platform {
+            font-size: 0.75rem;
+            padding: 4px 8px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-muted);
+            text-transform: capitalize;
+        }
+
+        .lead-info-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            color: #ddd;
+        }
+
+        .lead-info-icon {
+            opacity: 0.6;
+            width: 16px;
+            text-align: center;
+        }
+
         .status-badge {
-            display: inline-block; padding: 4px 10px; border-radius: 4px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
-        .status-qualified { background: rgba(102, 187, 106, 0.2); color: #66BB6A; border: 1px solid rgba(102, 187, 106, 0.3); }
-        .status-pending { background: rgba(255, 167, 38, 0.2); color: #ffa726; border: 1px solid rgba(255, 167, 38, 0.3); }
-        .status-new { background: rgba(41, 182, 246, 0.2); color: #29b6f6; border: 1px solid rgba(41, 182, 246, 0.3); }
-        
-        .export-group { display: flex; gap: 10px; }
+
+        .status-qualified {
+            background: rgba(102, 187, 106, 0.2);
+            color: #66BB6A;
+            border: 1px solid rgba(102, 187, 106, 0.3);
+        }
+
+        .status-pending {
+            background: rgba(255, 167, 38, 0.2);
+            color: #ffa726;
+            border: 1px solid rgba(255, 167, 38, 0.3);
+        }
+
+        .status-new {
+            background: rgba(41, 182, 246, 0.2);
+            color: #29b6f6;
+            border: 1px solid rgba(41, 182, 246, 0.3);
+        }
+
+        .export-group {
+            display: flex;
+            gap: 10px;
+        }
+
         .export-btn {
-            background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); color: white;
-            padding: 8px 16px; border-radius: 50px; cursor: pointer; font-size: 0.9rem; transition: all 0.3s;
-            display: flex; align-items: center; gap: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
-        .export-btn:hover { background: var(--theme-color); border-color: var(--theme-color); }
+
+        .export-btn:hover {
+            background: var(--theme-color);
+            border-color: var(--theme-color);
+        }
 
         /* --- Actions --- */
-        .suggestions { margin-top: 1rem; display: flex; gap: 0.8rem; flex-wrap: wrap; }
-        .pill-btn { background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); color: var(--text-muted); padding: 0.4rem 1rem; border-radius: 50px; cursor: pointer; font-size: 0.85rem; transition: all 0.3s; }
-        .pill-btn:hover { background: rgba(255,255,255,0.1); color: white; border-color: rgba(255,255,255,0.3); }
-        .action-container { margin-top: 1rem; display: flex; justify-content: flex-end; }
-        .save-btn { background: var(--theme-color); color: white; border: none; padding: 0.8rem 2rem; border-radius: 12px; font-weight: 600; cursor: pointer; font-size: 1rem; box-shadow: 0 4px 15px rgba(0,0,0, 0.3); transition: transform 0.2s, box-shadow 0.2s, background 0.3s; }
-        .save-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0, 0.5); }
+        .suggestions {
+            margin-top: 1rem;
+            display: flex;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+        }
+
+        .pill-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            color: var(--text-muted);
+            padding: 0.4rem 1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+        }
+
+        .pill-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .action-container {
+            margin-top: 1rem;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .save-btn {
+            background: var(--theme-color);
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 1rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            transition: transform 0.2s, box-shadow 0.2s, background 0.3s;
+        }
+
+        .save-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+        }
 
         /* --- Overlays --- */
-        #toast { visibility: hidden; min-width: 250px; background-color: var(--glass-bg); border: 1px solid var(--glass-border); color: #fff; text-align: center; border-radius: 8px; padding: 16px; position: fixed; z-index: 3500; left: 50%; bottom: 30px; transform: translateX(-50%); backdrop-filter: blur(10px); opacity: 0; transition: opacity 0.3s, bottom 0.3s; }
-        #toast.show { visibility: visible; opacity: 1; bottom: 50px; }
-        #toast.success { border-left: 4px solid var(--success); }
-        #toast.error { border-left: 4px solid var(--error); }
-        #loader-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 16, 20, 0.85); backdrop-filter: blur(5px); z-index: 2000; display: flex; justify-content: center; align-items: center; flex-direction: column; gap: 15px; transition: opacity 0.5s ease; }
-        .spinner { width: 50px; height: 50px; border: 3px solid rgba(255,255,255,0.1); border-radius: 50%; border-top-color: var(--theme-color); animation: spin 1s ease-in-out infinite; transition: border-top-color 0.3s; }
-        .loading-text { font-size: 0.9rem; color: var(--text-muted); }
-        @keyframes spin { to { transform: rotate(360deg); } }
+        #toast {
+            visibility: hidden;
+            min-width: 250px;
+            background-color: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            color: #fff;
+            text-align: center;
+            border-radius: 8px;
+            padding: 16px;
+            position: fixed;
+            z-index: 3500;
+            left: 50%;
+            bottom: 30px;
+            transform: translateX(-50%);
+            backdrop-filter: blur(10px);
+            opacity: 0;
+            transition: opacity 0.3s, bottom 0.3s;
+        }
+
+        #toast.show {
+            visibility: visible;
+            opacity: 1;
+            bottom: 50px;
+        }
+
+        #toast.success {
+            border-left: 4px solid var(--success);
+        }
+
+        #toast.error {
+            border-left: 4px solid var(--error);
+        }
+
+        #loader-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 16, 20, 0.85);
+            backdrop-filter: blur(5px);
+            z-index: 2000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            gap: 15px;
+            transition: opacity 0.5s ease;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            border-top-color: var(--theme-color);
+            animation: spin 1s ease-in-out infinite;
+            transition: border-top-color 0.3s;
+        }
+
+        .loading-text {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
 
         /* Mobile Adjustments */
         @media (max-width: 768px) {
-            .mobile-top-bar { display: flex; }
+            .mobile-top-bar {
+                display: flex;
+            }
 
             .sidebar-header {
                 display: none !important;
             }
-            .sidebar { 
-                width: 0; 
-                transition: width 0.3s ease; /* Ensure animation works */
-                z-index: 2001; /* Above Top Bar */
-                background: #0f1014; /* Solid BG for visibility */
-            }
-            .sidebar.mobile-open { width: 240px; box-shadow: 5px 0 15px rgba(0,0,0,0.5); }
-            
-            #app-container { margin-left: 0; width: 100%; margin-top: 60px; /* Push content down */ }
-            
-            .nav-list { display: block; }
-            .mobile-hamburger { display: none; } /* Hide old hamburger */
-            
-            .inbox-layout { flex-direction: column; height: auto; }
-            .inbox-sidebar { width: 100%; height: 300px; border-right: none; border-bottom: 1px solid var(--glass-border); }
-            .inbox-main { height: 500px; }
 
-            .post-row { flex-direction: column; }
-            .post-stats { border-left: none; padding-left: 0; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px; justify-content: space-around; }
-            
-            .modal-content { flex-direction: column; height: 90vh; }
-            .modal-media { flex: 0.8; max-height: 40%; }
-            .modal-info { flex: 1; }
-            
-            .leads-controls { flex-direction: column; gap: 10px; align-items: stretch; }
-            .export-group { justify-content: space-between; }
+            .sidebar {
+                width: 0;
+                transition: width 0.3s ease;
+                /* Ensure animation works */
+                z-index: 2001;
+                /* Above Top Bar */
+                background: #0f1014;
+                /* Solid BG for visibility */
+            }
+
+            .sidebar.mobile-open {
+                width: 240px;
+                box-shadow: 5px 0 15px rgba(0, 0, 0, 0.5);
+            }
+
+            #app-container {
+                margin-left: 0;
+                width: 100%;
+                margin-top: 60px;
+                /* Push content down */
+            }
+
+            .nav-list {
+                display: block;
+            }
+
+            .mobile-hamburger {
+                display: none;
+            }
+
+            /* Hide old hamburger */
+
+            .inbox-layout {
+                flex-direction: column;
+                height: auto;
+            }
+
+            .inbox-sidebar {
+                width: 100%;
+                height: 300px;
+                border-right: none;
+                border-bottom: 1px solid var(--glass-border);
+            }
+
+            .inbox-main {
+                height: 500px;
+            }
+
+            .post-row {
+                flex-direction: column;
+            }
+
+            .post-stats {
+                border-left: none;
+                padding-left: 0;
+                border-top: 1px solid rgba(255, 255, 255, 0.1);
+                padding-top: 15px;
+                justify-content: space-around;
+            }
+
+            .modal-content {
+                flex-direction: column;
+                height: 90vh;
+            }
+
+            .modal-media {
+                flex: 0.8;
+                max-height: 40%;
+            }
+
+            .modal-info {
+                flex: 1;
+            }
+
+            .leads-controls {
+                flex-direction: column;
+                gap: 10px;
+                align-items: stretch;
+            }
+
+            .export-group {
+                justify-content: space-between;
+            }
         }
     </style>
 </head>
+
 <body>
 
     <div id="login-container">
         <div class="card glass login-card">
             <div class="login-title">DIGITIVIA AI AGENT</div>
-            
+
             <button class="social-btn google" onclick="performOAuthLogin('google')">
-                <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12.545,10.239v3.821h5.445c-0.712,2.315-2.647,3.972-5.445,3.972c-3.332,0-6.033-2.701-6.033-6.032s2.701-6.032,6.033-6.032c1.498,0,2.866,0.549,3.921,1.453l2.814-2.814C17.503,2.988,15.139,2,12.545,2C7.021,2,2.543,6.477,2.543,12s4.478,10,10.002,10c8.396,0,10.249-7.85,9.426-11.748L12.545,10.239z"/></svg>
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                    <path
+                        d="M12.545,10.239v3.821h5.445c-0.712,2.315-2.647,3.972-5.445,3.972c-3.332,0-6.033-2.701-6.033-6.032s2.701-6.032,6.033-6.032c1.498,0,2.866,0.549,3.921,1.453l2.814-2.814C17.503,2.988,15.139,2,12.545,2C7.021,2,2.543,6.477,2.543,12s4.478,10,10.002,10c8.396,0,10.249-7.85,9.426-11.748L12.545,10.239z" />
+                </svg>
                 Sign in with Google
             </button>
             <button class="social-btn linkedin" onclick="performOAuthLogin('linkedin')">
-                <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                    <path
+                        d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
+                </svg>
                 Sign in with LinkedIn
             </button>
 
@@ -772,7 +1655,7 @@
 
             <input type="email" id="login-user" class="login-input" placeholder="Email Address">
             <input type="password" id="login-pass" class="login-input" placeholder="Password">
-            
+
             <div class="login-btn-group">
                 <button class="login-btn" onclick="performLogin()">LOGIN</button>
                 <button class="login-btn secondary" onclick="performSignUp()">REGISTER</button>
@@ -794,37 +1677,61 @@
         </div>
         <ul class="nav-list">
             <li class="nav-item active" onclick="switchTab('website', this)">
-                <div class="nav-icon"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg></div>
+                <div class="nav-icon"><svg viewBox="0 0 24 24">
+                        <path
+                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" />
+                    </svg></div>
                 <span class="nav-label">Website Agent</span>
             </li>
             <li class="nav-item" onclick="switchTab('whatsapp', this)">
-                <div class="nav-icon"><svg viewBox="0 0 24 24"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2z"/></svg></div>
+                <div class="nav-icon"><svg viewBox="0 0 24 24">
+                        <path
+                            d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2z" />
+                    </svg></div>
                 <span class="nav-label">WhatsApp Agent</span>
             </li>
             <li class="nav-item" onclick="switchTab('messenger', this)">
-                <div class="nav-icon"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.03 2 11c0 2.87 1.5 5.43 3.86 7.02-.06.71-.24 2.53-.54 3.79 1.43-.37 3.39-1.01 4.58-1.55.67.19 1.39.3 2.1.3 5.52 0 10-4.03 10-9S17.52 2 12 2zm1.2 12.39l-2.67-2.85-5.23 2.85 5.76-6.11 2.64 2.85 5.26-2.85-5.76 6.11z"/></svg></div>
+                <div class="nav-icon"><svg viewBox="0 0 24 24">
+                        <path
+                            d="M12 2C6.48 2 2 6.03 2 11c0 2.87 1.5 5.43 3.86 7.02-.06.71-.24 2.53-.54 3.79 1.43-.37 3.39-1.01 4.58-1.55.67.19 1.39.3 2.1.3 5.52 0 10-4.03 10-9S17.52 2 12 2zm1.2 12.39l-2.67-2.85-5.23 2.85 5.76-6.11 2.64 2.85 5.26-2.85-5.76 6.11z" />
+                    </svg></div>
                 <span class="nav-label">Messenger Agent</span>
             </li>
             <li class="nav-item" onclick="switchTab('instagram', this)">
-                <div class="nav-icon"><svg viewBox="0 0 24 24"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8 1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3z"/></svg></div>
+                <div class="nav-icon"><svg viewBox="0 0 24 24">
+                        <path
+                            d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8 1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3z" />
+                    </svg></div>
                 <span class="nav-label">Instagram Agent</span>
             </li>
             <li class="nav-item" onclick="switchTab('insights', this)">
-                <div class="nav-icon"><svg viewBox="0 0 24 24"><path d="M16,11.78L20.24,4.45L21.97,5.45L16.74,14.5L10.23,10.75L5.46,19H22V21H2V3H4V17.54L9.5,8L16,11.78Z" /></svg></div>
+                <div class="nav-icon"><svg viewBox="0 0 24 24">
+                        <path
+                            d="M16,11.78L20.24,4.45L21.97,5.45L16.74,14.5L10.23,10.75L5.46,19H22V21H2V3H4V17.54L9.5,8L16,11.78Z" />
+                    </svg></div>
                 <span class="nav-label">Live Insights</span>
             </li>
             <li class="nav-item" onclick="switchTab('inbox', this)">
-                <div class="nav-icon"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></div>
+                <div class="nav-icon"><svg viewBox="0 0 24 24">
+                        <path
+                            d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" />
+                    </svg></div>
                 <span class="nav-label">Live Inbox</span>
             </li>
             <li class="nav-item" onclick="switchTab('leads', this)">
-                <div class="nav-icon"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg></div>
+                <div class="nav-icon"><svg viewBox="0 0 24 24">
+                        <path
+                            d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z" />
+                    </svg></div>
                 <span class="nav-label">Leads Area</span>
             </li>
         </ul>
         <div class="sidebar-footer">
             <div class="nav-item" onclick="performLogout()">
-                <div class="nav-icon" style="color:var(--error);"><svg viewBox="0 0 24 24"><path d="M10.09 15.59L11.5 17l5-5-5-5-1.41 1.41L12.67 11H3v2h9.67l-2.58 2.59zM19 3H5c-1.11 0-2 .9-2 2v4h2V5h14v14H5v-4H3v4c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg></div>
+                <div class="nav-icon" style="color:var(--error);"><svg viewBox="0 0 24 24">
+                        <path
+                            d="M10.09 15.59L11.5 17l5-5-5-5-1.41 1.41L12.67 11H3v2h9.67l-2.58 2.59zM19 3H5c-1.11 0-2 .9-2 2v4h2V5h14v14H5v-4H3v4c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z" />
+                    </svg></div>
                 <span class="nav-label" style="color:var(--error);">Logout</span>
             </div>
         </div>
@@ -859,27 +1766,29 @@
     <div id="post-modal" class="modal-overlay" onclick="closeModal(event)">
         <div class="modal-content" onclick="event.stopPropagation()">
             <div class="modal-close" onclick="closeModal()">×</div>
-            
+
             <div class="modal-media">
                 <img id="m-img" class="modal-img" src="" alt="Post Media">
             </div>
-            
+
             <div class="modal-info">
                 <div class="modal-header">
                     <div id="m-date" class="m-date">Date</div>
                     <div id="m-caption" class="m-caption">Caption text...</div>
                 </div>
-                
+
                 <div class="modal-stats">
                     <div class="m-stat"><span id="m-likes">0</span> ❤️ Likes</div>
                     <div class="m-stat"><span id="m-comments">0</span> 💬 Comments</div>
                     <div class="m-stat"><span id="m-reach">0</span> 👁️ Reach</div>
                 </div>
-                
+
                 <div class="comments-section">
-                    <div style="font-size:0.85rem; color:#888; margin-bottom:15px; text-transform:uppercase; letter-spacing:1px;">Recent Comments</div>
+                    <div
+                        style="font-size:0.85rem; color:#888; margin-bottom:15px; text-transform:uppercase; letter-spacing:1px;">
+                        Recent Comments</div>
                     <div id="m-comments-list">
-                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -890,16 +1799,16 @@
     <script>
         // --- 3. SUPABASE CONFIGURATION ---
         const SUPABASE_URL = "https://xrycghxaxqzvkmzqzzkx.supabase.co";
-        const SUPABASE_KEY = "sb_publishable_E_BXMYVOxgwahNXw-JhgbA_pUWoIpUB"; 
+        const SUPABASE_KEY = "sb_publishable_E_BXMYVOxgwahNXw-JhgbA_pUWoIpUB";
 
-        
+
         // Initialize Supabase Client
         // NEW (Fixed)
-const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-// Update ALL references in your code from 'supabase' to 'supabaseClient'
-// Example:
-const { data, error } = await supabaseClient.auth.signInWithPassword(...)
+        // Update ALL references in your code from 'supabase' to 'supabaseClient'
+        // Example:
+        // const { data, error } = await supabaseClient.auth.signInWithPassword(...)
 
         // --- WEBHOOKS (Kept CHAT for Brain, Removed Others) ---
         const CHAT_WEBHOOK = "https://n8n.srv1174105.hstgr.cloud/webhook/chatHandler";
@@ -921,22 +1830,22 @@ const { data, error } = await supabaseClient.auth.signInWithPassword(...)
         // --- GLOBAL STATE ---
         let currentInboxPlatform = null;
         let currentChatUser = null;
-        let currentChatUserName = null; 
-        let agentToUnlock = null; 
-        let currentUserOrgId = null; 
-        
+        let currentChatUserName = null;
+        let agentToUnlock = null;
+        let currentUserOrgId = null;
+
         let insightPlatform = 'facebook';
         let insightPeriod = 'day';
         let cachedPosts = [];
-        let cachedLeads = []; 
+        let cachedLeads = [];
         let realtimeSubscription = null; // Store subscription
 
         // ==========================================
         //        AUTH LOGIC (GATEKEEPER)
         // ==========================================
-        
-        window.onload = async function() {
-            const { data: { session } } = await supabase.auth.getSession();
+
+        window.onload = async function () {
+            const { data: { session } } = await supabaseClient.auth.getSession();
             if (session) {
                 await ensureUserProfile(session.user);
                 showApp();
@@ -948,8 +1857,8 @@ const { data, error } = await supabaseClient.auth.signInWithPassword(...)
         async function performLogin() {
             const email = document.getElementById('login-user').value;
             const pass = document.getElementById('login-pass').value;
-            
-            if(!email || !pass) {
+
+            if (!email || !pass) {
                 showToast("Please fill in email and password", "error");
                 return;
             }
@@ -957,7 +1866,7 @@ const { data, error } = await supabaseClient.auth.signInWithPassword(...)
             setLoadingState(true, "LOGGING IN...");
 
             try {
-                const { data, error } = await supabase.auth.signInWithPassword({
+                const { data, error } = await supabaseClient.auth.signInWithPassword({
                     email: email,
                     password: pass,
                 });
@@ -979,7 +1888,7 @@ const { data, error } = await supabaseClient.auth.signInWithPassword(...)
             const email = document.getElementById('login-user').value;
             const pass = document.getElementById('login-pass').value;
 
-            if(!email || !pass) {
+            if (!email || !pass) {
                 showToast("Please fill in email and password", "error");
                 return;
             }
@@ -987,7 +1896,7 @@ const { data, error } = await supabaseClient.auth.signInWithPassword(...)
             setLoadingState(true, "REGISTERING...");
 
             try {
-                const { data, error } = await supabase.auth.signUp({
+                const { data, error } = await supabaseClient.auth.signUp({
                     email: email,
                     password: pass,
                 });
@@ -1005,10 +1914,10 @@ const { data, error } = await supabaseClient.auth.signInWithPassword(...)
 
         async function performOAuthLogin(provider) {
             try {
-                const { data, error } = await supabase.auth.signInWithOAuth({
+                const { data, error } = await supabaseClient.auth.signInWithOAuth({
                     provider: provider,
                     options: {
-                        redirectTo: window.location.href 
+                        redirectTo: window.location.href
                     }
                 });
                 if (error) throw error;
@@ -1019,13 +1928,13 @@ const { data, error } = await supabaseClient.auth.signInWithPassword(...)
         }
 
         async function performLogout() {
-            await supabase.auth.signOut();
-            location.reload(); 
+            await supabaseClient.auth.signOut();
+            location.reload();
         }
 
         async function ensureUserProfile(user) {
             try {
-                const { data: profile, error } = await supabase
+                const { data: profile, error } = await supabaseClient
                     .from('profiles')
                     .select('org_id')
                     .eq('user_id', user.id)
@@ -1034,17 +1943,17 @@ const { data, error } = await supabaseClient.auth.signInWithPassword(...)
                 if (profile) {
                     currentUserOrgId = profile.org_id;
                 } else {
-                    const { data: newProfile, error: insertError } = await supabase
+                    const { data: newProfile, error: insertError } = await supabaseClient
                         .from('profiles')
                         .insert([
-                            { 
-                                user_id: user.id, 
+                            {
+                                user_id: user.id,
                                 email: user.email,
                                 full_name: user.user_metadata.full_name || '',
                                 avatar_url: user.user_metadata.avatar_url || ''
                             }
                         ]).select().single();
-                    
+
                     if (!insertError && newProfile) currentUserOrgId = newProfile.org_id;
                 }
             } catch (e) {
@@ -1055,12 +1964,12 @@ const { data, error } = await supabaseClient.auth.signInWithPassword(...)
         function setLoadingState(isLoading, text, isSecondary = false) {
             const btns = document.querySelectorAll('.login-btn');
             btns.forEach(b => {
-                if(isLoading) {
-                    if(b.innerText.includes(text.replace('ING...', ''))) b.innerText = text;
+                if (isLoading) {
+                    if (b.innerText.includes(text.replace('ING...', ''))) b.innerText = text;
                     b.style.opacity = "0.7";
                     b.disabled = true;
                 } else {
-                    if(b.classList.contains('secondary')) b.innerText = "REGISTER";
+                    if (b.classList.contains('secondary')) b.innerText = "REGISTER";
                     else b.innerText = "LOGIN";
                     b.style.opacity = "1";
                     b.disabled = false;
@@ -1072,9 +1981,9 @@ const { data, error } = await supabaseClient.auth.signInWithPassword(...)
             document.getElementById('login-container').style.display = 'none';
             const app = document.getElementById('app-container');
             app.style.display = 'flex';
-            
+
             buildInterface();
-            fetchCurrentConfigurations(); 
+            fetchCurrentConfigurations();
             document.getElementById('loader-overlay').style.display = 'none';
             // Note: startAutoRefresh is less critical now with Realtime, but good for contacts list updates
             startAutoRefresh();
@@ -1083,10 +1992,10 @@ const { data, error } = await supabaseClient.auth.signInWithPassword(...)
         function startAutoRefresh() {
             setInterval(() => {
                 if (document.getElementById('inbox').classList.contains('active')) {
-                    if(currentInboxPlatform) loadInbox(currentInboxPlatform, true); 
+                    if (currentInboxPlatform) loadInbox(currentInboxPlatform, true);
                     // Messages handle themselves via Realtime now
                 }
-            }, 10000); 
+            }, 10000);
         }
 
         // ==========================================
@@ -1268,27 +2177,27 @@ const { data, error } = await supabaseClient.auth.signInWithPassword(...)
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
             document.getElementById(tabId).classList.add('active');
-            if(element) element.classList.add('active');
+            if (element) element.classList.add('active');
 
-            let color = '#5BAEB0'; 
-            if(tabId === 'whatsapp') color = '#57B078';
-            if(tabId === 'page' || tabId === 'messenger') color = '#5B89CE';
-            if(tabId === 'instagram') color = '#C66B8D';
-            if(tabId === 'website') color = '#5BAEB0';
-            if(tabId === 'inbox') color = '#ffffff'; 
-            if(tabId === 'leads') {
+            let color = '#5BAEB0';
+            if (tabId === 'whatsapp') color = '#57B078';
+            if (tabId === 'page' || tabId === 'messenger') color = '#5B89CE';
+            if (tabId === 'instagram') color = '#C66B8D';
+            if (tabId === 'website') color = '#5BAEB0';
+            if (tabId === 'inbox') color = '#ffffff';
+            if (tabId === 'leads') {
                 color = '#e6b72a'; // Gold for leads
                 fetchLeads(); // Fetch data when tab opens
             }
-            if(tabId === 'insights') {
-                color = '#7C4DFF'; 
-                if(document.getElementById('insights-grid').children.length <= 1) {
-                    setInsightPlatform('facebook'); 
+            if (tabId === 'insights') {
+                color = '#7C4DFF';
+                if (document.getElementById('insights-grid').children.length <= 1) {
+                    setInsightPlatform('facebook');
                 }
             }
 
             document.documentElement.style.setProperty('--theme-color', color);
-            
+
             // Mobile Menu Close
             document.getElementById('mainSidebar').classList.remove('mobile-open');
         }
@@ -1318,7 +2227,7 @@ const { data, error } = await supabaseClient.auth.signInWithPassword(...)
             const textarea = document.getElementById(`prompt-${agentToUnlock}`);
             textarea.removeAttribute('readonly');
             textarea.classList.remove('textarea-locked');
-            
+
             // 2. Hide Lock Button
             const lockBtn = document.getElementById(`lock-btn-${agentToUnlock}`);
             lockBtn.style.display = 'none';
@@ -1337,18 +2246,18 @@ const { data, error } = await supabaseClient.auth.signInWithPassword(...)
         function showPromptWarning(agentId) {
             // Backup trigger if user managed to type without unlocking (edge case)
             const w = document.getElementById(`warning-${agentId}`);
-            if(w) w.classList.add('show');
+            if (w) w.classList.add('show');
         }
 
-        function applySuggestion(agentId, type) { 
+        function applySuggestion(agentId, type) {
             // If locked, request unlock first
             const textarea = document.getElementById(`prompt-${agentId}`);
-            if(textarea.hasAttribute('readonly')) {
+            if (textarea.hasAttribute('readonly')) {
                 requestUnlock(agentId);
                 return;
             }
 
-            document.getElementById(`prompt-${agentId}`).value = PROMPT_TEMPLATES[type]; 
+            document.getElementById(`prompt-${agentId}`).value = PROMPT_TEMPLATES[type];
             showPromptWarning(agentId);
         }
 
@@ -1368,12 +2277,12 @@ const { data, error } = await supabaseClient.auth.signInWithPassword(...)
                     .select('*')
                     .eq('org_id', currentUserOrgId)
                     .order('created_at', { ascending: false });
-                
-                if (error) throw error;
-                
-                cachedLeads = leads || []; 
 
-                if(cachedLeads.length === 0) {
+                if (error) throw error;
+
+                cachedLeads = leads || [];
+
+                if (cachedLeads.length === 0) {
                     grid.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding:30px;">No leads found.</div>';
                     return;
                 }
@@ -1401,8 +2310,8 @@ const { data, error } = await supabaseClient.auth.signInWithPassword(...)
 
                 // Determine Status Badge Class
                 let statusClass = "status-new";
-                if(status.toLowerCase() === 'qualified') statusClass = "status-qualified";
-                else if(status.toLowerCase() === 'pending') statusClass = "status-pending";
+                if (status.toLowerCase() === 'qualified') statusClass = "status-qualified";
+                else if (status.toLowerCase() === 'pending') statusClass = "status-pending";
 
                 const card = document.createElement('div');
                 card.className = 'lead-card';
@@ -1417,7 +2326,7 @@ const { data, error } = await supabaseClient.auth.signInWithPassword(...)
                         <span class="lead-info-icon">📞</span> ${phone}
                     </div>
                     <div class="lead-info-row">
-                        <span class="lead-info-icon">💬</span> "${lastMsg.length > 30 ? lastMsg.substring(0,30)+'...' : lastMsg}"
+                        <span class="lead-info-icon">💬</span> "${lastMsg.length > 30 ? lastMsg.substring(0, 30) + '...' : lastMsg}"
                     </div>
                     <div class="lead-info-row" style="font-size:0.8rem; color:#888; margin-top:10px; justify-content: space-between;">
                         <span>${date.replace('T', ' ').substring(0, 16)}</span>
@@ -1429,8 +2338,8 @@ const { data, error } = await supabaseClient.auth.signInWithPassword(...)
         }
 
         function exportLeadsCSV() {
-            if(cachedLeads.length === 0) { showToast("No leads to export", "error"); return; }
-            
+            if (cachedLeads.length === 0) { showToast("No leads to export", "error"); return; }
+
             const keys = Object.keys(cachedLeads[0]);
             const csvContent = [
                 keys.join(","), // Header
@@ -1440,31 +2349,31 @@ const { data, error } = await supabaseClient.auth.signInWithPassword(...)
             const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
             const link = document.createElement("a");
             link.href = URL.createObjectURL(blob);
-            link.download = `leads_export_${new Date().toISOString().slice(0,10)}.csv`;
+            link.download = `leads_export_${new Date().toISOString().slice(0, 10)}.csv`;
             link.click();
         }
 
         function exportLeadsExcel() {
-             if(cachedLeads.length === 0) { showToast("No leads to export", "error"); return; }
+            if (cachedLeads.length === 0) { showToast("No leads to export", "error"); return; }
 
-             // Simple HTML Table export which Excel opens nicely
-             let table = '<table><thead><tr>';
-             const keys = Object.keys(cachedLeads[0]);
-             keys.forEach(k => table += `<th>${k}</th>`);
-             table += '</tr></thead><tbody>';
-             
-             cachedLeads.forEach(row => {
-                 table += '<tr>';
-                 keys.forEach(k => table += `<td>${row[k] || ''}</td>`);
-                 table += '</tr>';
-             });
-             table += '</tbody></table>';
+            // Simple HTML Table export which Excel opens nicely
+            let table = '<table><thead><tr>';
+            const keys = Object.keys(cachedLeads[0]);
+            keys.forEach(k => table += `<th>${k}</th>`);
+            table += '</tr></thead><tbody>';
 
-             const blob = new Blob([table], { type: "application/vnd.ms-excel" });
-             const link = document.createElement("a");
-             link.href = URL.createObjectURL(blob);
-             link.download = `leads_export_${new Date().toISOString().slice(0,10)}.xls`;
-             link.click();
+            cachedLeads.forEach(row => {
+                table += '<tr>';
+                keys.forEach(k => table += `<td>${row[k] || ''}</td>`);
+                table += '</tr>';
+            });
+            table += '</tbody></table>';
+
+            const blob = new Blob([table], { type: "application/vnd.ms-excel" });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = `leads_export_${new Date().toISOString().slice(0, 10)}.xls`;
+            link.click();
         }
 
         // ==========================================
@@ -1473,7 +2382,7 @@ const { data, error } = await supabaseClient.auth.signInWithPassword(...)
 
         function setInsightPlatform(platform) {
             insightPlatform = platform;
-            
+
             document.querySelectorAll('.platform-chip').forEach(c => c.classList.remove('active'));
             document.getElementById(`chip-${platform}`).classList.add('active');
 
@@ -1486,7 +2395,7 @@ const { data, error } = await supabaseClient.auth.signInWithPassword(...)
             }
 
             const postsSec = document.getElementById('posts-section');
-            if(platform === 'facebook' || platform === 'instagram') {
+            if (platform === 'facebook' || platform === 'instagram') {
                 postsSec.style.display = 'block';
                 fetchPosts(platform);
             } else {
@@ -1502,7 +2411,7 @@ const { data, error } = await supabaseClient.auth.signInWithPassword(...)
         }
 
         async function fetchInsights() {
-            if(!currentUserOrgId) return;
+            if (!currentUserOrgId) return;
             const grid = document.getElementById('insights-grid');
             grid.innerHTML = '<div style="grid-column: 1/-1; text-align:center;"><div class="spinner" style="width:30px; height:30px; margin:0 auto;"></div></div>';
 
@@ -1517,10 +2426,10 @@ const { data, error } = await supabaseClient.auth.signInWithPassword(...)
                     .limit(1)
                     .single();
 
-                if(error && error.code !== 'PGRST116') throw error; // Ignore "no rows found" error
-                
+                if (error && error.code !== 'PGRST116') throw error; // Ignore "no rows found" error
+
                 // Use fetched data or empty object if null
-                const metrics = data || {}; 
+                const metrics = data || {};
 
                 renderInsightCards(metrics);
 
@@ -1532,7 +2441,7 @@ const { data, error } = await supabaseClient.auth.signInWithPassword(...)
 
         // --- FETCH POSTS ---
         async function fetchPosts(platform) {
-            if(!currentUserOrgId) return;
+            if (!currentUserOrgId) return;
             const list = document.getElementById('posts-list');
             list.innerHTML = '<div style="padding:20px; text-align:center; color:#888;">Loading posts...</div>';
 
@@ -1541,12 +2450,12 @@ const { data, error } = await supabaseClient.auth.signInWithPassword(...)
                 // platform argument comes in as 'facebook' or 'instagram' usually, 
                 // but the UI passed 'facebook_posts' before. We need to clean it.
                 // Assuming DB platform column stores 'facebook', 'instagram'
-                
+
                 const dbPlatform = platform === 'facebook' ? 'facebook' : 'instagram';
 
                 const { data: posts, error } = await supabase
                     .from('social_posts')
-                    .select('*, social_post_metrics(*)') 
+                    .select('*, social_post_metrics(*)')
                     .eq('org_id', currentUserOrgId)
                     .eq('platform', dbPlatform)
                     .order('created_at', { ascending: false })
@@ -1556,7 +2465,7 @@ const { data, error } = await supabaseClient.auth.signInWithPassword(...)
 
                 cachedPosts = posts || [];
 
-                if(cachedPosts.length === 0) {
+                if (cachedPosts.length === 0) {
                     list.innerHTML = '<div style="padding:20px; text-align:center;">No recent posts found.</div>';
                     return;
                 }
@@ -1564,15 +2473,15 @@ const { data, error } = await supabaseClient.auth.signInWithPassword(...)
                 list.innerHTML = '';
                 cachedPosts.forEach((post, index) => {
                     const date = new Date(post.created_at || post.timestamp).toLocaleDateString();
-                    
+
                     // Metrics usually joined or separate. 
                     // If social_post_metrics is joined (1:1), access via array or object
                     let reach = 0;
-                    if(post.social_post_metrics && post.social_post_metrics.length > 0) {
-                         reach = post.social_post_metrics[0].reach || 0;
+                    if (post.social_post_metrics && post.social_post_metrics.length > 0) {
+                        reach = post.social_post_metrics[0].reach || 0;
                     }
 
-                    const img = post.media_url || post.thumbnail_url || post.full_picture || ''; 
+                    const img = post.media_url || post.thumbnail_url || post.full_picture || '';
                     const text = post.caption || post.message || 'No caption';
 
                     const html = `
@@ -1604,7 +2513,7 @@ const { data, error } = await supabaseClient.auth.signInWithPassword(...)
         // --- NEW MODAL FUNCTIONS ---
         function openModal(index) {
             const post = cachedPosts[index];
-            if(!post) return;
+            if (!post) return;
 
             document.getElementById('m-img').src = post.media_url || post.thumbnail_url || '';
             document.getElementById('m-date').innerText = new Date(post.created_at).toDateString();
@@ -1614,7 +2523,7 @@ const { data, error } = await supabaseClient.auth.signInWithPassword(...)
             let commentsCount = 0;
             let reach = 0;
 
-            if(post.social_post_metrics && post.social_post_metrics.length > 0) {
+            if (post.social_post_metrics && post.social_post_metrics.length > 0) {
                 const m = post.social_post_metrics[0];
                 likes = m.likes || 0;
                 commentsCount = m.comments || 0;
@@ -1630,7 +2539,7 @@ const { data, error } = await supabaseClient.auth.signInWithPassword(...)
             // For now, placeholder or empty unless data is eager loaded.
             const commentsList = document.getElementById('m-comments-list');
             commentsList.innerHTML = '<div style="padding:10px; color:#555; text-align:center;">Comments not loaded</div>';
-            
+
             document.getElementById('post-modal').style.display = 'flex';
         }
 
@@ -1682,7 +2591,7 @@ const { data, error } = await supabaseClient.auth.signInWithPassword(...)
         function formatDuration(ms) {
             if (!ms) return '0s';
             const seconds = Math.floor(ms / 1000);
-            if(seconds < 60) return `${seconds}s`;
+            if (seconds < 60) return `${seconds}s`;
             const minutes = Math.floor(seconds / 60);
             return `${minutes}m`;
         }
@@ -1692,18 +2601,18 @@ const { data, error } = await supabaseClient.auth.signInWithPassword(...)
         // ==========================================
 
         async function loadInbox(platform, isAutoRefresh = false) {
-            if(!isAutoRefresh) {
+            if (!isAutoRefresh) {
                 currentInboxPlatform = platform;
-                let color = '#5BAEB0'; 
-                if(platform === 'whatsapp') color = '#57B078';
-                if(platform === 'page') color = '#5B89CE';
-                if(platform === 'instagram') color = '#C66B8D';
+                let color = '#5BAEB0';
+                if (platform === 'whatsapp') color = '#57B078';
+                if (platform === 'page') color = '#5B89CE';
+                if (platform === 'instagram') color = '#C66B8D';
                 document.documentElement.style.setProperty('--theme-color', color);
             }
 
             const list = document.getElementById('contact-list');
-            if(!isAutoRefresh) list.innerHTML = '<div style="padding:20px; text-align:center;">Loading...</div>';
-            
+            if (!isAutoRefresh) list.innerHTML = '<div style="padding:20px; text-align:center;">Loading...</div>';
+
             try {
                 // PHASE 4: Fetch from inbox_contacts (Supabase)
                 const { data: contacts, error } = await supabase
@@ -1712,10 +2621,10 @@ const { data, error } = await supabaseClient.auth.signInWithPassword(...)
                     .eq('org_id', currentUserOrgId)
                     .eq('platform', platform);
 
-                if(error) throw error;
+                if (error) throw error;
 
-                if(!contacts || contacts.length === 0) {
-                    if(!isAutoRefresh) list.innerHTML = '<div style="padding:20px; text-align:center;">No chats found.</div>';
+                if (!contacts || contacts.length === 0) {
+                    if (!isAutoRefresh) list.innerHTML = '<div style="padding:20px; text-align:center;">No chats found.</div>';
                     return;
                 }
 
@@ -1723,15 +2632,15 @@ const { data, error } = await supabaseClient.auth.signInWithPassword(...)
                 contacts.forEach(contact => {
                     const div = document.createElement('div');
                     div.className = 'contact-item';
-                    if(contact.id === currentChatUser) div.classList.add('active'); // contact.id is UUID likely
-                    
+                    if (contact.id === currentChatUser) div.classList.add('active'); // contact.id is UUID likely
+
                     // Passing platform is safe since we filtered by it
                     div.onclick = () => loadInboxMessages(platform, contact.id, contact.name);
-                    
-                    const displayName = contact.name || "Unknown"; 
-                    const displayId = contact.platform_id || ""; 
+
+                    const displayName = contact.name || "Unknown";
+                    const displayId = contact.platform_id || "";
                     div.innerHTML = `
-                        <div class="contact-avatar">${displayName.substring(0,2).toUpperCase()}</div>
+                        <div class="contact-avatar">${displayName.substring(0, 2).toUpperCase()}</div>
                         <div class="contact-info">
                             <div class="contact-name">${displayName}</div>
                             <div class="contact-id">${displayId}</div>
@@ -1741,9 +2650,9 @@ const { data, error } = await supabaseClient.auth.signInWithPassword(...)
                 });
                 list.innerHTML = '';
                 list.appendChild(newContent);
-            } catch(e) {
+            } catch (e) {
                 console.error(e);
-                if(!isAutoRefresh) list.innerHTML = '<div style="padding:20px; color:red;">Error loading contacts.</div>';
+                if (!isAutoRefresh) list.innerHTML = '<div style="padding:20px; color:red;">Error loading contacts.</div>';
             }
         }
 
@@ -1751,13 +2660,13 @@ const { data, error } = await supabaseClient.auth.signInWithPassword(...)
             currentChatUser = contactId;
             currentChatUserName = contactName;
             const container = document.getElementById('inbox-messages');
-            
-            if(!isAutoRefresh) {
+
+            if (!isAutoRefresh) {
                 document.getElementById('inbox-header-title').innerText = `Chat with ${contactName}`;
                 container.innerHTML = '<div style="padding:20px; text-align:center;">Loading history...</div>';
-                
+
                 // Cleanup old subscription
-                if(realtimeSubscription) supabase.removeChannel(realtimeSubscription);
+                if (realtimeSubscription) supabase.removeChannel(realtimeSubscription);
             }
 
             try {
@@ -1770,7 +2679,7 @@ const { data, error } = await supabaseClient.auth.signInWithPassword(...)
                     .single();
 
                 if (convError || !conversation) {
-                    if(!isAutoRefresh) container.innerHTML = '<div style="padding:20px; text-align:center;">No messages yet.</div>';
+                    if (!isAutoRefresh) container.innerHTML = '<div style="padding:20px; text-align:center;">No messages yet.</div>';
                     return;
                 }
 
@@ -1788,10 +2697,10 @@ const { data, error } = await supabaseClient.auth.signInWithPassword(...)
                 if (messages.length === 0 && !isAutoRefresh) {
                     container.innerHTML = '<div style="padding:20px; text-align:center;">No messages yet.</div>';
                 } else {
-                    if(!isAutoRefresh) container.innerHTML = '';
+                    if (!isAutoRefresh) container.innerHTML = '';
                     // Only rebuild if not auto-refresh to avoid jitter, 
                     // OR simple rebuild for now. Real-time is better.
-                    if(!isAutoRefresh) {
+                    if (!isAutoRefresh) {
                         messages.forEach(msg => {
                             appendInboxMessage(msg.direction, msg.content);
                         });
@@ -1800,14 +2709,14 @@ const { data, error } = await supabaseClient.auth.signInWithPassword(...)
                 }
 
                 // 3. Setup Realtime (Only once per selection)
-                if(!isAutoRefresh) {
+                if (!isAutoRefresh) {
                     realtimeSubscription = supabase
                         .channel('public:inbox_messages')
-                        .on('postgres_changes', { 
-                            event: 'INSERT', 
-                            schema: 'public', 
-                            table: 'inbox_messages', 
-                            filter: `conversation_id=eq.${conversationId}` 
+                        .on('postgres_changes', {
+                            event: 'INSERT',
+                            schema: 'public',
+                            table: 'inbox_messages',
+                            filter: `conversation_id=eq.${conversationId}`
                         }, payload => {
                             appendInboxMessage(payload.new.direction, payload.new.content);
                             container.scrollTop = container.scrollHeight;
@@ -1815,9 +2724,9 @@ const { data, error } = await supabaseClient.auth.signInWithPassword(...)
                         .subscribe();
                 }
 
-            } catch(e) {
+            } catch (e) {
                 console.error(e);
-                if(!isAutoRefresh) container.innerHTML = 'Error loading messages';
+                if (!isAutoRefresh) container.innerHTML = 'Error loading messages';
             }
         }
 
@@ -1825,11 +2734,11 @@ const { data, error } = await supabaseClient.auth.signInWithPassword(...)
             const container = document.getElementById('inbox-messages');
             const div = document.createElement('div');
             // direction: 'inbound' (User) vs 'outbound' (Agent/AI)
-            const typeClass = direction === 'inbound' ? 'msg-ai' : 'msg-user'; 
+            const typeClass = direction === 'inbound' ? 'msg-ai' : 'msg-user';
             // Note: In visual logic, usually Right=Me(Agent), Left=Them(User). 
             // If 'inbound' is from user, it should be Left (msg-ai style in this CSS).
             // If 'outbound' is from agent, it should be Right (msg-user style).
-            
+
             div.className = `message ${typeClass}`;
             div.innerHTML = text;
             container.appendChild(div);
@@ -1850,10 +2759,10 @@ const { data, error } = await supabaseClient.auth.signInWithPassword(...)
 
         // --- PHASE 2: CONNECT CONFIGS TO SUPABASE ---
         async function fetchCurrentConfigurations() {
-            if(!currentUserOrgId) {
+            if (!currentUserOrgId) {
                 const { data: { user } } = await supabase.auth.getUser();
-                if(user) await ensureUserProfile(user);
-                if(!currentUserOrgId) {
+                if (user) await ensureUserProfile(user);
+                if (!currentUserOrgId) {
                     showToast("No Organization Found. Please contact admin.", "error");
                     return;
                 }
@@ -1876,7 +2785,7 @@ const { data, error } = await supabaseClient.auth.signInWithPassword(...)
                     const config = configs.find(c => c.agent_type === agent.id);
                     if (config) {
                         document.getElementById(`prompt-${agent.id}`).value = config.system_prompt || '';
-                        if(config.agent_tone) document.getElementById(`tone-${agent.id}`).value = config.agent_tone;
+                        if (config.agent_tone) document.getElementById(`tone-${agent.id}`).value = config.agent_tone;
                         document.getElementById(`status-${agent.id}`).checked = config.is_active || false;
                     }
 
@@ -1888,40 +2797,40 @@ const { data, error } = await supabaseClient.auth.signInWithPassword(...)
                     }
                 });
 
-            } catch (error) { 
+            } catch (error) {
                 console.error("Error fetching configs:", error);
-                AGENTS.forEach(a => addLinkField(a.id)); 
-            } 
+                AGENTS.forEach(a => addLinkField(a.id));
+            }
         }
 
         async function saveRole(agentId) {
-            if(!currentUserOrgId) { showToast("Missing Organization ID", "error"); return; }
+            if (!currentUserOrgId) { showToast("Missing Organization ID", "error"); return; }
 
             const prompt = document.getElementById(`prompt-${agentId}`).value;
             const tone = document.getElementById(`tone-${agentId}`).value;
             const btn = document.querySelector(`#${agentId} .save-btn`);
             const originalText = btn.innerText;
             btn.innerText = "Saving...";
-            
+
             try {
                 const { error: configError } = await supabase
                     .from('agent_configs')
-                    .upsert({ 
+                    .upsert({
                         org_id: currentUserOrgId,
                         agent_type: agentId,
                         system_prompt: prompt,
                         agent_tone: tone,
                         updated_at: new Date().toISOString()
-                    }, { onConflict: 'org_id, agent_type' }); 
+                    }, { onConflict: 'org_id, agent_type' });
 
-                if(configError) throw configError;
+                if (configError) throw configError;
 
                 const inputs = document.querySelectorAll(`#links-container-${agentId} .link-input`);
                 const newLinks = Array.from(inputs).map(input => input.value.trim()).filter(val => val !== "");
 
                 await supabase.from('agent_kb_links').delete().match({ org_id: currentUserOrgId, agent_type: agentId });
-                
-                if(newLinks.length > 0) {
+
+                if (newLinks.length > 0) {
                     const linksPayload = newLinks.map(url => ({
                         org_id: currentUserOrgId,
                         agent_type: agentId,
@@ -1931,24 +2840,24 @@ const { data, error } = await supabaseClient.auth.signInWithPassword(...)
                 }
 
                 showToast("Saved Successfully!", "success");
-                
-                const warn = document.getElementById(`warning-${agentId}`);
-                if(warn) warn.classList.remove('show');
 
-            } catch(e) { 
+                const warn = document.getElementById(`warning-${agentId}`);
+                if (warn) warn.classList.remove('show');
+
+            } catch (e) {
                 console.error(e);
-                showToast("Error saving data: " + e.message, "error"); 
-            } 
+                showToast("Error saving data: " + e.message, "error");
+            }
             finally { btn.innerText = originalText; }
         }
 
         async function toggleAgentStatus(agentId) {
-            if(!currentUserOrgId) return;
+            if (!currentUserOrgId) return;
 
             const isChecked = document.getElementById(`status-${agentId}`).checked;
             const label = document.querySelector(`#${agentId} .toggle-label`);
             label.style.opacity = "0.5";
-            
+
             try {
                 const { error } = await supabase
                     .from('agent_configs')
@@ -1959,7 +2868,7 @@ const { data, error } = await supabaseClient.auth.signInWithPassword(...)
                         updated_at: new Date().toISOString()
                     }, { onConflict: 'org_id, agent_type' });
 
-                if(error) throw error;
+                if (error) throw error;
 
                 showToast(`${isChecked ? 'Activated' : 'Deactivated'} ${agentId}`, "success");
             } catch (e) {
@@ -1975,17 +2884,17 @@ const { data, error } = await supabaseClient.auth.signInWithPassword(...)
             const section = document.getElementById(sectionId);
             const header = section.previousElementSibling;
             const isOpen = section.classList.contains('open');
-            if(isOpen) {
+            if (isOpen) {
                 section.classList.remove('open');
                 header.classList.remove('active');
             } else {
                 section.classList.add('open');
                 header.classList.add('active');
-                if(isChat && agentId) loadChatHistory(agentId);
+                if (isChat && agentId) loadChatHistory(agentId);
             }
         }
 
-        function handleEnter(e, agentId) { if(e.key === 'Enter') sendChatMessage(agentId); }
+        function handleEnter(e, agentId) { if (e.key === 'Enter') sendChatMessage(agentId); }
         function showToast(msg, type) {
             const t = document.getElementById('toast');
             t.className = type; t.innerText = msg; t.classList.add('show');
@@ -1995,7 +2904,7 @@ const { data, error } = await supabaseClient.auth.signInWithPassword(...)
         // --- PHASE 4: TEST CHAT LOGIC (HYBRID MEMORY + BRAIN) ---
         async function loadChatHistory(agentId) {
             const historyContainer = document.getElementById(`chat-history-${agentId}`);
-            if(!currentUserOrgId) return;
+            if (!currentUserOrgId) return;
 
             try {
                 // 1. Get Session ID
@@ -2007,16 +2916,16 @@ const { data, error } = await supabaseClient.auth.signInWithPassword(...)
                     .single();
 
                 // Create if not exists
-                if(!session) {
+                if (!session) {
                     const { data: newSession, error: createErr } = await supabase
                         .from('test_chat_sessions')
                         .insert([{ org_id: currentUserOrgId, agent_type: agentId }])
                         .select()
                         .single();
-                    if(newSession) session = newSession;
+                    if (newSession) session = newSession;
                 }
 
-                if(!session) return; // fail safe
+                if (!session) return; // fail safe
 
                 // 2. Load Messages
                 const { data: messages } = await supabase
@@ -2025,7 +2934,7 @@ const { data, error } = await supabaseClient.auth.signInWithPassword(...)
                     .eq('session_id', session.id)
                     .order('created_at', { ascending: true });
 
-                if(messages && messages.length > 0) {
+                if (messages && messages.length > 0) {
                     historyContainer.innerHTML = '';
                     messages.forEach(msg => {
                         const sender = msg.role === 'user' ? 'user' : 'ai';
@@ -2033,14 +2942,14 @@ const { data, error } = await supabaseClient.auth.signInWithPassword(...)
                     });
                     historyContainer.scrollTop = historyContainer.scrollHeight;
                 }
-            } catch(e) { console.log("History error", e); }
+            } catch (e) { console.log("History error", e); }
         }
 
         async function sendChatMessage(agentId) {
             const input = document.getElementById(`chat-input-${agentId}`);
             const text = input.value.trim();
-            if(!text) return;
-            
+            if (!text) return;
+
             // UI Update
             appendMessage(agentId, 'user', text);
             input.value = '';
@@ -2057,10 +2966,10 @@ const { data, error } = await supabaseClient.auth.signInWithPassword(...)
                     .eq('org_id', currentUserOrgId)
                     .eq('agent_type', agentId)
                     .single();
-                
-                if(!session) { // Should exist from load, but double check
-                     const { data: newSession } = await supabase.from('test_chat_sessions').insert([{ org_id: currentUserOrgId, agent_type: agentId }]).select().single();
-                     session = newSession;
+
+                if (!session) { // Should exist from load, but double check
+                    const { data: newSession } = await supabase.from('test_chat_sessions').insert([{ org_id: currentUserOrgId, agent_type: agentId }]).select().single();
+                    session = newSession;
                 }
 
                 // 2. Save User Message (MEMORY)
@@ -2083,7 +2992,7 @@ const { data, error } = await supabaseClient.auth.signInWithPassword(...)
                         timestamp: new Date().toISOString()
                     })
                 });
-                
+
                 const data = await response.json();
                 const replyText = data.reply || data.output || "No reply received.";
 
@@ -2099,7 +3008,7 @@ const { data, error } = await supabaseClient.auth.signInWithPassword(...)
                 appendMessage(agentId, 'ai', replyText);
                 historyContainer.scrollTop = historyContainer.scrollHeight;
 
-            } catch(e) {
+            } catch (e) {
                 document.getElementById(loadingId).remove();
                 appendMessage(agentId, 'ai', 'Error: Could not reach agent.');
                 console.error(e);
@@ -2111,9 +3020,10 @@ const { data, error } = await supabaseClient.auth.signInWithPassword(...)
             const div = document.createElement('div');
             div.className = `message ${sender === 'user' ? 'msg-user' : 'msg-ai'}`;
             div.innerHTML = text;
-            if(id) div.id = id;
+            if (id) div.id = id;
             container.appendChild(div);
         }
     </script>
 </body>
+
 </html>
