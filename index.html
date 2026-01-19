@@ -1,0 +1,1987 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Agent Command Center</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root {
+            /* --- CALM PALETTE --- */
+            --theme-color: #5BAEB0; 
+            
+            --glass-bg: rgba(93, 93, 91, 0.25);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --bg-dark: #0f1014;
+            --text-main: #ffffff;
+            --text-muted: #a0a0a0;
+            --success: #66BB6A; 
+            --error: #EF5350;     
+            --warning-bg: rgba(255, 193, 7, 0.15);
+            --warning-border: rgba(255, 193, 7, 0.4);
+            --warning-text: #ffca28;
+            --sidebar-width: 70px;
+            --sidebar-expanded: 240px;
+            --mobile-header-height: 60px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(255, 255, 255, 0.03) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, var(--theme-color) 0%, transparent 60%);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            transition: background-image 0.8s ease, background-color 0.8s ease, --theme-color 0.8s ease;
+            overflow-x: hidden;
+        }
+
+        /* --- Glassmorphism Utils --- */
+        .glass {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        /* --- LOGIN PAGE STYLES --- */
+        #login-container {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 3000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: var(--bg-dark);
+            background-image: radial-gradient(circle at 50% 50%, rgba(91, 174, 176, 0.1) 0%, transparent 50%);
+        }
+        .login-card {
+            width: 100%;
+            max-width: 400px;
+            padding: 3rem;
+            text-align: center;
+            border-radius: 20px;
+        }
+        .login-title { margin-bottom: 2rem; font-size: 1.5rem; font-weight: 700; color: var(--theme-color); letter-spacing: 1px; }
+        .login-input { margin-bottom: 1rem; text-align: center; }
+        
+        .login-btn-group {
+            display: flex; gap: 10px; margin-top: 1rem;
+        }
+        .login-btn {
+            flex: 1; padding: 1rem; border-radius: 50px; border: none;
+            background: var(--theme-color); color: white; font-weight: bold; font-size: 1rem;
+            cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .login-btn.secondary { background: rgba(255,255,255,0.1); border: 1px solid var(--glass-border); }
+        .login-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+
+        /* Social Login Buttons */
+        .social-login-divider { margin: 1.5rem 0; position: relative; color: var(--text-muted); font-size: 0.8rem; }
+        .social-login-divider::before, .social-login-divider::after {
+            content: ""; position: absolute; top: 50%; width: 30%; height: 1px; background: var(--glass-border);
+        }
+        .social-login-divider::before { left: 0; }
+        .social-login-divider::after { right: 0; }
+
+        .social-btn {
+            width: 100%; padding: 0.8rem; border-radius: 50px; border: 1px solid var(--glass-border);
+            background: rgba(255,255,255,0.05); color: white; font-weight: 500; font-size: 0.9rem;
+            cursor: pointer; transition: all 0.2s; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 10px;
+        }
+        .social-btn:hover { background: rgba(255,255,255,0.1); }
+        .social-btn.google { border-color: rgba(234, 67, 53, 0.5); }
+        .social-btn.linkedin { border-color: rgba(0, 119, 181, 0.5); }
+
+
+        /* --- MOBILE TOP BAR --- */
+        .mobile-top-bar {
+            display: none; /* Hidden on desktop */
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%;
+            height: var(--mobile-header-height);
+            background: rgba(15, 16, 20, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--glass-border);
+            z-index: 2000;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+        }
+        
+        .mobile-hamburger-btn {
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: white;
+            padding: 5px;
+        }
+
+        .mobile-logo-img {
+            height: 30px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        /* --- SIDEBAR NAVIGATION --- */
+        .sidebar {
+            position: fixed;
+            left: 0; top: 0;
+            height: 100vh;
+            width: var(--sidebar-width);
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(20px);
+            border-right: 1px solid var(--glass-border);
+            z-index: 1000;
+            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        @media (min-width: 769px) {
+            .sidebar:hover {
+                width: var(--sidebar-expanded);
+            }
+        }
+
+        .sidebar-header {
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center; /* Center icon initially */
+            padding: 0 20px;
+            white-space: nowrap;
+        }
+        
+        /* Show content on Hover OR when Mobile Menu is Open */
+        .sidebar:hover .sidebar-header,
+        .sidebar.mobile-open .sidebar-header {
+            justify-content: flex-start;
+        }
+
+        .logo-icon {
+            min-width: 30px;
+            font-size: 1.5rem;
+            color: var(--theme-color);
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        .logo-text {
+            margin-left: 15px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            opacity: 0;
+            transition: opacity 0.2s;
+            color: white;
+            display: flex; align-items: center;
+        }
+        
+        .sidebar-logo-img {
+            height: 25px;
+            width: auto;
+        }
+
+        /* Show Text on Hover OR Mobile Open */
+        .sidebar:hover .logo-text,
+        .sidebar.mobile-open .logo-text {
+            opacity: 1;
+        }
+
+        .nav-list {
+            list-style: none;
+            flex: 1;
+            padding-top: 20px;
+            overflow-y: auto; /* Allow scroll if list is long */
+        }
+        /* Hide scrollbar for nav list */
+        .nav-list::-webkit-scrollbar { width: 0px; }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--text-muted);
+            white-space: nowrap;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+        }
+
+        .nav-item.active {
+            color: white;
+            background: linear-gradient(90deg, rgba(255,255,255,0.05) 0%, transparent 100%);
+            border-left: 3px solid var(--theme-color);
+        }
+
+        .nav-icon {
+            min-width: 30px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .nav-icon svg {
+            width: 20px; 
+            height: 20px; 
+            fill: currentColor;
+        }
+
+        .nav-label {
+            margin-left: 15px;
+            font-size: 0.95rem;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        /* Show Label on Hover OR Mobile Open */
+        .sidebar:hover .nav-label,
+        .sidebar.mobile-open .nav-label {
+            opacity: 1;
+        }
+
+        .sidebar-footer {
+            padding: 0;
+            border-top: 1px solid var(--glass-border);
+            margin-top: auto;
+        }
+
+        /* --- MAIN LAYOUT --- */
+        #app-container {
+            display: none;
+            flex: 1;
+            margin-left: var(--sidebar-width); /* Push content */
+            transition: margin-left 0.3s;
+            width: calc(100% - var(--sidebar-width));
+        }
+
+        main {
+            flex: 1;
+            padding: 2rem;
+            max-width: 1400px; /* Increased slightly for Grid */
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .tab-content { display: none; animation: fadeIn 0.4s ease; width: 100%; }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .card { border-radius: 20px; padding: 2rem; position: relative; }
+        h2 { margin-bottom: 1.5rem; font-weight: 500; display: flex; align-items: center; gap: 10px; }
+        .icon-circle { width: 12px; height: 12px; border-radius: 50%; background: var(--theme-color); display: inline-block; transition: background 0.3s; }
+
+        /* --- TOGGLE SWITCH STYLES (NEW & FIXED) --- */
+        .agent-header-row {
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;
+        }
+        .agent-title {
+            display: flex; align-items: center; gap: 10px; font-size: 1.5rem; font-weight: 500; margin: 0;
+        }
+        .agent-toggle-container {
+            display: flex; align-items: center; gap: 12px; 
+        }
+        .toggle-label { 
+            font-size: 0.9rem; 
+            color: var(--text-muted); 
+            text-transform: uppercase; 
+            letter-spacing: 1px; 
+            font-weight: 600;
+            line-height: 1; /* Fixes vertical alignment */
+            transform: translateY(1px); /* Optical center fix */
+        }
+        
+        .switch {
+            position: relative; display: inline-block; width: 50px; height: 26px;
+        }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider {
+            position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #333; transition: .4s; border-radius: 34px;
+            border: 1px solid var(--glass-border);
+        }
+        .slider:before {
+            position: absolute; content: ""; height: 20px; width: 20px; left: 3px; bottom: 2px;
+            background-color: white; transition: .4s; border-radius: 50%;
+        }
+        input:checked + .slider { background-color: var(--success); border-color: var(--success); }
+        input:checked + .slider:before { transform: translateX(22px); }
+
+        /* --- INSIGHTS STYLES --- */
+        .insights-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .insights-platforms {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap !important;
+            justify-content: center !important;
+        }
+
+        .platform-chip {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: var(--text-muted);
+        }
+
+        .platform-chip:hover, .platform-chip.active {
+            background: var(--theme-color);
+            color: white;
+            border-color: var(--theme-color);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .period-select {
+            background: rgba(0,0,0,0.3);
+            border: 1px solid var(--glass-border);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 12px;
+            cursor: pointer;
+            outline: none;
+            min-width: 150px;
+        }
+        
+        .period-select:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background: rgba(0,0,0,0.5);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .stat-card {
+            background: linear-gradient(145deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 100%);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            transition: transform 0.3s, border 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--theme-color);
+        }
+
+        .stat-title {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stat-value {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: white;
+        }
+
+        .stat-trend {
+            font-size: 0.8rem;
+            color: var(--success);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* --- POSTS LIST STYLES --- */
+        .posts-container { margin-top: 3rem; }
+        .posts-header { font-size: 1.2rem; font-weight: 600; margin-bottom: 1rem; color: white; border-left: 4px solid var(--theme-color); padding-left: 15px; }
+
+        .post-row {
+            display: flex;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            margin-bottom: 15px;
+            padding: 15px;
+            gap: 20px;
+            transition: transform 0.2s;
+            cursor: pointer;
+        }
+        .post-row:hover { transform: translateX(5px); background: rgba(255,255,255,0.06); }
+
+        .post-thumb {
+            width: 80px; height: 80px;
+            border-radius: 8px;
+            background-size: cover;
+            background-position: center;
+            background-color: #333;
+            flex-shrink: 0;
+        }
+
+        .post-content { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+        .post-date { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 5px; }
+        .post-text { font-size: 0.95rem; line-height: 1.4; color: #eee; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; unicode-bidi: plaintext; text-align: start; }
+
+        .post-stats {
+            display: flex; gap: 20px;
+            align-items: center;
+            border-left: 1px solid rgba(255,255,255,0.1);
+            padding-left: 20px;
+            min-width: 200px;
+        }
+        .p-stat { text-align: center; }
+        .p-stat-val { font-size: 1.1rem; font-weight: 700; color: white; }
+        .p-stat-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; }
+
+        /* --- POST DETAILS MODAL (NEW) --- */
+        .modal-overlay {
+            display: none;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(8px);
+            z-index: 4000; justify-content: center; align-items: center;
+            padding: 20px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            background: #1a1b20;
+            width: 100%; max-width: 900px; height: 80vh;
+            border-radius: 20px; border: 1px solid var(--glass-border);
+            display: flex; overflow: hidden;
+            position: relative;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+
+        .modal-close {
+            position: absolute; top: 15px; right: 20px;
+            font-size: 1.5rem; color: white; cursor: pointer; z-index: 10;
+            background: rgba(0,0,0,0.5); width: 35px; height: 35px;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+        }
+
+        /* Split Layout */
+        .modal-media {
+            flex: 1.2; background: black;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .modal-img { max-width: 100%; max-height: 100%; object-fit: contain; }
+
+        .modal-info {
+            flex: 1; display: flex; flex-direction: column;
+            border-left: 1px solid var(--glass-border);
+            background: #1a1b20;
+        }
+
+        .modal-header { padding: 20px; border-bottom: 1px solid var(--glass-border); }
+        .m-date { font-size: 0.8rem; color: var(--text-muted); }
+        .m-caption { margin-top: 10px; font-size: 0.95rem; line-height: 1.5; max-height: 150px; overflow-y: auto; unicode-bidi: plaintext; text-align: start; }
+
+        .modal-stats {
+            padding: 15px 20px; display: flex; gap: 20px;
+            background: rgba(255,255,255,0.02); border-bottom: 1px solid var(--glass-border);
+        }
+        .m-stat { display: flex; align-items: center; gap: 8px; font-size: 0.9rem; color: #ddd; }
+
+        .comments-section { flex: 1; overflow-y: auto; padding: 20px; }
+        .comment-row { margin-bottom: 15px; display: flex; gap: 10px; }
+        .comment-avatar { width: 30px; height: 30px; border-radius: 50%; background: var(--theme-color); flex-shrink: 0; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:0.7rem;}
+        .comment-bubble { background: rgba(255,255,255,0.05); padding: 10px 15px; border-radius: 12px; font-size: 0.9rem; flex: 1; }
+        .comment-user { font-weight: 700; font-size: 0.8rem; margin-bottom: 3px; color: var(--theme-color); }
+        .comment-text { unicode-bidi: plaintext; text-align: start; }
+
+        /* --- Accordion Styles --- */
+        .section-wrapper { margin-bottom: 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 1.5rem; }
+        .section-header {
+            display: flex; justify-content: space-between; align-items: center; cursor: pointer;
+            padding: 0.5rem 0; color: var(--text-main); font-weight: 600; font-size: 1rem; transition: color 0.3s;
+        }
+        .section-header:hover { color: var(--theme-color); }
+        .section-header::after { content: '▼'; font-size: 0.8rem; transition: transform 0.3s; }
+        .section-header.active::after { transform: rotate(180deg); }
+        .section-content { max-height: 0; overflow: hidden; transition: max-height 0.4s ease-out, opacity 0.3s ease; opacity: 0; }
+        .section-content.open { max-height: 1000px; opacity: 1; margin-top: 1rem; }
+
+        /* --- Inputs --- */
+        label { display: block; margin-bottom: 0.5rem; color: var(--text-muted); font-size: 0.9rem; }
+        textarea, input[type="text"], select, input[type="password"], input[type="email"] {
+            width: 100%; background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border);
+            border-radius: 12px; padding: 1rem; color: white; font-size: 1rem; outline: none; transition: border 0.3s;
+        }
+        textarea { height: 200px; resize: vertical; line-height: 1.5; }
+        textarea:focus, input:focus, select:focus { border-color: var(--theme-color); }
+        select { appearance: none; cursor: pointer; }
+        select option { background: #1a1b20; color: white; }
+
+        /* --- NEW PROMPT WARNING & LOCK STYLES --- */
+        .prompt-warning {
+            background: var(--warning-bg); 
+            border: 1px solid var(--warning-border);
+            color: var(--warning-text);
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            margin-bottom: 10px;
+            display: none; /* Hidden by default */
+            align-items: center;
+            gap: 10px;
+            animation: fadeIn 0.3s ease;
+        }
+        .prompt-warning.show { display: flex; }
+
+        /* Lock Button & Disabled State */
+        .edit-lock-btn {
+            background: rgba(255, 193, 7, 0.1); 
+            border: 1px solid var(--warning-text); 
+            color: var(--warning-text);
+            padding: 5px 12px; 
+            border-radius: 20px; 
+            font-size: 0.75rem; 
+            cursor: pointer; 
+            margin-bottom: 10px; 
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.3s;
+        }
+        .edit-lock-btn:hover { background: rgba(255, 193, 7, 0.2); }
+        .textarea-locked { opacity: 0.6; cursor: not-allowed; }
+
+        /* --- CONFIRMATION MODAL --- */
+        .confirm-modal-overlay { 
+            display: none; 
+            position: fixed; top:0; left:0; width:100%; height:100%; 
+            background: rgba(0,0,0,0.7); z-index: 5000; 
+            align-items:center; justify-content:center; 
+            backdrop-filter: blur(5px); 
+        }
+        .confirm-modal { 
+            background: #1a1b20; 
+            border: 1px solid var(--error); 
+            padding: 30px; 
+            border-radius: 16px; 
+            max-width: 400px; 
+            text-align: center; 
+            box-shadow: 0 10px 40px rgba(0,0,0,0.6); 
+            animation: popIn 0.3s ease; 
+        }
+        .confirm-title { 
+            font-size: 1.2rem; font-weight: bold; margin-bottom: 10px; 
+            color: var(--error); display: flex; align-items: center; justify-content: center; gap: 10px; 
+        }
+        .confirm-text { color: #ccc; margin-bottom: 25px; line-height: 1.5; font-size: 0.95rem; }
+        .confirm-actions { display: flex; gap: 10px; justify-content: center; }
+        .btn-cancel { background: rgba(255,255,255,0.1); color: white; border: none; padding: 10px 20px; border-radius: 50px; cursor: pointer; }
+        .btn-confirm { background: var(--error); color: white; border: none; padding: 10px 20px; border-radius: 50px; cursor: pointer; font-weight: bold; }
+        .btn-cancel:hover { background: rgba(255,255,255,0.2); }
+        .btn-confirm:hover { filter: brightness(1.2); }
+        @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+
+        /* --- Dynamic Links --- */
+        .link-row { display: flex; gap: 10px; margin-bottom: 10px; }
+        .remove-link { background: rgba(231, 76, 60, 0.2); color: #ff6b6b; border: 1px solid rgba(231, 76, 60, 0.3); width: 45px; display: flex; align-items: center; justify-content: center; border-radius: 12px; cursor: pointer; font-size: 1.2rem; }
+        .add-link-btn { width: 100%; margin-top: 5px; text-align: center; cursor: pointer; background: rgba(255,255,255,0.05); padding: 0.5rem; border-radius: 50px; border: 1px solid var(--glass-border); color: var(--text-muted); font-size: 0.85rem; }
+
+        /* --- Chat Window (Shared) --- */
+        .chat-container { background: rgba(0, 0, 0, 0.3); border-radius: 12px; border: 1px solid var(--glass-border); overflow: hidden; display: flex; flex-direction: column; height: 400px; }
+        .chat-history { flex: 1; padding: 1rem; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
+        
+        /* Updated Message Style for Arabic Fix */
+        .message { 
+            max-width: 80%; 
+            padding: 0.8rem 1rem; 
+            border-radius: 12px; 
+            font-size: 0.95rem; 
+            line-height: 1.4; 
+            word-wrap: break-word;
+            unicode-bidi: plaintext; /* AUTO DETECT RTL/LTR */
+            text-align: start;       /* ALIGN BASED ON CONTENT */
+        }
+        
+        .msg-ai { align-self: flex-start; background: #2d2d2d; border-bottom-left-radius: 2px; color: #ddd; }
+        .msg-user { align-self: flex-end; background: var(--theme-color); border-bottom-right-radius: 2px; color: white; transition: background 0.3s; }
+        .chat-input-area { padding: 10px; background: rgba(255,255,255,0.03); display: flex; gap: 10px; border-top: 1px solid var(--glass-border); }
+        .chat-input-area input { padding: 0.8rem; border-radius: 50px; flex: 1; }
+        .send-chat-btn { width: 45px; height: 45px; border-radius: 50%; background: var(--theme-color); color: white; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; transition: background 0.3s; }
+        
+        /* --- LIVE INBOX SPECIFIC STYLES --- */
+        .inbox-layout { display: flex; height: 75vh; gap: 0; }
+        .inbox-sidebar { width: 300px; border-right: 1px solid var(--glass-border); display: flex; flex-direction: column; background: rgba(0,0,0,0.2); }
+        .inbox-main { flex: 1; display: flex; flex-direction: column; }
+        
+        .platform-selector { display: flex; justify-content: space-around; padding: 15px; border-bottom: 1px solid var(--glass-border); }
+        .platform-btn { 
+            width: 45px; height: 45px; border-radius: 50%; border: none; cursor: pointer; 
+            display: flex; align-items: center; justify-content: center; 
+            transition: transform 0.2s; background: rgba(255,255,255,0.1); 
+            fill: white;
+        }
+        .platform-btn:hover, .platform-btn.active { transform: scale(1.1); filter: brightness(1.2); box-shadow: 0 0 10px rgba(0,0,0,0.2); }
+        .platform-btn svg { width: 24px; height: 24px; }
+
+        .contact-list { flex: 1; overflow-y: auto; padding: 10px; }
+        .contact-item { padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); cursor: pointer; border-radius: 8px; transition: background 0.2s; display: flex; align-items: center; gap: 10px; }
+        .contact-item:hover, .contact-item.active { background: rgba(255,255,255,0.05); }
+        .contact-item.active { border-left: 3px solid var(--theme-color); }
+        .contact-avatar { width: 35px; height: 35px; background: #333; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.8rem; }
+        .contact-info { margin-left: 10px; overflow: hidden; }
+        .contact-name { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 0.95rem; }
+        .contact-id { font-size: 0.75rem; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        
+        .inbox-header { padding: 15px; border-bottom: 1px solid var(--glass-border); font-weight: bold; background: rgba(0,0,0,0.1); }
+
+        /* --- LEADS GRID STYLES (NEW) --- */
+        .leads-controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .leads-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+        }
+        .lead-card {
+            background: linear-gradient(145deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 20px;
+            position: relative;
+            transition: all 0.3s;
+        }
+        .lead-card:hover {
+            border-color: var(--theme-color);
+            transform: translateY(-3px);
+            background: rgba(255,255,255,0.05);
+        }
+        .lead-header { display: flex; justify-content: space-between; margin-bottom: 15px; align-items: flex-start; }
+        .lead-name { font-weight: 700; font-size: 1.1rem; color: white; display: flex; align-items: center; gap: 8px;}
+        .lead-platform { font-size: 0.75rem; padding: 4px 8px; border-radius: 20px; background: rgba(255,255,255,0.1); color: var(--text-muted); text-transform: capitalize; }
+        .lead-info-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; font-size: 0.9rem; color: #ddd; }
+        .lead-info-icon { opacity: 0.6; width: 16px; text-align: center; }
+        .status-badge {
+            display: inline-block; padding: 4px 10px; border-radius: 4px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .status-qualified { background: rgba(102, 187, 106, 0.2); color: #66BB6A; border: 1px solid rgba(102, 187, 106, 0.3); }
+        .status-pending { background: rgba(255, 167, 38, 0.2); color: #ffa726; border: 1px solid rgba(255, 167, 38, 0.3); }
+        .status-new { background: rgba(41, 182, 246, 0.2); color: #29b6f6; border: 1px solid rgba(41, 182, 246, 0.3); }
+        
+        .export-group { display: flex; gap: 10px; }
+        .export-btn {
+            background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); color: white;
+            padding: 8px 16px; border-radius: 50px; cursor: pointer; font-size: 0.9rem; transition: all 0.3s;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .export-btn:hover { background: var(--theme-color); border-color: var(--theme-color); }
+
+        /* --- Actions --- */
+        .suggestions { margin-top: 1rem; display: flex; gap: 0.8rem; flex-wrap: wrap; }
+        .pill-btn { background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); color: var(--text-muted); padding: 0.4rem 1rem; border-radius: 50px; cursor: pointer; font-size: 0.85rem; transition: all 0.3s; }
+        .pill-btn:hover { background: rgba(255,255,255,0.1); color: white; border-color: rgba(255,255,255,0.3); }
+        .action-container { margin-top: 1rem; display: flex; justify-content: flex-end; }
+        .save-btn { background: var(--theme-color); color: white; border: none; padding: 0.8rem 2rem; border-radius: 12px; font-weight: 600; cursor: pointer; font-size: 1rem; box-shadow: 0 4px 15px rgba(0,0,0, 0.3); transition: transform 0.2s, box-shadow 0.2s, background 0.3s; }
+        .save-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0, 0.5); }
+
+        /* --- Overlays --- */
+        #toast { visibility: hidden; min-width: 250px; background-color: var(--glass-bg); border: 1px solid var(--glass-border); color: #fff; text-align: center; border-radius: 8px; padding: 16px; position: fixed; z-index: 3500; left: 50%; bottom: 30px; transform: translateX(-50%); backdrop-filter: blur(10px); opacity: 0; transition: opacity 0.3s, bottom 0.3s; }
+        #toast.show { visibility: visible; opacity: 1; bottom: 50px; }
+        #toast.success { border-left: 4px solid var(--success); }
+        #toast.error { border-left: 4px solid var(--error); }
+        #loader-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 16, 20, 0.85); backdrop-filter: blur(5px); z-index: 2000; display: flex; justify-content: center; align-items: center; flex-direction: column; gap: 15px; transition: opacity 0.5s ease; }
+        .spinner { width: 50px; height: 50px; border: 3px solid rgba(255,255,255,0.1); border-radius: 50%; border-top-color: var(--theme-color); animation: spin 1s ease-in-out infinite; transition: border-top-color 0.3s; }
+        .loading-text { font-size: 0.9rem; color: var(--text-muted); }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Mobile Adjustments */
+        @media (max-width: 768px) {
+            .mobile-top-bar { display: flex; }
+
+            .sidebar-header {
+                display: none !important;
+            }
+            .sidebar { 
+                width: 0; 
+                transition: width 0.3s ease; /* Ensure animation works */
+                z-index: 2001; /* Above Top Bar */
+                background: #0f1014; /* Solid BG for visibility */
+            }
+            .sidebar.mobile-open { width: 240px; box-shadow: 5px 0 15px rgba(0,0,0,0.5); }
+            
+            #app-container { margin-left: 0; width: 100%; margin-top: 60px; /* Push content down */ }
+            
+            .nav-list { display: block; }
+            .mobile-hamburger { display: none; } /* Hide old hamburger */
+            
+            .inbox-layout { flex-direction: column; height: auto; }
+            .inbox-sidebar { width: 100%; height: 300px; border-right: none; border-bottom: 1px solid var(--glass-border); }
+            .inbox-main { height: 500px; }
+
+            .post-row { flex-direction: column; }
+            .post-stats { border-left: none; padding-left: 0; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px; justify-content: space-around; }
+            
+            .modal-content { flex-direction: column; height: 90vh; }
+            .modal-media { flex: 0.8; max-height: 40%; }
+            .modal-info { flex: 1; }
+            
+            .leads-controls { flex-direction: column; gap: 10px; align-items: stretch; }
+            .export-group { justify-content: space-between; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="login-container">
+        <div class="card glass login-card">
+            <div class="login-title">DIGITIVIA AI AGENT</div>
+            
+            <button class="social-btn google" onclick="performOAuthLogin('google')">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12.545,10.239v3.821h5.445c-0.712,2.315-2.647,3.972-5.445,3.972c-3.332,0-6.033-2.701-6.033-6.032s2.701-6.032,6.033-6.032c1.498,0,2.866,0.549,3.921,1.453l2.814-2.814C17.503,2.988,15.139,2,12.545,2C7.021,2,2.543,6.477,2.543,12s4.478,10,10.002,10c8.396,0,10.249-7.85,9.426-11.748L12.545,10.239z"/></svg>
+                Sign in with Google
+            </button>
+            <button class="social-btn linkedin" onclick="performOAuthLogin('linkedin')">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                Sign in with LinkedIn
+            </button>
+
+            <div class="social-login-divider">OR</div>
+
+            <input type="email" id="login-user" class="login-input" placeholder="Email Address">
+            <input type="password" id="login-pass" class="login-input" placeholder="Password">
+            
+            <div class="login-btn-group">
+                <button class="login-btn" onclick="performLogin()">LOGIN</button>
+                <button class="login-btn secondary" onclick="performSignUp()">REGISTER</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="mobile-top-bar">
+        <div class="mobile-hamburger-btn" onclick="toggleMobileMenu()">☰</div>
+        <img src="cropped-White.png" alt="Digitivia" class="mobile-logo-img">
+    </div>
+
+    <div class="sidebar" id="mainSidebar">
+        <div class="sidebar-header">
+            <span class="logo-icon">❖</span>
+            <div class="logo-text">
+                <img src="cropped-White.png" alt="Digitivia" class="sidebar-logo-img">
+            </div>
+        </div>
+        <ul class="nav-list">
+            <li class="nav-item active" onclick="switchTab('website', this)">
+                <div class="nav-icon"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg></div>
+                <span class="nav-label">Website Agent</span>
+            </li>
+            <li class="nav-item" onclick="switchTab('whatsapp', this)">
+                <div class="nav-icon"><svg viewBox="0 0 24 24"><path d="M16.75 13.96c.25.13.36.06.44-.06.08-.13.37-1.41.44-1.78.05-.27.05-.5.01-.74-.04-.24-.24-.46-.46-.58-.23-.11-.87-.51-1.2-.72-.33-.21-1.01-.26-1.57.43-.56.69-1.29 1.48-1.56 1.76-.27.28-.56.12-.87-.03-.31-.15-1.44-.81-2.09-1.53-.5-.56-1.12-1.37-1.37-1.81-.25-.44-.1-.66.12-.89.2-.21.41-.54.61-.8.2-.26.27-.44.41-.72.13-.28.07-.53-.03-.73-.1-.2-.87-2.12-1.19-2.9-.3-.72-.61-.62-.84-.63-.22-.01-.48-.01-.73-.01-.25 0-.66.09-1 .45-.34.36-1.31 1.28-1.31 3.12 0 1.84 1.34 3.62 1.53 3.87.19.25 2.64 4.03 6.4 5.65 3.76 1.62 3.76 1.08 4.42 1.01.66-.07 1.53-.63 1.75-1.23.22-.6.22-1.12.15-1.23-.07-.11-.26-.18-.54-.32z"/></svg></div>
+                <span class="nav-label">WhatsApp Agent</span>
+            </li>
+            <li class="nav-item" onclick="switchTab('messenger', this)">
+                <div class="nav-icon"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.03 2 11c0 2.87 1.5 5.43 3.86 7.02-.06.71-.24 2.53-.54 3.79 1.43-.37 3.39-1.01 4.58-1.55.67.19 1.39.3 2.1.3 5.52 0 10-4.03 10-9S17.52 2 12 2zm1.2 12.39l-2.67-2.85-5.23 2.85 5.76-6.11 2.64 2.85 5.26-2.85-5.76 6.11z"/></svg></div>
+                <span class="nav-label">Messenger Agent</span>
+            </li>
+            <li class="nav-item" onclick="switchTab('instagram', this)">
+                <div class="nav-icon"><svg viewBox="0 0 24 24"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8 1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3z"/></svg></div>
+                <span class="nav-label">Instagram Agent</span>
+            </li>
+            <li class="nav-item" onclick="switchTab('insights', this)">
+                <div class="nav-icon"><svg viewBox="0 0 24 24"><path d="M16,11.78L20.24,4.45L21.97,5.45L16.74,14.5L10.23,10.75L5.46,19H22V21H2V3H4V17.54L9.5,8L16,11.78Z" /></svg></div>
+                <span class="nav-label">Live Insights</span>
+            </li>
+            <li class="nav-item" onclick="switchTab('inbox', this)">
+                <div class="nav-icon"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></div>
+                <span class="nav-label">Live Inbox</span>
+            </li>
+            <li class="nav-item" onclick="switchTab('leads', this)">
+                <div class="nav-icon"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg></div>
+                <span class="nav-label">Leads Area</span>
+            </li>
+        </ul>
+        <div class="sidebar-footer">
+            <div class="nav-item" onclick="performLogout()">
+                <div class="nav-icon" style="color:var(--error);"><svg viewBox="0 0 24 24"><path d="M10.09 15.59L11.5 17l5-5-5-5-1.41 1.41L12.67 11H3v2h9.67l-2.58 2.59zM19 3H5c-1.11 0-2 .9-2 2v4h2V5h14v14H5v-4H3v4c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg></div>
+                <span class="nav-label" style="color:var(--error);">Logout</span>
+            </div>
+        </div>
+    </div>
+
+    <div id="app-container">
+        <div id="loader-overlay">
+            <div class="spinner"></div>
+            <div class="loading-text">Fetching Agent Configurations...</div>
+        </div>
+
+        <main>
+            <div id="dynamic-content-area"></div>
+        </main>
+    </div>
+
+    <div id="unlock-modal" class="confirm-modal-overlay">
+        <div class="confirm-modal">
+            <div class="confirm-title">⚠️ Critical Warning</div>
+            <div class="confirm-text">
+                Changing the System Prompt will fundamentally alter how this agent behaves, answers, and interacts.
+                <br><br>
+                Are you sure you want to proceed?
+            </div>
+            <div class="confirm-actions">
+                <button class="btn-cancel" onclick="closeUnlockModal()">Cancel</button>
+                <button class="btn-confirm" onclick="confirmUnlockAgent()">Yes, Unlock Editing</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="post-modal" class="modal-overlay" onclick="closeModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-close" onclick="closeModal()">×</div>
+            
+            <div class="modal-media">
+                <img id="m-img" class="modal-img" src="" alt="Post Media">
+            </div>
+            
+            <div class="modal-info">
+                <div class="modal-header">
+                    <div id="m-date" class="m-date">Date</div>
+                    <div id="m-caption" class="m-caption">Caption text...</div>
+                </div>
+                
+                <div class="modal-stats">
+                    <div class="m-stat"><span id="m-likes">0</span> ❤️ Likes</div>
+                    <div class="m-stat"><span id="m-comments">0</span> 💬 Comments</div>
+                    <div class="m-stat"><span id="m-reach">0</span> 👁️ Reach</div>
+                </div>
+                
+                <div class="comments-section">
+                    <div style="font-size:0.85rem; color:#888; margin-bottom:15px; text-transform:uppercase; letter-spacing:1px;">Recent Comments</div>
+                    <div id="m-comments-list">
+                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast">Saved Successfully!</div>
+
+    <script>
+        // --- 3. SUPABASE CONFIGURATION ---
+        // Using provided Safe/Anon keys from Reference
+        const SUPABASE_URL = "https://xrycghxaxqzvkmzqzzkx.supabase.co";
+        const SUPABASE_KEY = "sb_publishable_E_BXMYVOxgwahNXw-JhgbA_pUWoIpUB"; 
+        
+        // Initialize Supabase Client
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        // --- OLD WEBHOOKS (Kept for Phase 2/3 transition, but AUTH is now Supabase) ---
+        const CONFIG_WEBHOOK = "https://n8n.srv1174105.hstgr.cloud/webhook/promptAgent";
+        const CHAT_WEBHOOK   = "https://n8n.srv1174105.hstgr.cloud/webhook/chatHandler";
+        const HISTORY_WEBHOOK = "https://n8n.srv1174105.hstgr.cloud/webhook/getchathistory"; 
+        const INSIGHTS_WEBHOOK = "https://n8n.srv1174105.hstgr.cloud/webhook/insightsgrab";
+        const LEADS_WEBHOOK = "https://n8n.srv1174105.hstgr.cloud/webhook/getLeads";
+
+        // Define Agents & Colors
+        const AGENTS = [
+            { id: 'website', name: 'Website Agent', color: '#5BAEB0' },
+            { id: 'whatsapp', name: 'WhatsApp Agent', color: '#57B078' },
+            { id: 'messenger', name: 'Messenger Agent', color: '#5B89CE' },
+            { id: 'instagram', name: 'Instagram Agent', color: '#C66B8D' }
+        ];
+
+        const TONE_OPTIONS = ["Professional & Formal", "Friendly & Casual", "Empathetic & Helpful", "Sales-Oriented & Persuasive", "Witty & Humorous"];
+        const PROMPT_TEMPLATES = {
+            customer_service: "You are an empathetic and efficient Customer Service Agent...",
+            sales: "You are a persuasive and energetic Sales Agent..."
+        };
+
+        // --- GLOBAL STATE ---
+        let currentInboxPlatform = null;
+        let currentChatUser = null;
+        let currentChatUserName = null; 
+        let agentToUnlock = null; // Track which agent is being unlocked
+        
+        let insightPlatform = 'facebook';
+        let insightPeriod = 'day';
+        let cachedPosts = [];
+        let cachedLeads = []; // Store leads for export
+
+        // ==========================================
+        //        AUTH LOGIC (GATEKEEPER)
+        // ==========================================
+        
+        // Check for Session on Load
+        window.onload = async function() {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (session) {
+                // User is logged in, ensure profile exists then show app
+                await ensureUserProfile(session.user);
+                showApp();
+            } else {
+                // Stay on login screen
+                document.getElementById('login-container').style.display = 'flex';
+            }
+        };
+
+        // Login with Email/Password
+        async function performLogin() {
+            const email = document.getElementById('login-user').value;
+            const pass = document.getElementById('login-pass').value;
+            
+            if(!email || !pass) {
+                showToast("Please fill in email and password", "error");
+                return;
+            }
+
+            setLoadingState(true, "LOGGING IN...");
+
+            try {
+                const { data, error } = await supabase.auth.signInWithPassword({
+                    email: email,
+                    password: pass,
+                });
+
+                if (error) throw error;
+
+                // Success
+                await ensureUserProfile(data.user);
+                showApp();
+
+            } catch (e) {
+                console.error(e);
+                showToast(e.message || "Login Failed", "error");
+            } finally {
+                setLoadingState(false, "LOGIN");
+            }
+        }
+
+        // Sign Up with Email/Password
+        async function performSignUp() {
+            const email = document.getElementById('login-user').value;
+            const pass = document.getElementById('login-pass').value;
+
+            if(!email || !pass) {
+                showToast("Please fill in email and password", "error");
+                return;
+            }
+
+            setLoadingState(true, "REGISTERING...");
+
+            try {
+                const { data, error } = await supabase.auth.signUp({
+                    email: email,
+                    password: pass,
+                });
+
+                if (error) throw error;
+
+                showToast("Registration successful! Check your email.", "success");
+            } catch (e) {
+                console.error(e);
+                showToast(e.message || "Registration Failed", "error");
+            } finally {
+                setLoadingState(false, "REGISTER", true);
+            }
+        }
+
+        // Login with OAuth (Google/LinkedIn)
+        async function performOAuthLogin(provider) {
+            try {
+                const { data, error } = await supabase.auth.signInWithOAuth({
+                    provider: provider,
+                    options: {
+                        redirectTo: window.location.href // Returns to this page
+                    }
+                });
+                if (error) throw error;
+            } catch (e) {
+                console.error(e);
+                showToast(`Error connecting to ${provider}`, "error");
+            }
+        }
+
+        async function performLogout() {
+            await supabase.auth.signOut();
+            location.reload(); 
+        }
+
+        // --- SECTION 9 LOGIC: Ensure Profile Exists ---
+        async function ensureUserProfile(user) {
+            try {
+                // 1. Check if profile exists
+                const { data: profile, error } = await supabase
+                    .from('profiles')
+                    .select('*')
+                    .eq('user_id', user.id)
+                    .single();
+
+                if (!profile) {
+                    // 2. Create if missing (RLS allows insert for own user_id)
+                    const { error: insertError } = await supabase
+                        .from('profiles')
+                        .insert([
+                            { 
+                                user_id: user.id, 
+                                email: user.email,
+                                full_name: user.user_metadata.full_name || '',
+                                avatar_url: user.user_metadata.avatar_url || ''
+                            }
+                        ]);
+                    
+                    if (insertError) console.error("Error creating profile:", insertError);
+                    else console.log("Profile created successfully");
+                }
+            } catch (e) {
+                console.error("Profile check failed", e);
+            }
+        }
+
+        function setLoadingState(isLoading, text, isSecondary = false) {
+            const btns = document.querySelectorAll('.login-btn');
+            btns.forEach(b => {
+                if(isLoading) {
+                    if(b.innerText.includes(text.replace('ING...', ''))) b.innerText = text;
+                    b.style.opacity = "0.7";
+                    b.disabled = true;
+                } else {
+                    // Reset text based on type
+                    if(b.classList.contains('secondary')) b.innerText = "REGISTER";
+                    else b.innerText = "LOGIN";
+                    b.style.opacity = "1";
+                    b.disabled = false;
+                }
+            });
+        }
+
+        function showApp() {
+            document.getElementById('login-container').style.display = 'none';
+            const app = document.getElementById('app-container');
+            app.style.display = 'flex';
+            
+            // Initialize App
+            buildInterface();
+            fetchCurrentConfigurations();
+            document.getElementById('loader-overlay').style.display = 'none';
+            startAutoRefresh();
+        }
+
+        function startAutoRefresh() {
+            setInterval(() => {
+                if (document.getElementById('inbox').classList.contains('active')) {
+                    if(currentInboxPlatform) loadInbox(currentInboxPlatform, true); 
+                    if(currentChatUser) loadInboxMessages(currentInboxPlatform, currentChatUser, currentChatUserName, true);
+                }
+            }, 6500); 
+        }
+
+        // ==========================================
+        //        MAIN APP LOGIC (UI BUILDER)
+        // ==========================================
+
+        function buildInterface() {
+            const container = document.getElementById('dynamic-content-area');
+            let html = '';
+
+            // A. CONFIG TABS
+            AGENTS.forEach((agent) => {
+                html += `
+                <div id="${agent.id}" class="tab-content">
+                    <div class="card glass">
+                        <div class="agent-header-row">
+                            <h2 class="agent-title">
+                                <span class="icon-circle" style="background: ${agent.color};"></span> ${agent.name}
+                            </h2>
+                            <div class="agent-toggle-container">
+                                <span class="toggle-label">LIVE</span>
+                                <label class="switch">
+                                    <input type="checkbox" id="status-${agent.id}" onchange="toggleAgentStatus('${agent.id}')">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="section-wrapper">
+                            <div class="section-header active" onclick="toggleSection('${agent.id}-prompt-sec')">Agent Role (System Prompt)</div>
+                            <div id="${agent.id}-prompt-sec" class="section-content open">
+                                <div id="warning-${agent.id}" class="prompt-warning">
+                                    <span style="font-size:1.2rem;">⚠️</span>
+                                    <span><b>Caution:</b> Modifying the system prompt will directly alter the agent's personality and behavior.</span>
+                                </div>
+                                
+                                <div onclick="requestUnlock('${agent.id}')" class="edit-lock-btn" id="lock-btn-${agent.id}">
+                                    <span>🔒</span> Locked - Click to Edit
+                                </div>
+
+                                <textarea id="prompt-${agent.id}" class="textarea-locked" readonly placeholder="Define how your agent should behave..."></textarea>
+                                
+                                <div class="suggestions">
+                                    <button class="pill-btn" onclick="applySuggestion('${agent.id}', 'customer_service')">✨ Customer Service</button>
+                                    <button class="pill-btn" onclick="applySuggestion('${agent.id}', 'sales')">🚀 Sales Agent</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="section-wrapper">
+                            <div class="section-header" onclick="toggleSection('${agent.id}-tone-sec')">Agent Tone</div>
+                            <div id="${agent.id}-tone-sec" class="section-content">
+                                <select id="tone-${agent.id}">
+                                    <option value="" disabled selected>Select a tone...</option>
+                                    ${TONE_OPTIONS.map(opt => `<option value="${opt}">${opt}</option>`).join('')}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="section-wrapper">
+                            <div class="section-header" onclick="toggleSection('${agent.id}-links-sec')">Knowledge Base (Links)</div>
+                            <div id="${agent.id}-links-sec" class="section-content">
+                                <div id="links-container-${agent.id}"></div>
+                                <div class="add-link-btn" onclick="addLinkField('${agent.id}')">+ Add Another Link</div>
+                            </div>
+                        </div>
+                        <div class="section-wrapper">
+                            <div class="section-header" onclick="toggleSection('${agent.id}-chat-sec', true, '${agent.id}')">Test Chat Window</div>
+                            <div id="${agent.id}-chat-sec" class="section-content">
+                                <div class="chat-container">
+                                    <div id="chat-history-${agent.id}" class="chat-history">
+                                        <div class="message msg-ai">Hello! I am the ${agent.name}. How can I help?</div>
+                                    </div>
+                                    <div class="chat-input-area">
+                                        <input type="text" id="chat-input-${agent.id}" placeholder="Type a message..." onkeypress="handleEnter(event, '${agent.id}')">
+                                        <button class="send-chat-btn" onclick="sendChatMessage('${agent.id}')">➤</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="action-container">
+                            <button class="save-btn" onclick="saveRole('${agent.id}')">Save Role</button>
+                        </div>
+                    </div>
+                </div>`;
+            });
+
+            // B. LIVE INSIGHTS TAB
+            const iconFacebook = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12c0 5 3.66 9.13 8.41 9.88V14.9h-2.53v-2.9h2.53V9.79c0-2.5 1.47-3.89 3.77-3.89 1.1 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56v1.88h2.78l-.45 2.9h-2.33v6.98C18.34 21.13 22 17 22 12c0-5.52-4.48-10-10-10z"/></svg>`;
+            const iconInsta = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8 1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3z"/></svg>`;
+            const iconMsg = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.03 2 11c0 2.87 1.5 5.43 3.86 7.02-.06.71-.24 2.53-.54 3.79 1.43-.37 3.39-1.01 4.58-1.55.67.19 1.39.3 2.1.3 5.52 0 10-4.03 10-9S17.52 2 12 2zm1.2 12.39l-2.67-2.85-5.23 2.85 5.76-6.11 2.64 2.85 5.26-2.85-5.76 6.11z"/></svg>`;
+
+            html += `
+            <div id="insights" class="tab-content">
+                <div class="card glass">
+                    <h2>Live Insights</h2>
+                    <div class="insights-controls">
+                        <div class="insights-platforms">
+                            <div class="platform-chip active" id="chip-facebook" onclick="setInsightPlatform('facebook')">
+                                ${iconFacebook} Facebook
+                            </div>
+                            <div class="platform-chip" id="chip-instagram" onclick="setInsightPlatform('instagram')">
+                                ${iconInsta} Instagram
+                            </div>
+                            <div class="platform-chip" id="chip-messenger" onclick="setInsightPlatform('messenger')">
+                                ${iconMsg} Messenger
+                            </div>
+                        </div>
+                        <select class="period-select" id="insight-period" onchange="setInsightPeriod(this.value)">
+                            <option value="day">Daily</option>
+                            <option value="week">Weekly</option>
+                            <option value="days_28">28 Days</option>
+                            <option value="month">Monthly</option>
+                        </select>
+                    </div>
+                    <div id="insights-grid" class="stats-grid">
+                        <div style="grid-column: 1/-1; text-align:center; padding: 40px; color:#888;">Select a platform to view data</div>
+                    </div>
+                    <div class="posts-container" id="posts-section" style="display:none;">
+                        <div class="posts-header">Recent Posts Performance</div>
+                        <div id="posts-list"></div>
+                    </div>
+                </div>
+            </div>`;
+
+            // C. LIVE INBOX TAB
+            const iconWebsite = `<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>`;
+            const iconWhatsapp = `<svg viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.664-.698c1.024.558 1.815.842 2.802.842h.002c3.178 0 5.769-2.587 5.769-5.766 0-1.545-.601-2.997-1.692-4.088-1.09-1.091-2.539-1.691-4.085-1.691zm0-2c2.083 0 4.041.812 5.513 2.285 1.472 1.474 2.282 3.432 2.281 5.515 0 4.296-3.499 7.794-7.796 7.794-1.312 0-2.551-.33-3.666-.921l-4.093 1.073 1.092-3.987c-.672-1.163-1.025-2.478-1.025-3.959.001-4.301 3.502-7.8 7.802-7.8"/></svg>`;
+            const iconMessenger = `<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.03 2 11c0 2.87 1.5 5.43 3.86 7.02-.06.71-.24 2.53-.54 3.79 1.43-.37 3.39-1.01 4.58-1.55.67.19 1.39.3 2.1.3 5.52 0 10-4.03 10-9S17.52 2 12 2zm1.2 12.39l-2.67-2.85-5.23 2.85 5.76-6.11 2.64 2.85 5.26-2.85-5.76 6.11z"/></svg>`;
+           // Replace the old iconInstagram line with this one:
+const iconInstagram = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8 1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3z" fill-rule="evenodd"/></svg>`;
+
+            html += `
+            <div id="inbox" class="tab-content">
+                <div class="card glass" style="padding:0; overflow:hidden;">
+                    <div class="inbox-layout">
+                        <div class="inbox-sidebar">
+                            <div class="platform-selector">
+                                <button class="platform-btn" style="background:#5BAEB0" onclick="loadInbox('website', false)">${iconWebsite}</button>
+                                <button class="platform-btn" style="background:#57B078" onclick="loadInbox('whatsapp', false)">${iconWhatsapp}</button>
+                                <button class="platform-btn" style="background:#5B89CE" onclick="loadInbox('page', false)">${iconMessenger}</button>
+                                <button class="platform-btn" style="background:#C66B8D" onclick="loadInbox('instagram', false)">${iconInstagram}</button>
+                            </div>
+                            <div style="padding:10px; font-size:0.8rem; text-align:center; color:#888;">Select Platform</div>
+                            <div id="contact-list" class="contact-list"></div>
+                        </div>
+                        <div class="inbox-main">
+                            <div class="inbox-header" id="inbox-header-title">Select a conversation</div>
+                            <div id="inbox-messages" class="chat-history" style="background:rgba(0,0,0,0.2);"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+
+            // D. LEADS AREA TAB (NEW)
+            html += `
+            <div id="leads" class="tab-content">
+                <div class="card glass">
+                    <div class="leads-controls">
+                        <h2>Leads Area</h2>
+                        <div class="export-group">
+                            <button class="export-btn" onclick="exportLeadsCSV()">
+                                <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+                                Export CSV
+                            </button>
+                            <button class="export-btn" onclick="exportLeadsExcel()">
+                                <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-9 14h-2v-4H6v-2h2V7h2v4h3v2h-3v4zm6-5h-2V7h2v5z"/></svg>
+                                Export Excel
+                            </button>
+                        </div>
+                    </div>
+                    <div id="leads-grid" class="leads-grid">
+                        </div>
+                </div>
+            </div>`;
+
+            container.innerHTML = html;
+            document.getElementById('website').classList.add('active');
+        }
+
+        // --- THEME & NAVIGATION ---
+        function switchTab(tabId, element) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            if(element) element.classList.add('active');
+
+            let color = '#5BAEB0'; 
+            if(tabId === 'whatsapp') color = '#57B078';
+            if(tabId === 'page' || tabId === 'messenger') color = '#5B89CE';
+            if(tabId === 'instagram') color = '#C66B8D';
+            if(tabId === 'website') color = '#5BAEB0';
+            if(tabId === 'inbox') color = '#ffffff'; 
+            if(tabId === 'leads') {
+                color = '#e6b72a'; // Gold for leads
+                fetchLeads(); // Fetch data when tab opens
+            }
+            if(tabId === 'insights') {
+                color = '#7C4DFF'; 
+                if(document.getElementById('insights-grid').children.length <= 1) {
+                    setInsightPlatform('facebook'); 
+                }
+            }
+
+            document.documentElement.style.setProperty('--theme-color', color);
+            
+            // Mobile Menu Close
+            document.getElementById('mainSidebar').classList.remove('mobile-open');
+        }
+
+        function toggleMobileMenu() {
+            document.getElementById('mainSidebar').classList.toggle('mobile-open');
+        }
+
+        // ==========================================
+        //        LOCK & WARNING LOGIC
+        // ==========================================
+
+        function requestUnlock(agentId) {
+            agentToUnlock = agentId;
+            document.getElementById('unlock-modal').style.display = 'flex';
+        }
+
+        function closeUnlockModal() {
+            document.getElementById('unlock-modal').style.display = 'none';
+            agentToUnlock = null;
+        }
+
+        function confirmUnlockAgent() {
+            if (!agentToUnlock) return;
+
+            // 1. Enable textarea
+            const textarea = document.getElementById(`prompt-${agentToUnlock}`);
+            textarea.removeAttribute('readonly');
+            textarea.classList.remove('textarea-locked');
+            
+            // 2. Hide Lock Button
+            const lockBtn = document.getElementById(`lock-btn-${agentToUnlock}`);
+            lockBtn.style.display = 'none';
+
+            // 3. Show Warning Banner
+            const warningBanner = document.getElementById(`warning-${agentToUnlock}`);
+            warningBanner.classList.add('show');
+
+            // 4. Focus
+            textarea.focus();
+
+            // 5. Close Modal
+            closeUnlockModal();
+        }
+
+        function showPromptWarning(agentId) {
+            // Backup trigger if user managed to type without unlocking (edge case)
+            const w = document.getElementById(`warning-${agentId}`);
+            if(w) w.classList.add('show');
+        }
+
+        function applySuggestion(agentId, type) { 
+            // If locked, request unlock first
+            const textarea = document.getElementById(`prompt-${agentId}`);
+            if(textarea.hasAttribute('readonly')) {
+                requestUnlock(agentId);
+                return;
+            }
+
+            document.getElementById(`prompt-${agentId}`).value = PROMPT_TEMPLATES[type]; 
+            showPromptWarning(agentId);
+        }
+
+        // ==========================================
+        //        LEADS AREA LOGIC
+        // ==========================================
+
+        async function fetchLeads() {
+            const grid = document.getElementById('leads-grid');
+            grid.innerHTML = '<div style="grid-column: 1/-1; text-align:center;"><div class="spinner" style="width:30px; height:30px; margin:0 auto;"></div><p style="margin-top:10px; color:#888;">Fetching Leads...</p></div>';
+
+            try {
+                const response = await fetch(LEADS_WEBHOOK, { method: 'GET' });
+                
+                if (!response.ok) throw new Error("API Error");
+                
+                const data = await response.json();
+                
+                // Assuming data is array based on your snippet. If it's wrapped in object { leads: [...] }, adjust below.
+                const leads = Array.isArray(data) ? data : (data.leads || []);
+                cachedLeads = leads; // Store for export
+
+                if(leads.length === 0) {
+                    grid.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding:30px;">No leads found.</div>';
+                    return;
+                }
+
+                renderLeads(leads);
+
+            } catch (e) {
+                console.error(e);
+                grid.innerHTML = '<div style="grid-column: 1/-1; text-align:center; color: var(--error);">Failed to load leads. Check connection.</div>';
+            }
+        }
+
+        function renderLeads(leads) {
+            const grid = document.getElementById('leads-grid');
+            grid.innerHTML = '';
+
+            leads.forEach(lead => {
+                const name = lead.user_name || "Unknown User";
+                const phone = lead.phone_number || "No Phone";
+                const platform = lead.platform || "N/A";
+                const status = lead.status || "New";
+                const lastMsg = lead.last_message || "No message";
+                const date = lead.timestamp || lead.createdAt || "";
+
+                // Determine Status Badge Class
+                let statusClass = "status-new";
+                if(status.toLowerCase() === 'qualified') statusClass = "status-qualified";
+                else if(status.toLowerCase() === 'pending') statusClass = "status-pending";
+
+                const card = document.createElement('div');
+                card.className = 'lead-card';
+                card.innerHTML = `
+                    <div class="lead-header">
+                        <div class="lead-name">
+                             ${name}
+                        </div>
+                        <div class="lead-platform">${platform}</div>
+                    </div>
+                    <div class="lead-info-row">
+                        <span class="lead-info-icon">📞</span> ${phone}
+                    </div>
+                    <div class="lead-info-row">
+                        <span class="lead-info-icon">💬</span> "${lastMsg.length > 30 ? lastMsg.substring(0,30)+'...' : lastMsg}"
+                    </div>
+                    <div class="lead-info-row" style="font-size:0.8rem; color:#888; margin-top:10px; justify-content: space-between;">
+                        <span>${date.replace('T', ' ').substring(0, 16)}</span>
+                        <span class="status-badge ${statusClass}">${status}</span>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function exportLeadsCSV() {
+            if(cachedLeads.length === 0) { showToast("No leads to export", "error"); return; }
+            
+            const keys = Object.keys(cachedLeads[0]);
+            const csvContent = [
+                keys.join(","), // Header
+                ...cachedLeads.map(row => keys.map(k => `"${(row[k] || '').toString().replace(/"/g, '""')}"`).join(",")) // Rows
+            ].join("\n");
+
+            const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = `leads_export_${new Date().toISOString().slice(0,10)}.csv`;
+            link.click();
+        }
+
+        function exportLeadsExcel() {
+             if(cachedLeads.length === 0) { showToast("No leads to export", "error"); return; }
+
+             // Simple HTML Table export which Excel opens nicely
+             let table = '<table><thead><tr>';
+             const keys = Object.keys(cachedLeads[0]);
+             keys.forEach(k => table += `<th>${k}</th>`);
+             table += '</tr></thead><tbody>';
+             
+             cachedLeads.forEach(row => {
+                 table += '<tr>';
+                 keys.forEach(k => table += `<td>${row[k] || ''}</td>`);
+                 table += '</tr>';
+             });
+             table += '</tbody></table>';
+
+             const blob = new Blob([table], { type: "application/vnd.ms-excel" });
+             const link = document.createElement("a");
+             link.href = URL.createObjectURL(blob);
+             link.download = `leads_export_${new Date().toISOString().slice(0,10)}.xls`;
+             link.click();
+        }
+
+        // ==========================================
+        //        LIVE INSIGHTS LOGIC
+        // ==========================================
+
+        function setInsightPlatform(platform) {
+            insightPlatform = platform;
+            
+            document.querySelectorAll('.platform-chip').forEach(c => c.classList.remove('active'));
+            document.getElementById(`chip-${platform}`).classList.add('active');
+
+            const periodSelect = document.getElementById('insight-period');
+            if (platform === 'instagram') {
+                periodSelect.value = 'day';
+                periodSelect.disabled = true;
+            } else {
+                periodSelect.disabled = false;
+            }
+
+            const postsSec = document.getElementById('posts-section');
+            if(platform === 'facebook' || platform === 'instagram') {
+                postsSec.style.display = 'block';
+                fetchPosts(platform);
+            } else {
+                postsSec.style.display = 'none';
+            }
+
+            fetchInsights();
+        }
+
+        function setInsightPeriod(period) {
+            insightPeriod = period;
+            fetchInsights();
+        }
+
+        async function fetchInsights() {
+            const grid = document.getElementById('insights-grid');
+            grid.innerHTML = '<div style="grid-column: 1/-1; text-align:center;"><div class="spinner" style="width:30px; height:30px; margin:0 auto;"></div></div>';
+
+            try {
+                const response = await fetch(INSIGHTS_WEBHOOK, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        platform: insightPlatform,
+                        period: insightPeriod
+                    })
+                });
+
+                if(!response.ok) throw new Error("API Error");
+                
+                const data = await response.json();
+                const metrics = Array.isArray(data) ? data[0] : data;
+
+                renderInsightCards(metrics);
+
+            } catch (e) {
+                console.error(e);
+                grid.innerHTML = '<div style="grid-column: 1/-1; text-align:center; color: var(--error);">Failed to load insights. Check connection.</div>';
+            }
+        }
+
+        // --- FETCH POSTS ---
+        async function fetchPosts(platform) {
+            const list = document.getElementById('posts-list');
+            list.innerHTML = '<div style="padding:20px; text-align:center; color:#888;">Loading posts...</div>';
+
+            try {
+                const response = await fetch(INSIGHTS_WEBHOOK, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        platform: platform + '_posts' 
+                    })
+                });
+
+                const data = await response.json();
+                cachedPosts = data.posts || [];
+
+                if(cachedPosts.length === 0) {
+                    list.innerHTML = '<div style="padding:20px; text-align:center;">No recent posts found.</div>';
+                    return;
+                }
+
+                list.innerHTML = '';
+                cachedPosts.forEach((post, index) => {
+                    const date = new Date(post.created_time || post.timestamp).toLocaleDateString();
+                    
+                    let reach = 0;
+                    if(post.insights && post.insights.data) {
+                        const reachObj = post.insights.data.find(m => m.name === 'post_impressions_unique' || m.name === 'reach');
+                        if(reachObj) reach = reachObj.values[0].value;
+                    }
+
+                    const img = post.full_picture || post.media_url || post.thumbnail_url || ''; 
+                    const text = post.message || post.caption || 'No caption';
+
+                    const html = `
+                    <div class="post-row" onclick="openModal(${index})">
+                        <div class="post-thumb" style="background-image: url('${img}')"></div>
+                        <div class="post-content">
+                            <div class="post-date">${date}</div>
+                            <div class="post-text">${text}</div>
+                        </div>
+                        <div class="post-stats">
+                            <div class="p-stat">
+                                <div class="p-stat-val">${reach}</div>
+                                <div class="p-stat-label">Reach</div>
+                            </div>
+                            <div class="p-stat" style="opacity:0.5; font-size:0.8rem">
+                                ➜ View Details
+                            </div>
+                        </div>
+                    </div>`;
+                    list.innerHTML += html;
+                });
+
+            } catch (e) {
+                console.error(e);
+                list.innerHTML = '<div style="padding:20px; text-align:center; color:var(--error);">Failed to load posts</div>';
+            }
+        }
+
+        // --- NEW MODAL FUNCTIONS ---
+        function openModal(index) {
+            const post = cachedPosts[index];
+            if(!post) return;
+
+            document.getElementById('m-img').src = post.full_picture || post.media_url || post.thumbnail_url || '';
+            document.getElementById('m-date').innerText = new Date(post.created_time || post.timestamp).toDateString();
+            document.getElementById('m-caption').innerText = post.message || post.caption || 'No caption';
+
+            let likes = post.like_count || (post.likes ? post.likes.summary.total_count : 0);
+            let commentsCount = post.comments_count || (post.comments && post.comments.data ? post.comments.data.length : 0); 
+            
+            if(post.likes && post.likes.summary) likes = post.likes.summary.total_count;
+            
+            let reach = 0;
+            if(post.insights && post.insights.data) {
+                const reachObj = post.insights.data.find(m => m.name === 'post_impressions_unique' || m.name === 'reach');
+                if(reachObj) reach = reachObj.values[0].value;
+            }
+
+            document.getElementById('m-likes').innerText = likes;
+            document.getElementById('m-comments').innerText = commentsCount;
+            document.getElementById('m-reach').innerText = reach;
+
+            const commentsList = document.getElementById('m-comments-list');
+            commentsList.innerHTML = '';
+            
+            const comments = post.comments ? post.comments.data : [];
+            
+            if(!comments || comments.length === 0) {
+                commentsList.innerHTML = '<div style="padding:10px; color:#555; text-align:center;">No comments yet</div>';
+            } else {
+                comments.forEach(c => {
+                    const user = c.username || (c.from ? c.from.name : 'User');
+                    const text = c.text || c.message || '';
+                    const html = `
+                        <div class="comment-row">
+                            <div class="comment-avatar">${user.substring(0,1)}</div>
+                            <div class="comment-bubble">
+                                <div class="comment-user">${user}</div>
+                                <div class="comment-text">${text}</div>
+                            </div>
+                        </div>
+                    `;
+                    commentsList.innerHTML += html;
+                });
+            }
+
+            document.getElementById('post-modal').style.display = 'flex';
+        }
+
+        function closeModal(e) {
+            if (e && e.target !== e.currentTarget) return;
+            document.getElementById('post-modal').style.display = 'none';
+        }
+
+        function renderInsightCards(data) {
+            const grid = document.getElementById('insights-grid');
+            grid.innerHTML = '';
+
+            let cardsData = [];
+
+            if (insightPlatform === 'facebook') {
+                cardsData = [
+                    { label: 'Video Views', value: data.page_video_views || 0, icon: '👁️' },
+                    { label: 'Video View Time', value: formatDuration(data.page_video_view_time), icon: '⏱️' },
+                    { label: 'Post Engagements', value: data.page_post_engagements || 0, icon: '🔥' },
+                    { label: 'Unique Reach', value: data.page_impressions_unique || 0, icon: '👥' },
+                    { label: 'Total Impressions', value: data.page_posts_impressions || 0, icon: '📊' }
+                ];
+            } else if (insightPlatform === 'instagram') {
+                cardsData = [
+                    { label: 'Profile Views', value: data.profile_views || 0, icon: '👤' },
+                    { label: 'Website Clicks', value: data.website_clicks || 0, icon: '🖱️' },
+                    { label: 'Total Interactions', value: data.total_interactions || 0, icon: '❤️' }
+                ];
+            } else if (insightPlatform === 'messenger') {
+                cardsData = [
+                    { label: 'Total Connections', value: data.page_messages_total_messaging_connections || 0, icon: '💬' },
+                    { label: 'New Conversations', value: data.page_messages_new_conversations_unique || 0, icon: '✨' }
+                ];
+            }
+
+            cardsData.forEach(card => {
+                const div = document.createElement('div');
+                div.className = 'stat-card';
+                div.innerHTML = `
+                    <div class="stat-title">${card.label}</div>
+                    <div class="stat-value">${card.value}</div>
+                    <div class="stat-trend">${card.icon}</div>
+                `;
+                grid.appendChild(div);
+            });
+        }
+
+        function formatDuration(ms) {
+            if (!ms) return '0s';
+            const seconds = Math.floor(ms / 1000);
+            if(seconds < 60) return `${seconds}s`;
+            const minutes = Math.floor(seconds / 60);
+            return `${minutes}m`;
+        }
+
+        // ==========================================
+        //        EXISTING LOGIC (INBOX, CHAT, ETC)
+        // ==========================================
+
+        async function loadInbox(platform, isAutoRefresh = false) {
+            if(!isAutoRefresh) {
+                currentInboxPlatform = platform;
+                let color = '#5BAEB0'; // Default for website
+                if(platform === 'whatsapp') color = '#57B078';
+                if(platform === 'page') color = '#5B89CE';
+                if(platform === 'instagram') color = '#C66B8D';
+                document.documentElement.style.setProperty('--theme-color', color);
+            }
+
+            const list = document.getElementById('contact-list');
+            if(!isAutoRefresh) list.innerHTML = '<div style="padding:20px; text-align:center;">Loading...</div>';
+            
+            try {
+                const res = await fetch(`${HISTORY_WEBHOOK}?action=get_contacts&platform=${platform}`);
+                const data = await res.json();
+                const contacts = data.contacts || data; 
+
+                if(!contacts || contacts.length === 0) {
+                    if(!isAutoRefresh) list.innerHTML = '<div style="padding:20px; text-align:center;">No chats found.</div>';
+                    return;
+                }
+
+                const newContent = document.createElement('div');
+                contacts.forEach(contact => {
+                    const div = document.createElement('div');
+                    div.className = 'contact-item';
+                    if(contact.user_id === currentChatUser) div.classList.add('active'); 
+                    div.onclick = () => loadInboxMessages(platform, contact.user_id, contact.user_name);
+                    const displayName = contact.user_name || contact.user_id; 
+                    const displayId = contact.user_name ? contact.user_id : ''; 
+                    div.innerHTML = `
+                        <div class="contact-avatar">${displayName.substring(0,2).toUpperCase()}</div>
+                        <div class="contact-info">
+                            <div class="contact-name">${displayName}</div>
+                            <div class="contact-id">${displayId}</div>
+                        </div>
+                    `;
+                    newContent.appendChild(div);
+                });
+                list.innerHTML = '';
+                list.appendChild(newContent);
+            } catch(e) {
+                if(!isAutoRefresh) list.innerHTML = '<div style="padding:20px; color:red;">Error loading contacts.</div>';
+            }
+        }
+
+        async function loadInboxMessages(platform, userId, userName, isAutoRefresh = false) {
+            currentChatUser = userId;
+            currentChatUserName = userName;
+            const container = document.getElementById('inbox-messages');
+            const displayName = userName || userId;
+            
+            if(!isAutoRefresh) {
+                document.getElementById('inbox-header-title').innerText = `Chat with ${displayName}`;
+                container.innerHTML = '<div style="padding:20px; text-align:center;">Loading history...</div>';
+            }
+
+            try {
+                const res = await fetch(`${HISTORY_WEBHOOK}?action=get_messages&platform=${platform}&user_id=${userId}`);
+                const data = await res.json();
+                const messages = data.messages || data;
+
+                if(messages.length === 0 && !isAutoRefresh) {
+                    container.innerHTML = '<div style="padding:20px; text-align:center;">No messages yet.</div>';
+                    return;
+                }
+
+                const isAtBottom = container.scrollHeight - container.scrollTop <= container.clientHeight + 50;
+                container.innerHTML = '';
+                messages.forEach(msg => {
+                    const div = document.createElement('div');
+                    div.className = `message ${msg.sender === 'user' ? 'msg-user' : 'msg-ai'}`;
+                    div.innerHTML = msg.message;
+                    container.appendChild(div);
+                });
+
+                if(!isAutoRefresh || isAtBottom) {
+                    container.scrollTop = container.scrollHeight;
+                }
+            } catch(e) {
+                if(!isAutoRefresh) container.innerHTML = 'Error loading messages';
+            }
+        }
+
+        function addLinkField(agentId, value = "") {
+            const container = document.getElementById(`links-container-${agentId}`);
+            const div = document.createElement('div');
+            div.className = 'link-row';
+            div.innerHTML = `<input type="text" class="link-input" value="${value}" placeholder="https://..."><div class="remove-link" onclick="this.parentElement.remove()">×</div>`;
+            container.appendChild(div);
+        }
+
+        function getLinksAsCommaString(agentId) {
+            const inputs = document.querySelectorAll(`#links-container-${agentId} .link-input`);
+            return Array.from(inputs).map(input => input.value.trim()).filter(val => val !== "").join(', ');
+        }
+
+        // --- UPDATED CONFIG FETCH (INCLUDES SWITCH STATUS) ---
+        async function fetchCurrentConfigurations() {
+            try {
+                const response = await fetch(CONFIG_WEBHOOK, { method: 'GET' });
+                if (response.ok) {
+                    const data = await response.json();
+                    AGENTS.forEach(agent => {
+                        // 1. Load System Prompt
+                        const promptVal = data[`system_prompt_${agent.id}`];
+                        if(promptVal) document.getElementById(`prompt-${agent.id}`).value = promptVal;
+                        
+                        // 2. Load Tone
+                        const toneVal = data[`agent_tone_${agent.id}`];
+                        if(toneVal) document.getElementById(`tone-${agent.id}`).value = toneVal;
+                        
+                        // 3. Load Links
+                        const linksVal = data[`links_${agent.id}`];
+                        if(linksVal) {
+                            const linksArray = linksVal.split(',');
+                            linksArray.forEach(link => addLinkField(agent.id, link.trim()));
+                        } else {
+                            addLinkField(agent.id);
+                        }
+
+                        // 4. Load Active Switch Status (NEW)
+                        // Assuming your DB returns a key like "active_website" or similar
+                        // If it doesn't exist yet, it defaults to false (OFF)
+                        const isActive = data[`active_${agent.id}`] === true || data[`active_${agent.id}`] === "true";
+                        document.getElementById(`status-${agent.id}`).checked = isActive;
+                    });
+                }
+            } catch (error) { AGENTS.forEach(a => addLinkField(a.id)); } 
+        }
+
+        async function saveRole(agentId) {
+            const prompt = document.getElementById(`prompt-${agentId}`).value;
+            const tone = document.getElementById(`tone-${agentId}`).value;
+            const linksString = getLinksAsCommaString(agentId);
+            const btn = document.querySelector(`#${agentId} .save-btn`);
+            const originalText = btn.innerText;
+            btn.innerText = "Saving...";
+            
+            try {
+                const payload = {
+                    agent_source: agentId,
+                    system_prompt: prompt,
+                    timestamp: new Date().toISOString()
+                };
+                payload[`agent_tone_${agentId}`] = tone;
+                payload[`links_${agentId}`] = linksString;
+                
+                // We send a normal "save config" action here
+                // The switch status is saved separately when toggled, but good to send here too if you want
+                
+                await fetch(CONFIG_WEBHOOK, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                showToast("Saved Successfully!", "success");
+                
+                // HIDE WARNING ON SUCCESSFUL SAVE AND RELOCK
+                const warn = document.getElementById(`warning-${agentId}`);
+                if(warn) warn.classList.remove('show');
+                
+                // Optional: Re-Lock after saving? Let's leave it unlocked so they can continue edits until reload.
+                // But remove the warning banner is good.
+
+            } catch(e) { showToast("Error saving data", "error"); } 
+            finally { btn.innerText = originalText; }
+        }
+
+        // --- NEW FUNCTION: TOGGLE AGENT STATUS ---
+        async function toggleAgentStatus(agentId) {
+            const isChecked = document.getElementById(`status-${agentId}`).checked;
+            const label = document.querySelector(`#${agentId} .toggle-label`);
+            
+            // Visual feedback immediately
+            label.style.opacity = "0.5";
+            
+            try {
+                await fetch(CONFIG_WEBHOOK, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        action: 'toggle_status', // Special flag for n8n
+                        agent_source: agentId,
+                        is_active: isChecked
+                    })
+                });
+                showToast(`${isChecked ? 'Activated' : 'Deactivated'} ${agentId}`, "success");
+            } catch (e) {
+                console.error(e);
+                showToast("Failed to update status", "error");
+                // Revert switch if failed
+                document.getElementById(`status-${agentId}`).checked = !isChecked;
+            } finally {
+                label.style.opacity = "1";
+            }
+        }
+
+        function toggleSection(sectionId, isChat = false, agentId = null) {
+            const section = document.getElementById(sectionId);
+            const header = section.previousElementSibling;
+            const isOpen = section.classList.contains('open');
+            if(isOpen) {
+                section.classList.remove('open');
+                header.classList.remove('active');
+            } else {
+                section.classList.add('open');
+                header.classList.add('active');
+                if(isChat && agentId) loadChatHistory(agentId);
+            }
+        }
+
+        function handleEnter(e, agentId) { if(e.key === 'Enter') sendChatMessage(agentId); }
+        function showToast(msg, type) {
+            const t = document.getElementById('toast');
+            t.className = type; t.innerText = msg; t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 3000);
+        }
+
+        async function loadChatHistory(agentId) {
+            const historyContainer = document.getElementById(`chat-history-${agentId}`);
+            try {
+                const url = `${CHAT_WEBHOOK}?agent_source=${agentId}&action=get_history`;
+                const response = await fetch(url);
+                if(response.ok) {
+                    const data = await response.json();
+                    let messages = [];
+                    if(data.messages && Array.isArray(data.messages)) messages = data.messages;
+                    else if(Array.isArray(data)) messages = data;
+                    if(messages.length > 0) {
+                        historyContainer.innerHTML = ''; 
+                        messages.forEach(msg => {
+                            appendMessage(agentId, msg.sender, msg.message); 
+                        });
+                        historyContainer.scrollTop = historyContainer.scrollHeight;
+                    }
+                }
+            } catch(e) { console.log("History error", e); }
+        }
+
+        async function sendChatMessage(agentId) {
+            const input = document.getElementById(`chat-input-${agentId}`);
+            const text = input.value.trim();
+            if(!text) return;
+            appendMessage(agentId, 'user', text);
+            input.value = '';
+            const historyContainer = document.getElementById(`chat-history-${agentId}`);
+            historyContainer.scrollTop = historyContainer.scrollHeight;
+            const loadingId = `loading-${Date.now()}`;
+            appendMessage(agentId, 'ai', '...', loadingId);
+            try {
+                const response = await fetch(CHAT_WEBHOOK, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        agent_source: agentId,
+                        message: text,
+                        sender: 'user',
+                        timestamp: new Date().toISOString()
+                    })
+                });
+                const data = await response.json();
+                document.getElementById(loadingId).remove();
+                appendMessage(agentId, 'ai', data.reply || data.output || "No reply received.");
+                historyContainer.scrollTop = historyContainer.scrollHeight;
+            } catch(e) {
+                document.getElementById(loadingId).remove();
+                appendMessage(agentId, 'ai', 'Error: Could not reach agent.');
+            }
+        }
+
+        function appendMessage(agentId, sender, text, id = null) {
+            const container = document.getElementById(`chat-history-${agentId}`);
+            const div = document.createElement('div');
+            div.className = `message ${sender === 'user' ? 'msg-user' : 'msg-ai'}`;
+            div.innerHTML = text;
+            if(id) div.id = id;
+            container.appendChild(div);
+        }
+    </script>
+</body>
+</html>
