@@ -2829,12 +2829,6 @@
                     .select('*')
                     .eq('org_id', currentUserOrgId);
 
-                // Debugging Schema
-                console.log("Supabase fetched configs:", configs);
-                if (configs && configs.length > 0) {
-                    console.log("Config keys:", Object.keys(configs[0]));
-                }
-
                 if (error) throw error;
 
                 const { data: linksData, error: linksError } = await supabaseClient
@@ -2845,7 +2839,7 @@
                 // Initialize State
                 AGENTS.forEach(agent => {
                     const config = configs.find(c => c.agent === agent.id) || {};
-                    const links = linksData ? linksData.filter(l => l.agent_type === agent.id).map(l => l.url) : [];
+                    const links = linksData ? linksData.filter(l => l.agent === agent.id).map(l => l.url) : [];
 
                     // Populate Inputs
                     document.getElementById(`prompt-${agent.id}`).value = config.system_prompt || "";
@@ -2904,15 +2898,24 @@
                 const inputs = document.querySelectorAll(`#links-container-${agentId} .link-input`);
                 const newLinks = Array.from(inputs).map(input => input.value.trim()).filter(val => val !== "");
 
-                await supabaseClient.from('agent_kb_links').delete().match({ org_id: currentUserOrgId, agent_type: agentId });
+                const { error: delError } = await supabaseClient
+                    .from('agent_kb_links')
+                    .delete()
+                    .eq('org_id', currentUserOrgId)
+                    .eq('agent', agentId);
+
+                if (delError) throw delError;
 
                 if (newLinks.length > 0) {
-                    const linksPayload = newLinks.map(url => ({
-                        org_id: currentUserOrgId,
-                        agent_type: agentId,
-                        url: url
-                    }));
-                    await supabaseClient.from('agent_kb_links').insert(linksPayload);
+                    const { error: linkError } = await supabaseClient
+                        .from('agent_kb_links')
+                        .insert(newLinks.map(url => ({
+                            org_id: currentUserOrgId,
+                            agent: agentId,
+                            url: url
+                        })));
+
+                    if (linkError) throw linkError;
                 }
 
                 showToast("Saved Successfully!", "success");
