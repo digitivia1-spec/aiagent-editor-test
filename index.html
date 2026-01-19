@@ -895,11 +895,8 @@
         // Initialize Supabase Client
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        // --- OLD WEBHOOKS (Removed CONFIG_WEBHOOK in Phase 2) ---
-        const CHAT_WEBHOOK   = "https://n8n.srv1174105.hstgr.cloud/webhook/chatHandler";
-        const HISTORY_WEBHOOK = "https://n8n.srv1174105.hstgr.cloud/webhook/getchathistory"; 
-        const INSIGHTS_WEBHOOK = "https://n8n.srv1174105.hstgr.cloud/webhook/insightsgrab";
-        const LEADS_WEBHOOK = "https://n8n.srv1174105.hstgr.cloud/webhook/getLeads";
+        // --- WEBHOOKS (Kept CHAT for Brain, Removed Others) ---
+        const CHAT_WEBHOOK = "https://n8n.srv1174105.hstgr.cloud/webhook/chatHandler";
 
         // Define Agents & Colors
         const AGENTS = [
@@ -919,13 +916,14 @@
         let currentInboxPlatform = null;
         let currentChatUser = null;
         let currentChatUserName = null; 
-        let agentToUnlock = null; // Track which agent is being unlocked
-        let currentUserOrgId = null; // Store Org ID for RLS
+        let agentToUnlock = null; 
+        let currentUserOrgId = null; 
         
         let insightPlatform = 'facebook';
         let insightPeriod = 'day';
         let cachedPosts = [];
         let cachedLeads = []; 
+        let realtimeSubscription = null; // Store subscription
 
         // ==========================================
         //        AUTH LOGIC (GATEKEEPER)
@@ -934,7 +932,6 @@
         window.onload = async function() {
             const { data: { session } } = await supabase.auth.getSession();
             if (session) {
-                // Ensure profile exists and get Org ID
                 await ensureUserProfile(session.user);
                 showApp();
             } else {
@@ -1022,7 +1019,6 @@
 
         async function ensureUserProfile(user) {
             try {
-                // 1. Get Profile & Org ID
                 const { data: profile, error } = await supabase
                     .from('profiles')
                     .select('org_id')
@@ -1032,7 +1028,6 @@
                 if (profile) {
                     currentUserOrgId = profile.org_id;
                 } else {
-                    // Create if missing
                     const { data: newProfile, error: insertError } = await supabase
                         .from('profiles')
                         .insert([
@@ -1073,8 +1068,9 @@
             app.style.display = 'flex';
             
             buildInterface();
-            fetchCurrentConfigurations(); // Phase 2 Logic
+            fetchCurrentConfigurations(); 
             document.getElementById('loader-overlay').style.display = 'none';
+            // Note: startAutoRefresh is less critical now with Realtime, but good for contacts list updates
             startAutoRefresh();
         }
 
@@ -1082,9 +1078,9 @@
             setInterval(() => {
                 if (document.getElementById('inbox').classList.contains('active')) {
                     if(currentInboxPlatform) loadInbox(currentInboxPlatform, true); 
-                    if(currentChatUser) loadInboxMessages(currentInboxPlatform, currentChatUser, currentChatUserName, true);
+                    // Messages handle themselves via Realtime now
                 }
-            }, 6500); 
+            }, 10000); 
         }
 
         // ==========================================
@@ -1169,10 +1165,7 @@
                 </div>`;
             });
 
-            // ... (Insights, Inbox, Leads HTML remains identical to previous phases)
-            // [Truncated for brevity since it didn't change]
-            
-            // B. LIVE INSIGHTS TAB
+            // B. LIVE INSIGHTS TAB (Same as Phase 3)
             const iconFacebook = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12c0 5 3.66 9.13 8.41 9.88V14.9h-2.53v-2.9h2.53V9.79c0-2.5 1.47-3.89 3.77-3.89 1.1 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56v1.88h2.78l-.45 2.9h-2.33v6.98C18.34 21.13 22 17 22 12c0-5.52-4.48-10-10-10z"/></svg>`;
             const iconInsta = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8 1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3z"/></svg>`;
             const iconMsg = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.03 2 11c0 2.87 1.5 5.43 3.86 7.02-.06.71-.24 2.53-.54 3.79 1.43-.37 3.39-1.01 4.58-1.55.67.19 1.39.3 2.1.3 5.52 0 10-4.03 10-9S17.52 2 12 2zm1.2 12.39l-2.67-2.85-5.23 2.85 5.76-6.11 2.64 2.85 5.26-2.85-5.76 6.11z"/></svg>`;
@@ -1238,7 +1231,7 @@
                 </div>
             </div>`;
 
-            // D. LEADS AREA TAB (NEW)
+            // D. LEADS AREA TAB (Same as Phase 3)
             html += `
             <div id="leads" class="tab-content">
                 <div class="card glass">
@@ -1358,26 +1351,28 @@
         // ==========================================
 
         async function fetchLeads() {
+            if (!currentUserOrgId) return;
             const grid = document.getElementById('leads-grid');
             grid.innerHTML = '<div style="grid-column: 1/-1; text-align:center;"><div class="spinner" style="width:30px; height:30px; margin:0 auto;"></div><p style="margin-top:10px; color:#888;">Fetching Leads...</p></div>';
 
             try {
-                const response = await fetch(LEADS_WEBHOOK, { method: 'GET' });
+                // PHASE 3: Direct Supabase Query
+                const { data: leads, error } = await supabase
+                    .from('leads')
+                    .select('*')
+                    .eq('org_id', currentUserOrgId)
+                    .order('created_at', { ascending: false });
                 
-                if (!response.ok) throw new Error("API Error");
+                if (error) throw error;
                 
-                const data = await response.json();
-                
-                // Assuming data is array based on your snippet. If it's wrapped in object { leads: [...] }, adjust below.
-                const leads = Array.isArray(data) ? data : (data.leads || []);
-                cachedLeads = leads; // Store for export
+                cachedLeads = leads || []; 
 
-                if(leads.length === 0) {
+                if(cachedLeads.length === 0) {
                     grid.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding:30px;">No leads found.</div>';
                     return;
                 }
 
-                renderLeads(leads);
+                renderLeads(cachedLeads);
 
             } catch (e) {
                 console.error(e);
@@ -1390,12 +1385,13 @@
             grid.innerHTML = '';
 
             leads.forEach(lead => {
-                const name = lead.user_name || "Unknown User";
-                const phone = lead.phone_number || "No Phone";
+                // Map columns based on assumed schema or fallback
+                const name = lead.user_name || lead.name || "Unknown User";
+                const phone = lead.phone_number || lead.phone || "No Phone";
                 const platform = lead.platform || "N/A";
-                const status = lead.status || "New";
+                const status = lead.status || lead.lead_status || "New";
                 const lastMsg = lead.last_message || "No message";
-                const date = lead.timestamp || lead.createdAt || "";
+                const date = lead.created_at || lead.timestamp || "";
 
                 // Determine Status Badge Class
                 let statusClass = "status-new";
@@ -1500,23 +1496,25 @@
         }
 
         async function fetchInsights() {
+            if(!currentUserOrgId) return;
             const grid = document.getElementById('insights-grid');
             grid.innerHTML = '<div style="grid-column: 1/-1; text-align:center;"><div class="spinner" style="width:30px; height:30px; margin:0 auto;"></div></div>';
 
             try {
-                const response = await fetch(INSIGHTS_WEBHOOK, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        platform: insightPlatform,
-                        period: insightPeriod
-                    })
-                });
+                // PHASE 3: Direct Supabase Query for Metrics
+                const { data, error } = await supabase
+                    .from('platform_metrics')
+                    .select('*')
+                    .eq('org_id', currentUserOrgId)
+                    .eq('platform', insightPlatform)
+                    .order('created_at', { ascending: false }) // Assuming created_at or 'date' column
+                    .limit(1)
+                    .single();
 
-                if(!response.ok) throw new Error("API Error");
+                if(error && error.code !== 'PGRST116') throw error; // Ignore "no rows found" error
                 
-                const data = await response.json();
-                const metrics = Array.isArray(data) ? data[0] : data;
+                // Use fetched data or empty object if null
+                const metrics = data || {}; 
 
                 renderInsightCards(metrics);
 
@@ -1528,20 +1526,29 @@
 
         // --- FETCH POSTS ---
         async function fetchPosts(platform) {
+            if(!currentUserOrgId) return;
             const list = document.getElementById('posts-list');
             list.innerHTML = '<div style="padding:20px; text-align:center; color:#888;">Loading posts...</div>';
 
             try {
-                const response = await fetch(INSIGHTS_WEBHOOK, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        platform: platform + '_posts' 
-                    })
-                });
+                // PHASE 3: Fetch Posts directly
+                // platform argument comes in as 'facebook' or 'instagram' usually, 
+                // but the UI passed 'facebook_posts' before. We need to clean it.
+                // Assuming DB platform column stores 'facebook', 'instagram'
+                
+                const dbPlatform = platform === 'facebook' ? 'facebook' : 'instagram';
 
-                const data = await response.json();
-                cachedPosts = data.posts || [];
+                const { data: posts, error } = await supabase
+                    .from('social_posts')
+                    .select('*, social_post_metrics(*)') 
+                    .eq('org_id', currentUserOrgId)
+                    .eq('platform', dbPlatform)
+                    .order('created_at', { ascending: false })
+                    .limit(10);
+
+                if (error) throw error;
+
+                cachedPosts = posts || [];
 
                 if(cachedPosts.length === 0) {
                     list.innerHTML = '<div style="padding:20px; text-align:center;">No recent posts found.</div>';
@@ -1550,16 +1557,17 @@
 
                 list.innerHTML = '';
                 cachedPosts.forEach((post, index) => {
-                    const date = new Date(post.created_time || post.timestamp).toLocaleDateString();
+                    const date = new Date(post.created_at || post.timestamp).toLocaleDateString();
                     
+                    // Metrics usually joined or separate. 
+                    // If social_post_metrics is joined (1:1), access via array or object
                     let reach = 0;
-                    if(post.insights && post.insights.data) {
-                        const reachObj = post.insights.data.find(m => m.name === 'post_impressions_unique' || m.name === 'reach');
-                        if(reachObj) reach = reachObj.values[0].value;
+                    if(post.social_post_metrics && post.social_post_metrics.length > 0) {
+                         reach = post.social_post_metrics[0].reach || 0;
                     }
 
-                    const img = post.full_picture || post.media_url || post.thumbnail_url || ''; 
-                    const text = post.message || post.caption || 'No caption';
+                    const img = post.media_url || post.thumbnail_url || post.full_picture || ''; 
+                    const text = post.caption || post.message || 'No caption';
 
                     const html = `
                     <div class="post-row" onclick="openModal(${index})">
@@ -1592,49 +1600,31 @@
             const post = cachedPosts[index];
             if(!post) return;
 
-            document.getElementById('m-img').src = post.full_picture || post.media_url || post.thumbnail_url || '';
-            document.getElementById('m-date').innerText = new Date(post.created_time || post.timestamp).toDateString();
-            document.getElementById('m-caption').innerText = post.message || post.caption || 'No caption';
+            document.getElementById('m-img').src = post.media_url || post.thumbnail_url || '';
+            document.getElementById('m-date').innerText = new Date(post.created_at).toDateString();
+            document.getElementById('m-caption').innerText = post.caption || post.message || 'No caption';
 
-            let likes = post.like_count || (post.likes ? post.likes.summary.total_count : 0);
-            let commentsCount = post.comments_count || (post.comments && post.comments.data ? post.comments.data.length : 0); 
-            
-            if(post.likes && post.likes.summary) likes = post.likes.summary.total_count;
-            
+            let likes = 0;
+            let commentsCount = 0;
             let reach = 0;
-            if(post.insights && post.insights.data) {
-                const reachObj = post.insights.data.find(m => m.name === 'post_impressions_unique' || m.name === 'reach');
-                if(reachObj) reach = reachObj.values[0].value;
+
+            if(post.social_post_metrics && post.social_post_metrics.length > 0) {
+                const m = post.social_post_metrics[0];
+                likes = m.likes || 0;
+                commentsCount = m.comments || 0;
+                reach = m.reach || 0;
             }
 
             document.getElementById('m-likes').innerText = likes;
             document.getElementById('m-comments').innerText = commentsCount;
             document.getElementById('m-reach').innerText = reach;
 
+            // Comments list logic implies we fetch comments. 
+            // If comments are in a separate table 'social_comments', we'd need another fetch here.
+            // For now, placeholder or empty unless data is eager loaded.
             const commentsList = document.getElementById('m-comments-list');
-            commentsList.innerHTML = '';
+            commentsList.innerHTML = '<div style="padding:10px; color:#555; text-align:center;">Comments not loaded</div>';
             
-            const comments = post.comments ? post.comments.data : [];
-            
-            if(!comments || comments.length === 0) {
-                commentsList.innerHTML = '<div style="padding:10px; color:#555; text-align:center;">No comments yet</div>';
-            } else {
-                comments.forEach(c => {
-                    const user = c.username || (c.from ? c.from.name : 'User');
-                    const text = c.text || c.message || '';
-                    const html = `
-                        <div class="comment-row">
-                            <div class="comment-avatar">${user.substring(0,1)}</div>
-                            <div class="comment-bubble">
-                                <div class="comment-user">${user}</div>
-                                <div class="comment-text">${text}</div>
-                            </div>
-                        </div>
-                    `;
-                    commentsList.innerHTML += html;
-                });
-            }
-
             document.getElementById('post-modal').style.display = 'flex';
         }
 
@@ -1649,6 +1639,7 @@
 
             let cardsData = [];
 
+            // Fallback to 0 if data keys missing
             if (insightPlatform === 'facebook') {
                 cardsData = [
                     { label: 'Video Views', value: data.page_video_views || 0, icon: '👁️' },
@@ -1691,13 +1682,13 @@
         }
 
         // ==========================================
-        //        EXISTING LOGIC (INBOX, CHAT, ETC)
+        //        PHASE 4: LIVE INBOX & CHAT
         // ==========================================
 
         async function loadInbox(platform, isAutoRefresh = false) {
             if(!isAutoRefresh) {
                 currentInboxPlatform = platform;
-                let color = '#5BAEB0'; // Default for website
+                let color = '#5BAEB0'; 
                 if(platform === 'whatsapp') color = '#57B078';
                 if(platform === 'page') color = '#5B89CE';
                 if(platform === 'instagram') color = '#C66B8D';
@@ -1708,9 +1699,14 @@
             if(!isAutoRefresh) list.innerHTML = '<div style="padding:20px; text-align:center;">Loading...</div>';
             
             try {
-                const res = await fetch(`${HISTORY_WEBHOOK}?action=get_contacts&platform=${platform}`);
-                const data = await res.json();
-                const contacts = data.contacts || data; 
+                // PHASE 4: Fetch from inbox_contacts (Supabase)
+                const { data: contacts, error } = await supabase
+                    .from('inbox_contacts')
+                    .select('*')
+                    .eq('org_id', currentUserOrgId)
+                    .eq('platform', platform);
+
+                if(error) throw error;
 
                 if(!contacts || contacts.length === 0) {
                     if(!isAutoRefresh) list.innerHTML = '<div style="padding:20px; text-align:center;">No chats found.</div>';
@@ -1721,10 +1717,13 @@
                 contacts.forEach(contact => {
                     const div = document.createElement('div');
                     div.className = 'contact-item';
-                    if(contact.user_id === currentChatUser) div.classList.add('active'); 
-                    div.onclick = () => loadInboxMessages(platform, contact.user_id, contact.user_name);
-                    const displayName = contact.user_name || contact.user_id; 
-                    const displayId = contact.user_name ? contact.user_id : ''; 
+                    if(contact.id === currentChatUser) div.classList.add('active'); // contact.id is UUID likely
+                    
+                    // Passing platform is safe since we filtered by it
+                    div.onclick = () => loadInboxMessages(platform, contact.id, contact.name);
+                    
+                    const displayName = contact.name || "Unknown"; 
+                    const displayId = contact.platform_id || ""; 
                     div.innerHTML = `
                         <div class="contact-avatar">${displayName.substring(0,2).toUpperCase()}</div>
                         <div class="contact-info">
@@ -1737,46 +1736,97 @@
                 list.innerHTML = '';
                 list.appendChild(newContent);
             } catch(e) {
+                console.error(e);
                 if(!isAutoRefresh) list.innerHTML = '<div style="padding:20px; color:red;">Error loading contacts.</div>';
             }
         }
 
-        async function loadInboxMessages(platform, userId, userName, isAutoRefresh = false) {
-            currentChatUser = userId;
-            currentChatUserName = userName;
+        async function loadInboxMessages(platform, contactId, contactName, isAutoRefresh = false) {
+            currentChatUser = contactId;
+            currentChatUserName = contactName;
             const container = document.getElementById('inbox-messages');
-            const displayName = userName || userId;
             
             if(!isAutoRefresh) {
-                document.getElementById('inbox-header-title').innerText = `Chat with ${displayName}`;
+                document.getElementById('inbox-header-title').innerText = `Chat with ${contactName}`;
                 container.innerHTML = '<div style="padding:20px; text-align:center;">Loading history...</div>';
+                
+                // Cleanup old subscription
+                if(realtimeSubscription) supabase.removeChannel(realtimeSubscription);
             }
 
             try {
-                const res = await fetch(`${HISTORY_WEBHOOK}?action=get_messages&platform=${platform}&user_id=${userId}`);
-                const data = await res.json();
-                const messages = data.messages || data;
+                // 1. Get Conversation ID for this Contact
+                const { data: conversation, error: convError } = await supabase
+                    .from('inbox_conversations')
+                    .select('id')
+                    .eq('org_id', currentUserOrgId)
+                    .eq('contact_id', contactId)
+                    .single();
 
-                if(messages.length === 0 && !isAutoRefresh) {
-                    container.innerHTML = '<div style="padding:20px; text-align:center;">No messages yet.</div>';
+                if (convError || !conversation) {
+                    if(!isAutoRefresh) container.innerHTML = '<div style="padding:20px; text-align:center;">No messages yet.</div>';
                     return;
                 }
 
-                const isAtBottom = container.scrollHeight - container.scrollTop <= container.clientHeight + 50;
-                container.innerHTML = '';
-                messages.forEach(msg => {
-                    const div = document.createElement('div');
-                    div.className = `message ${msg.sender === 'user' ? 'msg-user' : 'msg-ai'}`;
-                    div.innerHTML = msg.message;
-                    container.appendChild(div);
-                });
+                const conversationId = conversation.id;
 
-                if(!isAutoRefresh || isAtBottom) {
-                    container.scrollTop = container.scrollHeight;
+                // 2. Fetch Messages
+                const { data: messages, error } = await supabase
+                    .from('inbox_messages')
+                    .select('*')
+                    .eq('conversation_id', conversationId)
+                    .order('created_at', { ascending: true });
+
+                if (error) throw error;
+
+                if (messages.length === 0 && !isAutoRefresh) {
+                    container.innerHTML = '<div style="padding:20px; text-align:center;">No messages yet.</div>';
+                } else {
+                    if(!isAutoRefresh) container.innerHTML = '';
+                    // Only rebuild if not auto-refresh to avoid jitter, 
+                    // OR simple rebuild for now. Real-time is better.
+                    if(!isAutoRefresh) {
+                        messages.forEach(msg => {
+                            appendInboxMessage(msg.direction, msg.content);
+                        });
+                        container.scrollTop = container.scrollHeight;
+                    }
                 }
+
+                // 3. Setup Realtime (Only once per selection)
+                if(!isAutoRefresh) {
+                    realtimeSubscription = supabase
+                        .channel('public:inbox_messages')
+                        .on('postgres_changes', { 
+                            event: 'INSERT', 
+                            schema: 'public', 
+                            table: 'inbox_messages', 
+                            filter: `conversation_id=eq.${conversationId}` 
+                        }, payload => {
+                            appendInboxMessage(payload.new.direction, payload.new.content);
+                            container.scrollTop = container.scrollHeight;
+                        })
+                        .subscribe();
+                }
+
             } catch(e) {
+                console.error(e);
                 if(!isAutoRefresh) container.innerHTML = 'Error loading messages';
             }
+        }
+
+        function appendInboxMessage(direction, text) {
+            const container = document.getElementById('inbox-messages');
+            const div = document.createElement('div');
+            // direction: 'inbound' (User) vs 'outbound' (Agent/AI)
+            const typeClass = direction === 'inbound' ? 'msg-ai' : 'msg-user'; 
+            // Note: In visual logic, usually Right=Me(Agent), Left=Them(User). 
+            // If 'inbound' is from user, it should be Left (msg-ai style in this CSS).
+            // If 'outbound' is from agent, it should be Right (msg-user style).
+            
+            div.className = `message ${typeClass}`;
+            div.innerHTML = text;
+            container.appendChild(div);
         }
 
         function addLinkField(agentId, value = "") {
@@ -1795,7 +1845,6 @@
         // --- PHASE 2: CONNECT CONFIGS TO SUPABASE ---
         async function fetchCurrentConfigurations() {
             if(!currentUserOrgId) {
-                // Try fetching again if somehow missing, though ensured on login
                 const { data: { user } } = await supabase.auth.getUser();
                 if(user) await ensureUserProfile(user);
                 if(!currentUserOrgId) {
@@ -1805,7 +1854,6 @@
             }
 
             try {
-                // 1. Fetch Configs for this Org
                 const { data: configs, error } = await supabase
                     .from('agent_configs')
                     .select('*')
@@ -1813,13 +1861,11 @@
 
                 if (error) throw error;
 
-                // 2. Fetch Links for this Org (if using agent_kb_links table)
                 const { data: linksData, error: linksError } = await supabase
                     .from('agent_kb_links')
                     .select('*')
                     .eq('org_id', currentUserOrgId);
 
-                // Map DB results to UI
                 AGENTS.forEach(agent => {
                     const config = configs.find(c => c.agent_type === agent.id);
                     if (config) {
@@ -1828,7 +1874,6 @@
                         document.getElementById(`status-${agent.id}`).checked = config.is_active || false;
                     }
 
-                    // Populate Links
                     const agentLinks = linksData ? linksData.filter(l => l.agent_type === agent.id || l.config_id === config?.id) : [];
                     if (agentLinks.length > 0) {
                         agentLinks.forEach(l => addLinkField(agent.id, l.url));
@@ -1853,7 +1898,6 @@
             btn.innerText = "Saving...";
             
             try {
-                // 1. Upsert Agent Config
                 const { error: configError } = await supabase
                     .from('agent_configs')
                     .upsert({ 
@@ -1862,18 +1906,15 @@
                         system_prompt: prompt,
                         agent_tone: tone,
                         updated_at: new Date().toISOString()
-                    }, { onConflict: 'org_id, agent_type' }); // Assuming composite unique constraint
+                    }, { onConflict: 'org_id, agent_type' }); 
 
                 if(configError) throw configError;
 
-                // 2. Handle Links (Delete All & Insert All strategy for simplicity)
                 const inputs = document.querySelectorAll(`#links-container-${agentId} .link-input`);
                 const newLinks = Array.from(inputs).map(input => input.value.trim()).filter(val => val !== "");
 
-                // Delete existing links for this agent
                 await supabase.from('agent_kb_links').delete().match({ org_id: currentUserOrgId, agent_type: agentId });
                 
-                // Insert new links
                 if(newLinks.length > 0) {
                     const linksPayload = newLinks.map(url => ({
                         org_id: currentUserOrgId,
@@ -1903,7 +1944,6 @@
             label.style.opacity = "0.5";
             
             try {
-                // Upsert only the status
                 const { error } = await supabase
                     .from('agent_configs')
                     .upsert({
@@ -1946,23 +1986,46 @@
             setTimeout(() => t.classList.remove('show'), 3000);
         }
 
+        // --- PHASE 4: TEST CHAT LOGIC (HYBRID MEMORY + BRAIN) ---
         async function loadChatHistory(agentId) {
             const historyContainer = document.getElementById(`chat-history-${agentId}`);
+            if(!currentUserOrgId) return;
+
             try {
-                const url = `${CHAT_WEBHOOK}?agent_source=${agentId}&action=get_history`;
-                const response = await fetch(url);
-                if(response.ok) {
-                    const data = await response.json();
-                    let messages = [];
-                    if(data.messages && Array.isArray(data.messages)) messages = data.messages;
-                    else if(Array.isArray(data)) messages = data;
-                    if(messages.length > 0) {
-                        historyContainer.innerHTML = ''; 
-                        messages.forEach(msg => {
-                            appendMessage(agentId, msg.sender, msg.message); 
-                        });
-                        historyContainer.scrollTop = historyContainer.scrollHeight;
-                    }
+                // 1. Get Session ID
+                let { data: session } = await supabase
+                    .from('test_chat_sessions')
+                    .select('id')
+                    .eq('org_id', currentUserOrgId)
+                    .eq('agent_type', agentId)
+                    .single();
+
+                // Create if not exists
+                if(!session) {
+                    const { data: newSession, error: createErr } = await supabase
+                        .from('test_chat_sessions')
+                        .insert([{ org_id: currentUserOrgId, agent_type: agentId }])
+                        .select()
+                        .single();
+                    if(newSession) session = newSession;
+                }
+
+                if(!session) return; // fail safe
+
+                // 2. Load Messages
+                const { data: messages } = await supabase
+                    .from('test_chat_messages')
+                    .select('*')
+                    .eq('session_id', session.id)
+                    .order('created_at', { ascending: true });
+
+                if(messages && messages.length > 0) {
+                    historyContainer.innerHTML = '';
+                    messages.forEach(msg => {
+                        const sender = msg.role === 'user' ? 'user' : 'ai';
+                        appendMessage(agentId, sender, msg.content);
+                    });
+                    historyContainer.scrollTop = historyContainer.scrollHeight;
                 }
             } catch(e) { console.log("History error", e); }
         }
@@ -1971,13 +2034,38 @@
             const input = document.getElementById(`chat-input-${agentId}`);
             const text = input.value.trim();
             if(!text) return;
+            
+            // UI Update
             appendMessage(agentId, 'user', text);
             input.value = '';
             const historyContainer = document.getElementById(`chat-history-${agentId}`);
             historyContainer.scrollTop = historyContainer.scrollHeight;
             const loadingId = `loading-${Date.now()}`;
             appendMessage(agentId, 'ai', '...', loadingId);
+
             try {
+                // 1. Get Session ID (Reuse logic or cache it)
+                let { data: session } = await supabase
+                    .from('test_chat_sessions')
+                    .select('id')
+                    .eq('org_id', currentUserOrgId)
+                    .eq('agent_type', agentId)
+                    .single();
+                
+                if(!session) { // Should exist from load, but double check
+                     const { data: newSession } = await supabase.from('test_chat_sessions').insert([{ org_id: currentUserOrgId, agent_type: agentId }]).select().single();
+                     session = newSession;
+                }
+
+                // 2. Save User Message (MEMORY)
+                await supabase.from('test_chat_messages').insert({
+                    session_id: session.id,
+                    role: 'user',
+                    content: text
+                });
+
+                // 3. Call AI Webhook (BRAIN)
+                // We keep this to generate the actual smart response
                 const response = await fetch(CHAT_WEBHOOK, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -1985,16 +2073,30 @@
                         agent_source: agentId,
                         message: text,
                         sender: 'user',
+                        org_id: currentUserOrgId, // Pass context
                         timestamp: new Date().toISOString()
                     })
                 });
+                
                 const data = await response.json();
+                const replyText = data.reply || data.output || "No reply received.";
+
+                // 4. Save AI Response (MEMORY)
+                await supabase.from('test_chat_messages').insert({
+                    session_id: session.id,
+                    role: 'assistant',
+                    content: replyText
+                });
+
+                // 5. Update UI
                 document.getElementById(loadingId).remove();
-                appendMessage(agentId, 'ai', data.reply || data.output || "No reply received.");
+                appendMessage(agentId, 'ai', replyText);
                 historyContainer.scrollTop = historyContainer.scrollHeight;
+
             } catch(e) {
                 document.getElementById(loadingId).remove();
                 appendMessage(agentId, 'ai', 'Error: Could not reach agent.');
+                console.error(e);
             }
         }
 
