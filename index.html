@@ -2657,7 +2657,7 @@
 
         <div id="loader-overlay">
             <div class="spinner"></div>
-            <div class="loading-text">Fetching Agent Configurations...</div>
+            <div class="loading-text" data-i18n="messages.loading_config">Fetching Agent Configurations...</div>
         </div>
 
         <main>
@@ -2718,7 +2718,7 @@
         <div class="pricing-modal" onclick="event.stopPropagation()">
             <button class="pricing-close" onclick="closePricingModal()">&times;</button>
             <div class="pricing-header">
-                <h2>Choose Your Plan</h2>
+                <h2 data-i18n="modals.pricing.header_title">Choose Your Plan</h2>
                 <p>Scale your AI agents with the perfect plan for your business</p>
             </div>
             <div class="pricing-grid">
@@ -2791,17 +2791,18 @@
                 </div>
 
                 <div class="docs-section">
-                    <h3>🤖 Configuring Your Agents</h3>
-                    <p>Each agent (Website, WhatsApp, Messenger, Instagram) can be customized independently:</p>
+                    <h3 data-i18n="modals.docs.section_roles_title">🤖 Agent Roles & System Prompts</h3>
+                    <p data-i18n="modals.docs.section_roles_text">The <strong>System Prompt</strong> is the brain of
+                        your agent. It defines who the agent is, what it knows, and how it speaks.</p>
                     <ul>
-                        <li><strong>System Prompt:</strong> This is the "brain" of your agent. Define its personality,
-                            knowledge, and boundaries.</li>
-                        <li><strong>Tone:</strong> Choose how the agent should sound (e.g., Professional, Friendly,
-                            Helpful).</li>
-                        <li><strong>Knowledge Base Links:</strong> Add URLs that your agent should use as a reference to
-                            answer questions accurately.</li>
+                        <li data-i18n="modals.docs.list_role"><strong>Role:</strong> Define the persona (e.g., Support
+                            Agent, Sales Rep).</li>
+                        <li data-i18n="modals.docs.list_tone"><strong>Tone:</strong> Adjectives that describe the
+                            personality (e.g., Professional, Friendly, Helpful).</li>
+                        <li data-i18n="modals.docs.list_kb"><strong>Knowledge Base Links:</strong> Add URLs that your
+                            agent should use as a reference to answer questions accurately.</li>
                     </ul>
-                    <div class="docs-tip">
+                    <div class="docs-tip" data-i18n="modals.docs.tip">
                         <strong>Pro Tip:</strong> Be specific in your System Prompt. Instead of "You are a helpful
                         assistant," try "You are an expert real estate consultant for Acme Realty, specializing in
                         downtown apartments."
@@ -2809,31 +2810,37 @@
                 </div>
 
                 <div class="docs-section">
-                    <h3>🔌 Connecting Channels</h3>
-                    <p>To start receiving messages, you need to connect your social channels:</p>
+                    <h3 data-i18n="modals.docs.section_channels_title">🔌 Connecting Channels</h3>
+                    <p data-i18n="modals.docs.section_channels_text">To start receiving messages, you need to connect
+                        your social channels:</p>
                     <ul>
-                        <li>Go to the specific agent tab in the left sidebar.</li>
-                        <li>Click the <strong>"Connect Channel"</strong> button.</li>
-                        <li>Follow the integration steps (currently requires a consultation for setup).</li>
+                        <li data-i18n="modals.docs.list_channel_step1">Go to the specific agent tab in the left sidebar.
+                        </li>
+                        <li data-i18n="modals.docs.list_channel_step2">Click the <strong>"Connect Channel"</strong>
+                            button.</li>
+                        <li data-i18n="modals.docs.list_channel_step3">Follow the integration steps (currently requires
+                            a consultation for setup).</li>
                     </ul>
                 </div>
 
                 <div class="docs-section">
-                    <h3>📨 Using the Live Inbox & Leads</h3>
+                    <h3 data-i18n="modals.docs.section_inbox_title">📨 Using the Live Inbox & Leads</h3>
                     <ul>
-                        <li><strong>Live Inbox:</strong> Monitor real-time conversations between your agents and
-                            customers. You can step in at any time to take over the chat.</li>
-                        <li><strong>Leads Area:</strong> Automatically captures contact details and interests from
-                            conversations, allowing you to export or manage your pipeline.</li>
-                        <li><strong>Live Insights:</strong> View performance metrics, message volume, and engagement
-                            statistics across all platforms.</li>
+                        <li data-i18n="modals.docs.list_inbox"><strong>Live Inbox:</strong> Monitor real-time
+                            conversations between your agents and consumers.</li>
+                        <li data-i18n="modals.docs.list_leads"><strong>Leads Area:</strong> Automatically captures
+                            contact details and interests from conversations.</li>
+                        <li data-i18n="modals.docs.list_insights"><strong>Live Insights:</strong> View performance
+                            metrics, message volume, and engagement statistics.</li>
                     </ul>
                 </div>
 
                 <div class="docs-cta">
-                    <h4>Need more help?</h4>
-                    <p>If you're stuck or need a custom implementation, our team is here to help.</p>
-                    <button onclick="closeDocsModal(); openHelpModal();">Book Free Consultation</button>
+                    <h4 data-i18n="modals.docs.cta_title">Need more help?</h4>
+                    <p data-i18n="modals.docs.cta_text">If you're stuck or need a custom implementation, our team is
+                        here to help.</p>
+                    <button onclick="closeDocsModal(); openHelpModal();" data-i18n="modals.docs.btn_book">Book Free
+                        Consultation</button>
                 </div>
             </div>
         </div>
@@ -2846,21 +2853,23 @@
             <h3 id="profile-name">User Name</h3>
             <div class="email" id="profile-email">user@example.com</div>
             <div class="profile-info-row">
-                <span class="profile-info-label">Organization</span>
+                <span class="profile-info-label" data-i18n="modals.profile.label_org">Organization</span>
                 <input type="text" id="profile-org-input" class="login-input"
                     style="margin:0; padding:5px 10px; font-size:0.9rem;" placeholder="Organization Name">
             </div>
             <div class="profile-info-row">
-                <span class="profile-info-label">Current Plan</span>
+                <span class="profile-info-label" data-i18n="modals.profile.label_plan">Current Plan</span>
                 <span class="profile-info-value" id="profile-plan">Free</span>
             </div>
             <div class="profile-actions" style="flex-direction: column; gap: 10px;">
                 <button class="btn-confirm" id="save-org-btn" onclick="saveOrganizationName()"
-                    style="width:100%; border-radius:8px;">Save Organization Name</button>
+                    style="width:100%; border-radius:8px;" data-i18n="modals.profile.btn_save">Save Organization
+                    Name</button>
                 <div style="display: flex; gap: 10px; width: 100%;">
-                    <button class="btn-upgrade" onclick="closeProfileModal(); openPricingModal();"
-                        style="flex:1;">Upgrade Plan</button>
-                    <button class="btn-logout" onclick="performLogout()" style="flex:1;">Logout</button>
+                    <button class="btn-upgrade" onclick="closeProfileModal(); openPricingModal();" style="flex:1;"
+                        data-i18n="modals.profile.btn_upgrade">Upgrade Plan</button>
+                    <button class="btn-logout" onclick="performLogout()" style="flex:1;"
+                        data-i18n="modals.profile.btn_logout">Logout</button>
                 </div>
             </div>
         </div>
@@ -2870,12 +2879,15 @@
     <div id="help-modal" class="help-modal-overlay" onclick="closeHelpModal(event)">
         <div class="help-modal" onclick="event.stopPropagation()">
             <div class="help-icon">📅</div>
-            <h3>Free Consultation Meeting</h3>
-            <p>Book a 30-minute consultation with our team to help you get the most out of your AI agents.</p>
+            <h3 data-i18n="modals.help.title">Free Consultation Meeting</h3>
+            <p data-i18n="modals.help.text">Book a 30-minute consultation with our team to help you get the most out of
+                your AI agents.</p>
             <div class="help-remaining">
-                You have <strong id="help-remaining-count">2</strong> free consultation(s) remaining
+                <span data-i18n="modals.help.remaining">You have <strong id="help-remaining-count">2</strong> free
+                    consultation(s) remaining</span>
             </div>
-            <button class="help-btn" id="help-book-btn" onclick="bookConsultation()">Book Consultation</button>
+            <button class="help-btn" id="help-book-btn" onclick="bookConsultation()"
+                data-i18n="modals.help.btn_book">Book Consultation</button>
         </div>
     </div>
 
@@ -2937,19 +2949,41 @@
             auth: { app_title: "DIGITIVIA AI AGENT", sign_in_google: "Sign in with Google", sign_in_linkedin: "Sign in with LinkedIn", separator_or: "OR", input_email_placeholder: "Email Address", input_password_placeholder: "Password", btn_login: "LOGIN", btn_register: "REGISTER", btn_loading_login: "LOGGING IN...", btn_loading_register: "REGISTERING..." },
             sidebar: { nav_website: "Website Agent", nav_whatsapp: "WhatsApp Agent", nav_messenger: "Messenger Agent", nav_instagram: "Instagram Agent", nav_insights: "Live Insights", nav_inbox: "Live Inbox", nav_leads: "Leads Area", nav_reviews: "Customer Reviews", nav_followups: "Follow-ups", nav_logout: "Logout" },
             top_bar: { btn_pricing: "Pricing", btn_docs: "Docs", btn_help: "Help" },
-            agent_config: { btn_connect_channel: "🔗 Connect Channel", label_live: "LIVE", header_role: "Agent Role (System Prompt)", header_tone: "Agent Tone", header_kb: "Knowledge Base (Links)", header_chat_test: "Test Chat Window", btn_locked: "🔒 Locked - Click to Edit", placeholder_prompt: "Define how your agent should behave...", btn_save: "Save Role", btn_save_changes: "Save Changes *", btn_saving: "Saving..." },
-            insights: { title: "Live Insights", empty_title: "No Data Available", empty_text: "Connect your platform accounts to see live performance insights.", btn_connect: "Connect Insights", empty_posts_title: "No Posts Yet", btn_connect_posts: "Connect Posts" },
-            inbox: { empty_title: "No Conversations Yet", empty_text: "Connect your social channels to start chatting with your customers.", btn_connect: "Connect Channels" },
-            leads: { title: "Leads Area", btn_export_csv: "Export CSV", btn_export_excel: "Export Excel", empty_title: "No Leads Yet", btn_connect: "Connect Your Channels" },
-            reviews: { title: "Customer Reviews", empty_title: "No Reviews Connected" },
-            followups: { title: "Scheduled Follow-ups", empty_title: "No Scheduled Tasks", btn_setup: "Set Up Automations" },
+            agent_config: { btn_connect_channel: "🔗 Connect Channel", label_live: "LIVE", header_role: "Agent Role (System Prompt)", header_tone: "Agent Tone", header_kb: "Knowledge Base (Links)", header_chat_test: "Test Chat Window", btn_locked: "🔒 Locked - Click to Edit", placeholder_prompt: "Define how your agent should behave...", btn_save: "Save Role", btn_save_changes: "Save Changes *", btn_saving: "Saving...", chat_greeting: "Hello! I am the {name}. How can I help?", chat_placeholder: "Type a message...", btn_add_link: "+ Add Another Link" },
+            insights: { title: "Live Insights", empty_title: "No Data Available", empty_text: "Connect your platform accounts to see live performance insights.", btn_connect: "Connect Insights", empty_posts_title: "No Posts Yet", btn_connect_posts: "Connect Posts", loading: "Loading..." },
+            inbox: { empty_title: "No Conversations Yet", empty_text: "Connect your social channels to start chatting with your customers.", btn_connect: "Connect Channels", label_platform: "Select Platform", header_select: "Select a conversation", loading: "Loading...", no_chats: "No chats found.", chat_with: "Chat with {name}", loading_history: "Loading history...", no_messages: "No messages yet.", error_loading: "Error loading contacts." },
+            leads: { title: "Leads Area", btn_export_csv: "Export CSV", btn_export_excel: "Export Excel", empty_title: "No Leads Yet", empty_text: "Connect your channels to start capturing leads from conversations.", btn_connect: "Connect Your Channels", fetching: "Fetching Leads...", no_leads_found: "No leads found.", failed_load: "Failed to load leads. Check connection.", unknown_user: "Unknown User", no_phone: "No Phone", no_message: "No message" },
+            reviews: { title: "Customer Reviews", empty_title: "No Reviews Connected", btn_connect: "Connect Google Reviews", stat_avg_rating: "Average Rating", stat_total_reviews: "Total Reviews", stat_positive: "Positive (4-5★)" },
+            followups: { title: "Scheduled Follow-ups", empty_title: "No Scheduled Tasks", empty_text: "When your agents schedule callbacks or follow-ups, they will appear here.", btn_setup: "Set Up Automations" },
+            posts: { loading: "Loading posts...", no_posts_found: "No posts found.", failed_load: "Failed to load posts", no_caption: "No caption", view_details: "➜ View Details", comments_not_loaded: "Comments not loaded", reach: "Reach" },
+            metrics: { video_views: "Video Views", video_view_time: "Video View Time", post_engagements: "Post Engagements", unique_reach: "Unique Reach", total_impressions: "Total Impressions", profile_views: "Profile Views", website_clicks: "Website Clicks", total_interactions: "Total Interactions", total_connections: "Total Connections", new_conversations: "New Conversations" },
             modals: {
                 pricing: { header_title: "Choose Your Plan" },
-                docs: { title: "Documentation & User Guide" },
-                profile: { label_org: "Organization", label_plan: "Current Plan", btn_save: "Save Organization Name", btn_upgrade: "Upgrade Plan", btn_logout: "Logout" },
-                help: { title: "Free Consultation Meeting", btn_book: "Book Consultation" }
+                docs: {
+                    title: "Documentation & User Guide",
+                    section_roles_title: "🤖 Agent Roles & System Prompts",
+                    section_roles_text: "The <strong>System Prompt</strong> is the brain of your agent. It defines who the agent is, what it knows, and how it speaks.",
+                    list_role: "<strong>Role:</strong> Define the persona (e.g., Support Agent, Sales Rep).",
+                    list_tone: "<strong>Tone:</strong> Adjectives that describe the personality (e.g., Professional, Friendly, Helpful).",
+                    list_kb: "<strong>Knowledge Base Links:</strong> Add URLs that your agent should use as a reference to answer questions accurately.",
+                    tip: "<strong>Pro Tip:</strong> Be specific in your System Prompt. Instead of 'You are a helpful assistant,' try 'You are an expert real estate consultant for Acme Realty, specializing in downtown apartments.'",
+                    section_channels_title: "🔌 Connecting Channels",
+                    section_channels_text: "To start receiving messages, you need to connect your social channels:",
+                    list_channel_step1: "Go to the specific agent tab in the left sidebar.",
+                    list_channel_step2: "Click the <strong>'Connect Channel'</strong> button.",
+                    list_channel_step3: "Follow the integration steps (currently requires a consultation for setup).",
+                    section_inbox_title: "📨 Using the Live Inbox & Leads",
+                    list_inbox: "<strong>Live Inbox:</strong> Monitor real-time conversations between your agents and consumers.",
+                    list_leads: "<strong>Leads Area:</strong> Automatically captures contact details and interests from conversations.",
+                    list_insights: "<strong>Live Insights:</strong> View performance metrics, message volume, and engagement statistics.",
+                    cta_title: "Need more help?",
+                    cta_text: "If you're stuck or need a custom implementation, our team is here to help.",
+                    btn_book: "Book Free Consultation"
+                },
+                profile: { label_org: "Organization", label_plan: "Current Plan", btn_save: "Save Organization Name", btn_upgrade: "Upgrade Plan", btn_logout: "Logout", placeholder_org: "Organization Name" },
+                help: { title: "Free Consultation Meeting", btn_book: "Book Consultation", text: "Book a 30-minute consultation with our team to help you get the most out of your AI agents.", remaining: "You have <strong id='help-remaining-count'>2</strong> free consultation(s) remaining" }
             },
-            messages: { toast_saved: "Saved Successfully!", toast_org_updated: "Organization name updated!", loading_config: "Fetching Agent Configurations..." }
+            messages: { toast_saved: "Saved Successfully!", toast_org_updated: "Organization name updated!", loading_config: "Fetching Agent Configurations...", agent_activated: "Activated", agent_deactivated: "Deactivated", error_no_org: "No Organization Found. Please contact admin.", error_saving: "Error saving data: ", error_status_update: "Failed to update status" }
         };
 
         // Arabic Language Strings (RTL)
@@ -2957,19 +2991,41 @@
             auth: { app_title: "وكيل الذكاء الاصطناعي ديجيتيفيا", sign_in_google: "تسجيل الدخول عبر Google", sign_in_linkedin: "تسجيل الدخول عبر LinkedIn", separator_or: "أو", input_email_placeholder: "البريد الإلكتروني", input_password_placeholder: "كلمة المرور", btn_login: "دخول", btn_register: "إنشاء حساب", btn_loading_login: "جاري الدخول...", btn_loading_register: "جاري التسجيل..." },
             sidebar: { nav_website: "وكيل الموقع", nav_whatsapp: "وكيل واتساب", nav_messenger: "وكيل ماسنجر", nav_instagram: "وكيل انستغرام", nav_insights: "رؤى مباشرة", nav_inbox: "صندوق الوارد", nav_leads: "العملاء المحتملين", nav_reviews: "آراء العملاء", nav_followups: "المتابعات", nav_logout: "تسجيل خروج" },
             top_bar: { btn_pricing: "الأسعار", btn_docs: "الوثائق", btn_help: "مساعدة" },
-            agent_config: { btn_connect_channel: "🔗 ربط القناة", label_live: "نشط", header_role: "دور الوكيل", header_tone: "نبرة المحادثة", header_kb: "قاعدة المعرفة", header_chat_test: "نافذة الاختبار", btn_locked: "🔒 مقفل - اضغط للتعديل", placeholder_prompt: "حدد كيف يجب أن يتصرف وكيلك...", btn_save: "حفظ الدور", btn_save_changes: "حفظ التغييرات *", btn_saving: "جاري الحفظ..." },
-            insights: { title: "رؤى مباشرة", empty_title: "لا توجد بيانات", empty_text: "قم بربط حساباتك لرؤية الأداء.", btn_connect: "ربط الرؤى", empty_posts_title: "لا توجد منشورات", btn_connect_posts: "ربط المنشورات" },
-            inbox: { empty_title: "لا توجد محادثات", empty_text: "قم بربط قنواتك للبدء في الدردشة.", btn_connect: "ربط القنوات" },
-            leads: { title: "العملاء المحتملين", btn_export_csv: "تصدير CSV", btn_export_excel: "تصدير Excel", empty_title: "لا يوجد عملاء", btn_connect: "ربط القنوات" },
-            reviews: { title: "آراء العملاء", empty_title: "التقييمات غير متصلة" },
-            followups: { title: "المتابعات المجدولة", empty_title: "لا توجد مهام", btn_setup: "إعداد الأتمتة" },
+            agent_config: { btn_connect_channel: "🔗 ربط القناة", label_live: "نشط", header_role: "دور الوكيل", header_tone: "نبرة المحادثة", header_kb: "قاعدة المعرفة", header_chat_test: "نافذة الاختبار", btn_locked: "🔒 مقفل - اضغط للتعديل", placeholder_prompt: "حدد كيف يجب أن يتصرف وكيلك...", btn_save: "حفظ الدور", btn_save_changes: "حفظ التغييرات *", btn_saving: "جاري الحفظ...", chat_greeting: "مرحباً! أنا {name}. كيف يمكنني مساعدتك؟", chat_placeholder: "اكتب رسالة...", btn_add_link: "+ إضافة رابط آخر" },
+            insights: { title: "رؤى مباشرة", empty_title: "لا توجد بيانات", empty_text: "قم بربط حساباتك لرؤية الأداء.", btn_connect: "ربط الرؤى", empty_posts_title: "لا توجد منشورات", btn_connect_posts: "ربط المنشورات", loading: "جاري التحميل..." },
+            inbox: { empty_title: "لا توجد محادثات", empty_text: "قم بربط قنواتك للبدء في الدردشة.", btn_connect: "ربط القنوات", label_platform: "اختر المنصة", header_select: "اختر محادثة", loading: "جاري التحميل...", no_chats: "لا توجد محادثات.", chat_with: "محادثة مع {name}", loading_history: "جاري تحميل السجل...", no_messages: "لا توجد رسائل بعد.", error_loading: "خطأ في تحميل جهات الاتصال." },
+            leads: { title: "العملاء المحتملين", btn_export_csv: "تصدير CSV", btn_export_excel: "تصدير Excel", empty_title: "لا يوجد عملاء", empty_text: "قم بربط قنواتك للبدء في جلب العملاء المحتملين.", btn_connect: "ربط القنوات", fetching: "جاري جلب العملاء...", no_leads_found: "لم يتم العثور على عملاء.", failed_load: "فشل تحميل العملاء. تحقق من الاتصال.", unknown_user: "مستخدم غير معروف", no_phone: "لا يوجد هاتف", no_message: "لا توجد رسالة" },
+            reviews: { title: "آراء العملاء", empty_title: "التقييمات غير متصلة", btn_connect: "ربط تقييمات جوجل", stat_avg_rating: "متوسط التقييم", stat_total_reviews: "إجمالي التقييمات", stat_positive: "إيجابية (4-5★)" },
+            followups: { title: "المتابعات المجدولة", empty_title: "لا توجد مهام", empty_text: "عندما يقوم وكلاؤك بجدولة مكالمات أو متابعات، ستظهر هنا.", btn_setup: "إعداد الأتمتة" },
+            posts: { loading: "جاري تحميل المنشورات...", no_posts_found: "لم يتم العثور على منشورات.", failed_load: "فشل تحميل المنشورات", no_caption: "لا يوجد تعليق", view_details: "➜ عرض التفاصيل", comments_not_loaded: "التعليقات غير محملة", reach: "الوصول" },
+            metrics: { video_views: "مشاهدات الفيديو", video_view_time: "وقت مشاهدة الفيديو", post_engagements: "تفاعلات المنشور", unique_reach: "وصول فريد", total_impressions: "إجمالي الظهور", profile_views: "زيارات الملف الشخصي", website_clicks: "نقرات الموقع", total_interactions: "إجمالي التفاعلات", total_connections: "إجمالي الاتصالات", new_conversations: "محادثات جديدة" },
             modals: {
                 pricing: { header_title: "اختر خطتك" },
-                docs: { title: "التوثيق ودليل المستخدم" },
-                profile: { label_org: "الشركة", label_plan: "الخطة الحالية", btn_save: "حفظ اسم الشركة", btn_upgrade: "ترقية الخطة", btn_logout: "تسجيل خروج" },
-                help: { title: "استشارة مجانية", btn_book: "حجز استشارة" }
+                docs: {
+                    title: "التوثيق ودليل المستخدم",
+                    section_roles_title: "🤖 أدوار الوكيل وموجهات النظام",
+                    section_roles_text: "<strong>موجه النظام</strong> هو عقل وكيلك. إنه يحدد من هو الوكيل، وماذا يعرف، وكيف يتحدث.",
+                    list_role: "<strong>الدور:</strong> حدد الشخصية (مثل وكيل دعم، ممثل مبيعات).",
+                    list_tone: "<strong>النبرة:</strong> الصفات التي تصف الشخصية (مثل مهني، ودود، مفيد).",
+                    list_kb: "<strong>قاعدة المعرفة:</strong> أضف روابط URL التي يجب أن يستخدمها وكيلك كمرجع للإجابة بدقة.",
+                    tip: "<strong>نصيحة محترف:</strong> كن محددًا في موجه النظام. بدلاً من 'أنت مساعد مفيد'، جرب 'أنت مستشار عقاري خبير لشركة Acme Realty، متخصص في شقق وسط المدينة.'",
+                    section_channels_title: "🔌 ربط القنوات",
+                    section_channels_text: "للبدء في تلقي الرسائل، تحتاج إلى ربط قنوات التواصل الاجتماعي الخاصة بك:",
+                    list_channel_step1: "اذهب إلى تبويب الوكيل المحدد في القائمة الجانبية اليسرى.",
+                    list_channel_step2: "اضغط على زر <strong>'ربط القناة'</strong>.",
+                    list_channel_step3: "اتبع خطوات التكامل (يتطلب حاليًا استشارة للإعداد).",
+                    section_inbox_title: "📨 استخدام صندوق الوارد والعملاء المحتملين",
+                    list_inbox: "<strong>صندوق الوارد المباشر:</strong> مراقبة المحادثات في الوقت الفعلي بين وكلائك والعملاء.",
+                    list_leads: "<strong>منطقة العملاء المحتملين:</strong> التقاط تفاصيل الاتصال والاهتمامات تلقائيًا من المحادثات.",
+                    list_insights: "<strong>رؤى مباشرة:</strong> عرض مقاييس الأداء وحجم الرسائل وإحصائيات التفاعل.",
+                    cta_title: "تحتاج لمزيد من المساعدة؟",
+                    cta_text: "إذا كنت عالقًا أو تحتاج إلى تنفيذ مخصص، فريقنا هنا للمساعدة.",
+                    btn_book: "حجز استشارة مجانية"
+                },
+                profile: { label_org: "الشركة", label_plan: "الخطة الحالية", btn_save: "حفظ اسم الشركة", btn_upgrade: "ترقية الخطة", btn_logout: "تسجيل خروج", placeholder_org: "اسم الشركة" },
+                help: { title: "استشارة مجانية", btn_book: "حجز استشارة", text: "احجز استشارة لمدة 30 دقيقة مع فريقنا لمساعدتك في تحقيق أقصى استفادة من وكلاء الذكاء الاصطناعي الخاصين بك.", remaining: "لديك <strong id='help-remaining-count'>2</strong> استشارة مجانية متبقية" }
             },
-            messages: { toast_saved: "تم الحفظ بنجاح!", toast_org_updated: "تم تحديث اسم الشركة!", loading_config: "جاري جلب الإعدادات..." }
+            messages: { toast_saved: "تم الحفظ بنجاح!", toast_org_updated: "تم تحديث اسم الشركة!", loading_config: "جاري جلب الإعدادات...", agent_activated: "تم تفعيل", agent_deactivated: "تم تعطيل", error_no_org: "لم يتم العثور على شركة. يرجى الاتصال بالمسؤول.", error_saving: "خطأ في حفظ البيانات: ", error_status_update: "فشل تحديث الحالة" }
         };
 
         let currentLang = localStorage.getItem('app_language') || 'en';
@@ -3087,13 +3143,21 @@
         async function openHelpModal() {
             // Fetch current consultation count from DB
             if (currentUserOrgId) {
-                const { data } = await supabaseClient
-                    .from('organizations')
-                    .select('meeting_booking_count')
-                    .eq('id', currentUserOrgId)
-                    .single();
-                if (data) {
-                    consultationMeetingsUsed = data.meeting_booking_count || 0;
+                try {
+                    const { data, error } = await supabaseClient
+                        .from('organizations')
+                        .select('meeting_booking_count')
+                        .eq('id', currentUserOrgId)
+                        .single();
+
+                    if (error) throw error;
+
+                    if (data) {
+                        consultationMeetingsUsed = data.meeting_booking_count || 0;
+                    }
+                } catch (e) {
+                    console.warn("Could not fetch consultation count (likely RLS or schema):", e.message);
+                    consultationMeetingsUsed = 0;
                 }
             }
 
@@ -3459,6 +3523,9 @@
             document.getElementById('loader-overlay').style.display = 'none';
             // Note: startAutoRefresh is less critical now with Realtime, but good for contacts list updates
             startAutoRefresh();
+
+            // Apply translations to dynamic content
+            applyTranslations();
         }
 
         function startAutoRefresh() {
@@ -3487,9 +3554,9 @@
                                 <span class="icon-circle" style="background: ${agent.color};"></span> ${agent.name}
                             </h2>
                             <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
-                                <a href="${CALENDAR_URL}" target="_blank" class="connect-btn">🔗 Connect Channel</a>
+                                <a href="${CALENDAR_URL}" target="_blank" class="connect-btn" data-i18n="agent_config.btn_connect_channel">🔗 Connect Channel</a>
                                 <div class="agent-toggle-container">
-                                    <span class="toggle-label">LIVE</span>
+                                    <span class="toggle-label" data-i18n="agent_config.label_live">LIVE</span>
                                     <label class="switch">
                                         <input type="checkbox" id="status-${agent.id}" onchange="toggleAgentStatus('${agent.id}')">
                                         <span class="slider"></span>
@@ -3499,7 +3566,7 @@
                         </div>
 
                         <div class="section-wrapper">
-                            <div class="section-header active" onclick="toggleSection('${agent.id}-prompt-sec')">Agent Role (System Prompt)</div>
+                            <div class="section-header active" onclick="toggleSection('${agent.id}-prompt-sec')" data-i18n="agent_config.header_role">Agent Role (System Prompt)</div>
                             <div id="${agent.id}-prompt-sec" class="section-content open">
                                 <div id="warning-${agent.id}" class="prompt-warning">
                                     <span style="font-size:1.2rem;">⚠️</span>
@@ -3507,10 +3574,10 @@
                                 </div>
                                 
                                 <div onclick="requestUnlock('${agent.id}')" class="edit-lock-btn" id="lock-btn-${agent.id}">
-                                    <span>🔒</span> Locked - Click to Edit
+                                    <span>🔒</span> <span data-i18n="agent_config.btn_locked">Locked - Click to Edit</span>
                                 </div>
 
-                                <textarea id="prompt-${agent.id}" class="textarea-locked" readonly placeholder="Define how your agent should behave..." oninput="checkDirty('${agent.id}')"></textarea>
+                                <textarea id="prompt-${agent.id}" class="textarea-locked" readonly data-i18n-placeholder="agent_config.placeholder_prompt" placeholder="Define how your agent should behave..." oninput="checkDirty('${agent.id}')"></textarea>
                                 
                                 <div class="suggestions">
                                     <button class="pill-btn" onclick="applySuggestion('${agent.id}', 'customer_service')">✨ Customer Service</button>
@@ -3519,7 +3586,7 @@
                             </div>
                         </div>
                         <div class="section-wrapper">
-                            <div class="section-header" onclick="toggleSection('${agent.id}-tone-sec')">Agent Tone</div>
+                            <div class="section-header" onclick="toggleSection('${agent.id}-tone-sec')" data-i18n="agent_config.header_tone">Agent Tone</div>
                             <div id="${agent.id}-tone-sec" class="section-content">
                                 <select id="tone-${agent.id}" onchange="checkDirty('${agent.id}')">
                                     <option value="" disabled selected>Select a tone...</option>
@@ -3528,28 +3595,28 @@
                             </div>
                         </div>
                         <div class="section-wrapper">
-                            <div class="section-header" onclick="toggleSection('${agent.id}-links-sec')">Knowledge Base (Links)</div>
+                            <div class="section-header" onclick="toggleSection('${agent.id}-links-sec')" data-i18n="agent_config.header_kb">Knowledge Base (Links)</div>
                             <div id="${agent.id}-links-sec" class="section-content">
                                 <div id="links-container-${agent.id}"></div>
-                                <div class="add-link-btn" onclick="addLinkField('${agent.id}')">+ Add Another Link</div>
+                                <div class="add-link-btn" onclick="addLinkField('${agent.id}')" data-i18n="agent_config.btn_add_link">+ Add Another Link</div>
                             </div>
                         </div>
                         <div class="section-wrapper">
-                            <div class="section-header" onclick="toggleSection('${agent.id}-chat-sec', true, '${agent.id}')">Test Chat Window</div>
+                            <div class="section-header" onclick="toggleSection('${agent.id}-chat-sec', true, '${agent.id}')" data-i18n="agent_config.header_chat_test">Test Chat Window</div>
                             <div id="${agent.id}-chat-sec" class="section-content">
                                 <div class="chat-container">
                                     <div id="chat-history-${agent.id}" class="chat-history">
-                                        <div class="message msg-ai">Hello! I am the ${agent.name}. How can I help?</div>
+                                        <div class="message msg-ai">${t('agent_config.chat_greeting').replace('{name}', agent.name)}</div>
                                     </div>
                                     <div class="chat-input-area">
-                                        <input type="text" id="chat-input-${agent.id}" placeholder="Type a message..." onkeypress="handleEnter(event, '${agent.id}')">
+                                        <input type="text" id="chat-input-${agent.id}" placeholder="${t('agent_config.chat_placeholder')}" data-i18n-placeholder="agent_config.chat_placeholder" onkeypress="handleEnter(event, '${agent.id}')">
                                         <button class="send-chat-btn" onclick="sendChatMessage('${agent.id}')">➤</button>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="action-container">
-                            <button class="save-btn" onclick="saveRole('${agent.id}')">Save Role</button>
+                            <button class="save-btn" onclick="saveRole('${agent.id}')" data-i18n="agent_config.btn_save">Save Role</button>
                         </div>
                     </div>
                 </div>`;
@@ -3563,7 +3630,7 @@
             html += `
             <div id="insights" class="tab-content">
                 <div class="card glass">
-                    <h2>Live Insights</h2>
+                    <h2 data-i18n="insights.title">Live Insights</h2>
                     <div class="insights-controls">
                         <div class="insights-platforms">
                             <div class="platform-chip active" id="chip-facebook" onclick="setInsightPlatform('facebook')">
@@ -3586,9 +3653,9 @@
                     <div id="insights-grid" class="stats-grid">
                         <div style="grid-column: 1/-1; text-align:center; padding: 60px; color:#888;">
                             <div style="font-size: 3rem; margin-bottom: 20px;">📊</div>
-                            <h3>No Data Available</h3>
-                            <p>Connect your platform accounts to see live performance insights and post engagement.</p>
-                            <button class="pill-btn primary" onclick="window.open(CALENDAR_URL, '_blank')" style="margin-top: 20px;">Connect Insights</button>
+                            <h3 data-i18n="insights.empty_title">No Data Available</h3>
+                            <p data-i18n="insights.empty_text">Connect your platform accounts to see live performance insights and post engagement.</p>
+                            <button class="pill-btn primary" onclick="window.open(CALENDAR_URL, '_blank')" style="margin-top: 20px;" data-i18n="insights.btn_connect">Connect Insights</button>
                         </div>
                     </div>
                     <div class="posts-container" id="posts-section" style="display:none;">
@@ -3615,17 +3682,17 @@
                                 <button class="platform-btn" style="background:#5B89CE" onclick="loadInbox('messenger', false)">${iconMessenger}</button>
                                 <button class="platform-btn" style="background:#C66B8D" onclick="loadInbox('instagram', false)">${iconInstagram}</button>
                             </div>
-                            <div style="padding:10px; font-size:0.8rem; text-align:center; color:#888;">Select Platform</div>
+                            <div style="padding:10px; font-size:0.8rem; text-align:center; color:#888;" data-i18n="inbox.label_platform">Select Platform</div>
                             <div id="contact-list" class="contact-list"></div>
                         </div>
                         <div class="inbox-main" style="background: radial-gradient(circle at center, rgba(91, 174, 176, 0.05) 0%, transparent 70%);">
-                            <div class="inbox-header" id="inbox-header-title">Select a conversation</div>
+                            <div class="inbox-header" id="inbox-header-title" data-i18n="inbox.header_select">Select a conversation</div>
                             <div id="inbox-messages" class="chat-history">
                                 <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; color:#888; text-align:center; padding:40px;">
                                     <div style="font-size: 3rem; margin-bottom: 20px;">💬</div>
-                                    <h3>No Conversations Yet</h3>
-                                    <p>Connect your social channels to start chatting with your customers in real-time.</p>
-                                    <button class="pill-btn primary" onclick="window.open(CALENDAR_URL, '_blank')" style="margin-top: 20px;">Connect Channels</button>
+                                    <h3 data-i18n="inbox.empty_title">No Conversations Yet</h3>
+                                    <p data-i18n="inbox.empty_text">Connect your social channels to start chatting with your customers in real-time.</p>
+                                    <button class="pill-btn primary" onclick="window.open(CALENDAR_URL, '_blank')" style="margin-top: 20px;" data-i18n="inbox.btn_connect">Connect Channels</button>
                                 </div>
                             </div>
                         </div>
@@ -3638,24 +3705,24 @@
             <div id="leads" class="tab-content">
                 <div class="card glass">
                     <div class="leads-controls">
-                        <h2>Leads Area</h2>
+                        <h2 data-i18n="leads.title">Leads Area</h2>
                         <div class="export-group">
                             <button class="export-btn" onclick="exportLeadsCSV()">
                                 <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
-                                Export CSV
+                                <span data-i18n="leads.btn_export_csv">Export CSV</span>
                             </button>
                             <button class="export-btn" onclick="exportLeadsExcel()">
                                 <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-9 14h-2v-4H6v-2h2V7h2v4h3v2h-3v4zm6-5h-2V7h2v5z"/></svg>
-                                Export Excel
+                                <span data-i18n="leads.btn_export_excel">Export Excel</span>
                             </button>
                         </div>
                     </div>
                     <div id="leads-grid" class="leads-grid">
                          <div style="grid-column: 1/-1; text-align:center; padding: 60px; color:#888;">
                             <div style="font-size: 3rem; margin-bottom: 20px;">👥</div>
-                            <h3>No Leads Yet</h3>
-                            <p>Connect your channels to start capturing leads from conversations.</p>
-                            <button class="pill-btn primary" onclick="window.open(CALENDAR_URL, '_blank')" style="margin-top: 20px;">Connect Your Channels</button>
+                            <h3 data-i18n="leads.empty_title">No Leads Yet</h3>
+                            <p data-i18n="leads.empty_text">Connect your channels to start capturing leads from conversations.</p>
+                            <button class="pill-btn primary" onclick="window.open(CALENDAR_URL, '_blank')" style="margin-top: 20px;" data-i18n="leads.btn_connect">Connect Your Channels</button>
                          </div>
                     </div>
                 </div>
@@ -3665,22 +3732,22 @@
             <div id="reviews" class="tab-content">
                 <div class="card glass">
                     <div class="leads-controls">
-                        <h2>Customer Reviews</h2>
-                        <button class="export-btn" onclick="window.open(CALENDAR_URL, '_blank')">
+                        <h2 data-i18n="reviews.title">Customer Reviews</h2>
+                        <button class="export-btn" onclick="window.open(CALENDAR_URL, '_blank')" data-i18n="reviews.btn_connect">
                             Connect Google Reviews
                         </button>
                     </div>
                     <div class="stats-grid" id="reviews-stats">
                         <div class="stat-card">
-                            <div style="color:var(--text-muted); font-size:0.8rem;">Average Rating</div>
+                            <div style="color:var(--text-muted); font-size:0.8rem;" data-i18n="reviews.stat_avg_rating">Average Rating</div>
                             <div style="font-size:1.8rem; font-weight:700; color:var(--theme-color);">0.0</div>
                         </div>
                         <div class="stat-card">
-                            <div style="color:var(--text-muted); font-size:0.8rem;">Total Reviews</div>
+                            <div style="color:var(--text-muted); font-size:0.8rem;" data-i18n="reviews.stat_total_reviews">Total Reviews</div>
                             <div style="font-size:1.8rem; font-weight:700; color:var(--theme-color);">0</div>
                         </div>
                         <div class="stat-card">
-                            <div style="color:var(--text-muted); font-size:0.8rem;">Positive (4-5★)</div>
+                            <div style="color:var(--text-muted); font-size:0.8rem;" data-i18n="reviews.stat_positive">Positive (4-5★)</div>
                             <div style="font-size:1.8rem; font-weight:700; color:var(--theme-color);">0%</div>
                         </div>
                     </div>
@@ -3696,12 +3763,12 @@
             <!-- F. FOLLOW-UPS TAB -->
             <div id="followups" class="tab-content">
                 <div class="card glass">
-                    <h2>Scheduled Follow-ups</h2>
+                    <h2 data-i18n="followups.title">Scheduled Follow-ups</h2>
                     <div style="text-align:center; padding: 60px; color:#888;">
                         <div style="font-size: 3rem; margin-bottom: 20px;">🗓️</div>
-                        <h3>No Scheduled Tasks</h3>
-                        <p>When your agents schedule callbacks or follow-ups, they will appear here.</p>
-                        <button class="pill-btn primary" onclick="window.open(CALENDAR_URL, '_blank')" style="margin-top: 20px;">Set Up Automations</button>
+                        <h3 data-i18n="followups.empty_title">No Scheduled Tasks</h3>
+                        <p data-i18n="followups.empty_text">When your agents schedule callbacks or follow-ups, they will appear here.</p>
+                        <button class="pill-btn primary" onclick="window.open(CALENDAR_URL, '_blank')" style="margin-top: 20px;" data-i18n="followups.btn_setup">Set Up Automations</button>
                     </div>
                 </div>
             </div>`;
@@ -3814,7 +3881,7 @@
         async function fetchLeads() {
             if (!currentUserOrgId) return;
             const grid = document.getElementById('leads-grid');
-            grid.innerHTML = '<div style="grid-column: 1/-1; text-align:center;"><div class="spinner" style="width:30px; height:30px; margin:0 auto;"></div><p style="margin-top:10px; color:#888;">Fetching Leads...</p></div>';
+            grid.innerHTML = `<div style="grid-column: 1/-1; text-align:center;"><div class="spinner" style="width:30px; height:30px; margin:0 auto;"></div><p style="margin-top:10px; color:#888;">${t('leads.fetching')}</p></div>`;
 
             try {
                 // PHASE 3: Direct Supabase Query
@@ -3829,7 +3896,7 @@
                 cachedLeads = leads || [];
 
                 if (cachedLeads.length === 0) {
-                    grid.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding:30px;">No leads found.</div>';
+                    grid.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding:30px;">${t('leads.no_leads_found')}</div>`;
                     return;
                 }
 
@@ -3837,7 +3904,7 @@
 
             } catch (e) {
                 console.error(e);
-                grid.innerHTML = '<div style="grid-column: 1/-1; text-align:center; color: var(--error);">Failed to load leads. Check connection.</div>';
+                grid.innerHTML = `<div style="grid-column: 1/-1; text-align:center; color: var(--error);">${t('leads.failed_load')}</div>`;
             }
         }
 
@@ -3847,11 +3914,11 @@
 
             leads.forEach(lead => {
                 // Map columns based on assumed schema or fallback
-                const name = lead.user_name || lead.name || "Unknown User";
-                const phone = lead.phone_number || lead.phone || "No Phone";
+                const name = lead.user_name || lead.name || t('leads.unknown_user');
+                const phone = lead.phone_number || lead.phone || t('leads.no_phone');
                 const platform = lead.platform || "N/A";
                 const status = lead.status || lead.lead_status || "New";
-                const lastMsg = lead.last_message || "No message";
+                const lastMsg = lead.last_message || t('leads.no_message');
                 const date = lead.created_at || lead.timestamp || "";
 
                 // Determine Status Badge Class
@@ -3997,7 +4064,7 @@
         async function fetchPosts(platform) {
             if (!currentUserOrgId) return;
             const list = document.getElementById('posts-list');
-            list.innerHTML = '<div style="padding:20px; text-align:center; color:#888;">Loading posts...</div>';
+            list.innerHTML = `<div style="padding:20px; text-align:center; color:#888;">${t('posts.loading')}</div>`;
 
             try {
                 // PHASE 3: Fetch Posts directly
@@ -4023,9 +4090,9 @@
                     list.innerHTML = `
                     <div style="padding: 60px 20px; text-align:center; color:#888;">
                         <div style="font-size: 3rem; margin-bottom: 20px;">📸</div>
-                        <h3>No Posts Yet</h3>
-                        <p>Connect your ${dbPlatform.charAt(0).toUpperCase() + dbPlatform.slice(1)} account to see your post performance here.</p>
-                        <button class="pill-btn primary" onclick="window.open(CALENDAR_URL, '_blank')" style="margin-top: 20px;">Connect Posts</button>
+                        <h3 data-i18n="insights.empty_posts_title">${t('insights.empty_posts_title')}</h3>
+                        <p>${t('insights.empty_text')}</p>
+                        <button class="pill-btn primary" onclick="window.open(CALENDAR_URL, '_blank')" style="margin-top: 20px;" data-i18n="insights.btn_connect_posts">${t('insights.btn_connect_posts')}</button>
                     </div>`;
                     return;
                 }
@@ -4042,7 +4109,7 @@
                     }
 
                     const img = post.media_url || post.thumbnail_url || post.full_picture || '';
-                    const text = post.caption || post.message || 'No caption';
+                    const text = post.caption || post.message || t('posts.no_caption');
 
                     const html = `
                     <div class="post-row" onclick="openModal(${index})">
@@ -4054,10 +4121,10 @@
                         <div class="post-stats">
                             <div class="p-stat">
                                 <div class="p-stat-val">${reach}</div>
-                                <div class="p-stat-label">Reach</div>
+                                <div class="p-stat-label">${t('posts.reach')}</div>
                             </div>
                             <div class="p-stat" style="opacity:0.5; font-size:0.8rem">
-                                ➜ View Details
+                                ${t('posts.view_details')}
                             </div>
                         </div>
                     </div>`;
@@ -4066,7 +4133,7 @@
 
             } catch (e) {
                 console.error(e);
-                list.innerHTML = '<div style="padding:20px; text-align:center; color:var(--error);">Failed to load posts</div>';
+                list.innerHTML = `<div style="padding:20px; text-align:center; color:var(--error);">${t('posts.failed_load')}</div>`;
             }
         }
 
@@ -4077,7 +4144,7 @@
 
             document.getElementById('m-img').src = post.media_url || post.thumbnail_url || '';
             document.getElementById('m-date').innerText = new Date(post.created_at).toDateString();
-            document.getElementById('m-caption').innerText = post.caption || post.message || 'No caption';
+            document.getElementById('m-caption').innerText = post.caption || post.message || t('posts.no_caption');
 
             let likes = 0;
             let commentsCount = 0;
@@ -4098,7 +4165,7 @@
             // If comments are in a separate table 'social_comments', we'd need another fetch here.
             // For now, placeholder or empty unless data is eager loaded.
             const commentsList = document.getElementById('m-comments-list');
-            commentsList.innerHTML = '<div style="padding:10px; color:#555; text-align:center;">Comments not loaded</div>';
+            commentsList.innerHTML = `<div style="padding:10px; color:#555; text-align:center;">${t('posts.comments_not_loaded')}</div>`;
 
             document.getElementById('post-modal').style.display = 'flex';
         }
@@ -4117,22 +4184,22 @@
             // Fallback to 0 if data keys missing
             if (insightPlatform === 'facebook') {
                 cardsData = [
-                    { label: 'Video Views', value: data.page_video_views || 0, icon: '👁️' },
-                    { label: 'Video View Time', value: formatDuration(data.page_video_view_time), icon: '⏱️' },
-                    { label: 'Post Engagements', value: data.page_post_engagements || 0, icon: '🔥' },
-                    { label: 'Unique Reach', value: data.page_impressions_unique || 0, icon: '👥' },
-                    { label: 'Total Impressions', value: data.page_posts_impressions || 0, icon: '📊' }
+                    { label: t('metrics.video_views'), value: data.page_video_views || 0, icon: '👁️' },
+                    { label: t('metrics.video_view_time'), value: formatDuration(data.page_video_view_time), icon: '⏱️' },
+                    { label: t('metrics.post_engagements'), value: data.page_post_engagements || 0, icon: '🔥' },
+                    { label: t('metrics.unique_reach'), value: data.page_impressions_unique || 0, icon: '👥' },
+                    { label: t('metrics.total_impressions'), value: data.page_posts_impressions || 0, icon: '📊' }
                 ];
             } else if (insightPlatform === 'instagram') {
                 cardsData = [
-                    { label: 'Profile Views', value: data.profile_views || 0, icon: '👤' },
-                    { label: 'Website Clicks', value: data.website_clicks || 0, icon: '🖱️' },
-                    { label: 'Total Interactions', value: data.total_interactions || 0, icon: '❤️' }
+                    { label: t('metrics.profile_views'), value: data.profile_views || 0, icon: '👤' },
+                    { label: t('metrics.website_clicks'), value: data.website_clicks || 0, icon: '🖱️' },
+                    { label: t('metrics.total_interactions'), value: data.total_interactions || 0, icon: '❤️' }
                 ];
             } else if (insightPlatform === 'messenger') {
                 cardsData = [
-                    { label: 'Total Connections', value: data.page_messages_total_messaging_connections || 0, icon: '💬' },
-                    { label: 'New Conversations', value: data.page_messages_new_conversations_unique || 0, icon: '✨' }
+                    { label: t('metrics.total_connections'), value: data.page_messages_total_messaging_connections || 0, icon: '💬' },
+                    { label: t('metrics.new_conversations'), value: data.page_messages_new_conversations_unique || 0, icon: '✨' }
                 ];
             }
 
@@ -4172,7 +4239,7 @@
             }
 
             const list = document.getElementById('contact-list');
-            if (!isAutoRefresh) list.innerHTML = '<div style="padding:20px; text-align:center;">Loading...</div>';
+            if (!isAutoRefresh) list.innerHTML = `<div style="padding:20px; text-align:center;">${t('inbox.loading')}</div>`;
 
             try {
                 // PHASE 4: Fetch from inbox_contacts (Supabase)
@@ -4185,7 +4252,7 @@
                 if (error) throw error;
 
                 if (!contacts || contacts.length === 0) {
-                    if (!isAutoRefresh) list.innerHTML = '<div style="padding:20px; text-align:center;">No chats found.</div>';
+                    if (!isAutoRefresh) list.innerHTML = `<div style="padding:20px; text-align:center;">${t('inbox.no_chats')}</div>`;
                     return;
                 }
 
@@ -4213,7 +4280,7 @@
                 list.appendChild(newContent);
             } catch (e) {
                 console.error(e);
-                if (!isAutoRefresh) list.innerHTML = '<div style="padding:20px; color:red;">Error loading contacts.</div>';
+                if (!isAutoRefresh) list.innerHTML = `<div style="padding:20px; color:red;">${t('inbox.error_loading')}</div>`;
             }
         }
 
@@ -4223,8 +4290,8 @@
             const container = document.getElementById('inbox-messages');
 
             if (!isAutoRefresh) {
-                document.getElementById('inbox-header-title').innerText = `Chat with ${contactName}`;
-                container.innerHTML = '<div style="padding:20px; text-align:center;">Loading history...</div>';
+                document.getElementById('inbox-header-title').innerText = t('inbox.chat_with', { name: contactName });
+                container.innerHTML = `<div style="padding:20px; text-align:center;">${t('inbox.loading_history')}</div>`;
 
                 // Cleanup old subscription
                 if (realtimeSubscription) supabaseClient.removeChannel(realtimeSubscription);
@@ -4240,7 +4307,7 @@
                     .single();
 
                 if (convError || !conversation) {
-                    if (!isAutoRefresh) container.innerHTML = '<div style="padding:20px; text-align:center;">No messages yet.</div>';
+                    if (!isAutoRefresh) container.innerHTML = `<div style="padding:20px; text-align:center;">${t('inbox.no_messages')}</div>`;
                     return;
                 }
 
@@ -4256,7 +4323,7 @@
                 if (error) throw error;
 
                 if (messages.length === 0 && !isAutoRefresh) {
-                    container.innerHTML = '<div style="padding:20px; text-align:center;">No messages yet.</div>';
+                    container.innerHTML = `<div style="padding:20px; text-align:center;">${t('inbox.no_messages')}</div>`;
                 } else {
                     if (!isAutoRefresh) container.innerHTML = '';
                     // Only rebuild if not auto-refresh to avoid jitter, 
@@ -4333,7 +4400,7 @@
                 const { data: { user } } = await supabaseClient.auth.getUser();
                 if (user) await ensureUserProfile(user);
                 if (!currentUserOrgId) {
-                    showToast("No Organization Found. Please contact admin.", "error");
+                    showToast(t('messages.error_no_org'), "error");
                     return;
                 }
             }
@@ -4383,13 +4450,13 @@
         }
 
         async function saveRole(agentId) {
-            if (!currentUserOrgId) { showToast("Missing Organization ID", "error"); return; }
+            if (!currentUserOrgId) { showToast(t('messages.error_no_org'), "error"); return; }
 
             const prompt = document.getElementById(`prompt-${agentId}`).value;
             const tone = document.getElementById(`tone-${agentId}`).value;
             const btn = document.querySelector(`#${agentId} .save-btn`);
             const originalText = btn.innerText;
-            btn.innerText = "Saving...";
+            btn.innerText = t('agent_config.btn_saving');
 
             try {
                 const updates = {
@@ -4433,7 +4500,7 @@
                     if (linkError) throw linkError;
                 }
 
-                showToast("Saved Successfully!", "success");
+                showToast(t('messages.toast_saved'), "success");
 
                 // Update Initial State
                 initialStates[agentId] = {
@@ -4449,7 +4516,7 @@
 
             } catch (e) {
                 console.error(e);
-                showToast("Error saving data: " + e.message, "error");
+                showToast(t('messages.error_saving') + e.message, "error");
             }
             finally { btn.innerText = originalText; }
         }
@@ -4473,10 +4540,11 @@
 
                 if (error) throw error;
 
-                showToast(`${isChecked ? 'Activated' : 'Deactivated'} ${agentId}`, "success");
+                const statusMsg = isChecked ? t('messages.agent_activated') : t('messages.agent_deactivated');
+                showToast(`${statusMsg} ${agentId}`, "success");
             } catch (e) {
                 console.error(e);
-                showToast("Failed to update status", "error");
+                showToast(t('messages.error_status_update'), "error");
                 document.getElementById(`status-${agentId}`).checked = !isChecked;
             } finally {
                 label.style.opacity = "1";
