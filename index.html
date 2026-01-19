@@ -3025,8 +3025,8 @@
                 if (messages && messages.length > 0) {
                     historyContainer.innerHTML = '';
                     messages.forEach(msg => {
-                        const sender = msg.role === 'user' ? 'user' : 'ai';
-                        appendMessage(agentId, sender, msg.content);
+                        const sender = msg.sender === 'user' ? 'user' : 'ai';
+                        appendMessage(agentId, sender, msg.message || msg.content);
                     });
                     historyContainer.scrollTop = historyContainer.scrollHeight;
                 }
@@ -3063,9 +3063,8 @@
                 // 2. Save User Message (MEMORY)
                 await supabaseClient.from('test_chat_messages').insert({
                     session_id: session.id,
-                    org_id: currentUserOrgId,
-                    role: 'user',
-                    content: text
+                    sender: 'user',
+                    message: text
                 });
 
                 // 3. Call AI Webhook (BRAIN)
@@ -3088,9 +3087,8 @@
                 // 4. Save AI Response (MEMORY)
                 await supabaseClient.from('test_chat_messages').insert({
                     session_id: session.id,
-                    org_id: currentUserOrgId,
-                    role: 'assistant',
-                    content: replyText
+                    sender: 'assistant', // or 'ai', keeping assistant for now but sender column
+                    message: replyText
                 });
 
                 // 5. Update UI
