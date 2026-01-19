@@ -2786,312 +2786,315 @@
 
             div.className = `message ${typeClass}`;
             div.innerHTML = text;
-            function addLinkField(agentId, value = "") {
-                const container = document.getElementById(`links-container-${agentId}`);
-                const div = document.createElement('div');
-                div.className = 'link-row';
-                div.innerHTML = `
+            container.appendChild(div);
+        }
+
+        function addLinkField(agentId, value = "") {
+            const container = document.getElementById(`links-container-${agentId}`);
+            const div = document.createElement('div');
+            div.className = 'link-row';
+            div.innerHTML = `
                 <input type="text" class="link-input" value="${value}" placeholder="https://example.com" oninput="checkDirty('${agentId}')">
                 <button class="remove-link-btn" onclick="removeLink(this, '${agentId}')">×</button>
             `;
-                container.appendChild(div);
-                if (value === '') div.querySelector('input').focus();
-            }
+            container.appendChild(div);
+            if (value === '') div.querySelector('input').focus();
+        }
 
-            function removeLink(btn, agentId) {
-                btn.parentElement.remove();
-                checkDirty(agentId);
-            }
+        function removeLink(btn, agentId) {
+            btn.parentElement.remove();
+            checkDirty(agentId);
+        }
 
-            function getLinksAsCommaString(agentId) {
-                const inputs = document.querySelectorAll(`#links-container-${agentId} .link-input`);
-                return Array.from(inputs).map(input => input.value.trim()).filter(val => val !== "").join(', ');
-            }
+        function getLinksAsCommaString(agentId) {
+            const inputs = document.querySelectorAll(`#links-container-${agentId} .link-input`);
+            return Array.from(inputs).map(input => input.value.trim()).filter(val => val !== "").join(', ');
+        }
 
-            // --- PHASE 2: CONNECT CONFIGS TO SUPABASE ---
-            async function fetchCurrentConfigurations() {
+        // --- PHASE 2: CONNECT CONFIGS TO SUPABASE ---
+        async function fetchCurrentConfigurations() {
+            if (!currentUserOrgId) {
+                const { data: { user } } = await supabaseClient.auth.getUser();
+                if (user) await ensureUserProfile(user);
                 if (!currentUserOrgId) {
-                    const { data: { user } } = await supabaseClient.auth.getUser();
-                    if (user) await ensureUserProfile(user);
-                    if (!currentUserOrgId) {
-                        showToast("No Organization Found. Please contact admin.", "error");
-                        return;
-                    }
-                }
-
-                try {
-                    const { data: configs, error } = await supabaseClient
-                        .from('agent_configs')
-                        .select('*')
-                        .eq('org_id', currentUserOrgId);
-
-                    if (error) throw error;
-
-                    const { data: linksData, error: linksError } = await supabaseClient
-                        .from('agent_kb_links')
-                        .select('*')
-                        .eq('org_id', currentUserOrgId);
-
-                    // Initialize State
-                    AGENTS.forEach(agent => {
-                        const config = configs.find(c => c.agent_type === agent.id) || {};
-                        const links = linksData ? linksData.filter(l => l.agent_type === agent.id).map(l => l.url) : [];
-
-                        // Populate Inputs
-                        document.getElementById(`prompt-${agent.id}`).value = config.system_prompt || "";
-                        document.getElementById(`tone-${agent.id}`).value = config.agent_tone || "";
-                        document.getElementById(`status-${agent.id}`).checked = config.is_active || false;
-
-                        // Render Links
-                        const container = document.getElementById(`links-container-${agent.id}`);
-                        container.innerHTML = '';
-                        links.forEach(url => addLinkField(agent.id, url));
-                        if (links.length === 0) addLinkField(agent.id); // Add one empty
-
-                        // Store Initial State
-                        initialStates[agent.id] = {
-                            prompt: config.system_prompt || "",
-                            tone: config.agent_tone || "",
-                            links: links
-                        };
-                        isDirtyState[agent.id] = false;
-                    });
-
-                } catch (error) {
-                    console.error("Error fetching configs:", error);
-                    AGENTS.forEach(a => addLinkField(a.id));
+                    showToast("No Organization Found. Please contact admin.", "error");
+                    return;
                 }
             }
 
-            async function saveRole(agentId) {
-                if (!currentUserOrgId) { showToast("Missing Organization ID", "error"); return; }
+            try {
+                const { data: configs, error } = await supabaseClient
+                    .from('agent_configs')
+                    .select('*')
+                    .eq('org_id', currentUserOrgId);
 
-                const prompt = document.getElementById(`prompt-${agentId}`).value;
-                const tone = document.getElementById(`tone-${agentId}`).value;
-                const btn = document.querySelector(`#${agentId} .save-btn`);
-                const originalText = btn.innerText;
-                btn.innerText = "Saving...";
+                if (error) throw error;
 
-                try {
-                    const { error: configError } = await supabaseClient
-                        .from('agent_configs')
-                        .upsert({
-                            org_id: currentUserOrgId,
-                            agent_type: agentId,
-                            system_prompt: prompt,
-                            agent_tone: tone,
-                            updated_at: new Date().toISOString()
-                        }, { onConflict: 'org_id, agent_type' });
+                const { data: linksData, error: linksError } = await supabaseClient
+                    .from('agent_kb_links')
+                    .select('*')
+                    .eq('org_id', currentUserOrgId);
 
-                    if (configError) throw configError;
+                // Initialize State
+                AGENTS.forEach(agent => {
+                    const config = configs.find(c => c.agent_type === agent.id) || {};
+                    const links = linksData ? linksData.filter(l => l.agent_type === agent.id).map(l => l.url) : [];
 
-                    const inputs = document.querySelectorAll(`#links-container-${agentId} .link-input`);
-                    const newLinks = Array.from(inputs).map(input => input.value.trim()).filter(val => val !== "");
+                    // Populate Inputs
+                    document.getElementById(`prompt-${agent.id}`).value = config.system_prompt || "";
+                    document.getElementById(`tone-${agent.id}`).value = config.agent_tone || "";
+                    document.getElementById(`status-${agent.id}`).checked = config.is_active || false;
 
-                    await supabaseClient.from('agent_kb_links').delete().match({ org_id: currentUserOrgId, agent_type: agentId });
+                    // Render Links
+                    const container = document.getElementById(`links-container-${agent.id}`);
+                    container.innerHTML = '';
+                    links.forEach(url => addLinkField(agent.id, url));
+                    if (links.length === 0) addLinkField(agent.id); // Add one empty
 
-                    if (newLinks.length > 0) {
-                        const linksPayload = newLinks.map(url => ({
-                            org_id: currentUserOrgId,
-                            agent_type: agentId,
-                            url: url
-                        }));
-                        await supabaseClient.from('agent_kb_links').insert(linksPayload);
-                    }
-
-                    showToast("Saved Successfully!", "success");
-
-                    // Update Initial State
-                    initialStates[agentId] = {
-                        prompt: prompt,
-                        tone: tone,
-                        links: newLinks
+                    // Store Initial State
+                    initialStates[agent.id] = {
+                        prompt: config.system_prompt || "",
+                        tone: config.agent_tone || "",
+                        links: links
                     };
-                    checkDirty(agentId); // Will clear dirty state
+                    isDirtyState[agent.id] = false;
+                });
 
+            } catch (error) {
+                console.error("Error fetching configs:", error);
+                AGENTS.forEach(a => addLinkField(a.id));
+            }
+        }
 
-                    const warn = document.getElementById(`warning-${agentId}`);
-                    if (warn) warn.classList.remove('show');
+        async function saveRole(agentId) {
+            if (!currentUserOrgId) { showToast("Missing Organization ID", "error"); return; }
 
-                } catch (e) {
-                    console.error(e);
-                    showToast("Error saving data: " + e.message, "error");
+            const prompt = document.getElementById(`prompt-${agentId}`).value;
+            const tone = document.getElementById(`tone-${agentId}`).value;
+            const btn = document.querySelector(`#${agentId} .save-btn`);
+            const originalText = btn.innerText;
+            btn.innerText = "Saving...";
+
+            try {
+                const { error: configError } = await supabaseClient
+                    .from('agent_configs')
+                    .upsert({
+                        org_id: currentUserOrgId,
+                        agent_type: agentId,
+                        system_prompt: prompt,
+                        agent_tone: tone,
+                        updated_at: new Date().toISOString()
+                    }, { onConflict: 'org_id, agent_type' });
+
+                if (configError) throw configError;
+
+                const inputs = document.querySelectorAll(`#links-container-${agentId} .link-input`);
+                const newLinks = Array.from(inputs).map(input => input.value.trim()).filter(val => val !== "");
+
+                await supabaseClient.from('agent_kb_links').delete().match({ org_id: currentUserOrgId, agent_type: agentId });
+
+                if (newLinks.length > 0) {
+                    const linksPayload = newLinks.map(url => ({
+                        org_id: currentUserOrgId,
+                        agent_type: agentId,
+                        url: url
+                    }));
+                    await supabaseClient.from('agent_kb_links').insert(linksPayload);
                 }
-                finally { btn.innerText = originalText; }
+
+                showToast("Saved Successfully!", "success");
+
+                // Update Initial State
+                initialStates[agentId] = {
+                    prompt: prompt,
+                    tone: tone,
+                    links: newLinks
+                };
+                checkDirty(agentId); // Will clear dirty state
+
+
+                const warn = document.getElementById(`warning-${agentId}`);
+                if (warn) warn.classList.remove('show');
+
+            } catch (e) {
+                console.error(e);
+                showToast("Error saving data: " + e.message, "error");
             }
+            finally { btn.innerText = originalText; }
+        }
 
-            async function toggleAgentStatus(agentId) {
-                if (!currentUserOrgId) return;
+        async function toggleAgentStatus(agentId) {
+            if (!currentUserOrgId) return;
 
-                const isChecked = document.getElementById(`status-${agentId}`).checked;
-                const label = document.querySelector(`#${agentId} .toggle-label`);
-                label.style.opacity = "0.5";
+            const isChecked = document.getElementById(`status-${agentId}`).checked;
+            const label = document.querySelector(`#${agentId} .toggle-label`);
+            label.style.opacity = "0.5";
 
-                try {
-                    const { error } = await supabase
-                        .from('agent_configs')
-                        .upsert({
-                            org_id: currentUserOrgId,
-                            agent_type: agentId,
-                            is_active: isChecked,
-                            updated_at: new Date().toISOString()
-                        }, { onConflict: 'org_id, agent_type' });
+            try {
+                const { error } = await supabase
+                    .from('agent_configs')
+                    .upsert({
+                        org_id: currentUserOrgId,
+                        agent_type: agentId,
+                        is_active: isChecked,
+                        updated_at: new Date().toISOString()
+                    }, { onConflict: 'org_id, agent_type' });
 
-                    if (error) throw error;
+                if (error) throw error;
 
-                    showToast(`${isChecked ? 'Activated' : 'Deactivated'} ${agentId}`, "success");
-                } catch (e) {
-                    console.error(e);
-                    showToast("Failed to update status", "error");
-                    document.getElementById(`status-${agentId}`).checked = !isChecked;
-                } finally {
-                    label.style.opacity = "1";
-                }
+                showToast(`${isChecked ? 'Activated' : 'Deactivated'} ${agentId}`, "success");
+            } catch (e) {
+                console.error(e);
+                showToast("Failed to update status", "error");
+                document.getElementById(`status-${agentId}`).checked = !isChecked;
+            } finally {
+                label.style.opacity = "1";
             }
+        }
 
-            function toggleSection(sectionId, isChat = false, agentId = null) {
-                const section = document.getElementById(sectionId);
-                const header = section.previousElementSibling;
-                const isOpen = section.classList.contains('open');
-                if (isOpen) {
-                    section.classList.remove('open');
-                    header.classList.remove('active');
-                } else {
-                    section.classList.add('open');
-                    header.classList.add('active');
-                    if (isChat && agentId) loadChatHistory(agentId);
-                }
+        function toggleSection(sectionId, isChat = false, agentId = null) {
+            const section = document.getElementById(sectionId);
+            const header = section.previousElementSibling;
+            const isOpen = section.classList.contains('open');
+            if (isOpen) {
+                section.classList.remove('open');
+                header.classList.remove('active');
+            } else {
+                section.classList.add('open');
+                header.classList.add('active');
+                if (isChat && agentId) loadChatHistory(agentId);
             }
+        }
 
-            function handleEnter(e, agentId) { if (e.key === 'Enter') sendChatMessage(agentId); }
-            function showToast(msg, type) {
-                const t = document.getElementById('toast');
-                t.className = type; t.innerText = msg; t.classList.add('show');
-                setTimeout(() => t.classList.remove('show'), 3000);
-            }
+        function handleEnter(e, agentId) { if (e.key === 'Enter') sendChatMessage(agentId); }
+        function showToast(msg, type) {
+            const t = document.getElementById('toast');
+            t.className = type; t.innerText = msg; t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 3000);
+        }
 
-            // --- PHASE 4: TEST CHAT LOGIC (HYBRID MEMORY + BRAIN) ---
-            async function loadChatHistory(agentId) {
-                const historyContainer = document.getElementById(`chat-history-${agentId}`);
-                if (!currentUserOrgId) return;
+        // --- PHASE 4: TEST CHAT LOGIC (HYBRID MEMORY + BRAIN) ---
+        async function loadChatHistory(agentId) {
+            const historyContainer = document.getElementById(`chat-history-${agentId}`);
+            if (!currentUserOrgId) return;
 
-                try {
-                    // 1. Get Session ID
-                    let { data: session } = await supabase
+            try {
+                // 1. Get Session ID
+                let { data: session } = await supabase
+                    .from('test_chat_sessions')
+                    .select('id')
+                    .eq('org_id', currentUserOrgId)
+                    .eq('agent_type', agentId)
+                    .single();
+
+                // Create if not exists
+                if (!session) {
+                    const { data: newSession, error: createErr } = await supabase
                         .from('test_chat_sessions')
-                        .select('id')
-                        .eq('org_id', currentUserOrgId)
-                        .eq('agent_type', agentId)
+                        .insert([{ org_id: currentUserOrgId, agent_type: agentId }])
+                        .select()
                         .single();
+                    if (newSession) session = newSession;
+                }
 
-                    // Create if not exists
-                    if (!session) {
-                        const { data: newSession, error: createErr } = await supabase
-                            .from('test_chat_sessions')
-                            .insert([{ org_id: currentUserOrgId, agent_type: agentId }])
-                            .select()
-                            .single();
-                        if (newSession) session = newSession;
-                    }
+                if (!session) return; // fail safe
 
-                    if (!session) return; // fail safe
+                // 2. Load Messages
+                const { data: messages } = await supabase
+                    .from('test_chat_messages')
+                    .select('*')
+                    .eq('session_id', session.id)
+                    .order('created_at', { ascending: true });
 
-                    // 2. Load Messages
-                    const { data: messages } = await supabase
-                        .from('test_chat_messages')
-                        .select('*')
-                        .eq('session_id', session.id)
-                        .order('created_at', { ascending: true });
-
-                    if (messages && messages.length > 0) {
-                        historyContainer.innerHTML = '';
-                        messages.forEach(msg => {
-                            const sender = msg.role === 'user' ? 'user' : 'ai';
-                            appendMessage(agentId, sender, msg.content);
-                        });
-                        historyContainer.scrollTop = historyContainer.scrollHeight;
-                    }
-                } catch (e) { console.log("History error", e); }
-            }
-
-            async function sendChatMessage(agentId) {
-                const input = document.getElementById(`chat-input-${agentId}`);
-                const text = input.value.trim();
-                if (!text) return;
-
-                // UI Update
-                appendMessage(agentId, 'user', text);
-                input.value = '';
-                const historyContainer = document.getElementById(`chat-history-${agentId}`);
-                historyContainer.scrollTop = historyContainer.scrollHeight;
-                const loadingId = `loading-${Date.now()}`;
-                appendMessage(agentId, 'ai', '...', loadingId);
-
-                try {
-                    // 1. Get Session ID (Reuse logic or cache it)
-                    let { data: session } = await supabase
-                        .from('test_chat_sessions')
-                        .select('id')
-                        .eq('org_id', currentUserOrgId)
-                        .eq('agent_type', agentId)
-                        .single();
-
-                    if (!session) { // Should exist from load, but double check
-                        const { data: newSession } = await supabase.from('test_chat_sessions').insert([{ org_id: currentUserOrgId, agent_type: agentId }]).select().single();
-                        session = newSession;
-                    }
-
-                    // 2. Save User Message (MEMORY)
-                    await supabase.from('test_chat_messages').insert({
-                        session_id: session.id,
-                        role: 'user',
-                        content: text
+                if (messages && messages.length > 0) {
+                    historyContainer.innerHTML = '';
+                    messages.forEach(msg => {
+                        const sender = msg.role === 'user' ? 'user' : 'ai';
+                        appendMessage(agentId, sender, msg.content);
                     });
-
-                    // 3. Call AI Webhook (BRAIN)
-                    // We keep this to generate the actual smart response
-                    const response = await fetch(CHAT_WEBHOOK, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            agent_source: agentId,
-                            message: text,
-                            sender: 'user',
-                            org_id: currentUserOrgId, // Pass context
-                            timestamp: new Date().toISOString()
-                        })
-                    });
-
-                    const data = await response.json();
-                    const replyText = data.reply || data.output || "No reply received.";
-
-                    // 4. Save AI Response (MEMORY)
-                    await supabase.from('test_chat_messages').insert({
-                        session_id: session.id,
-                        role: 'assistant',
-                        content: replyText
-                    });
-
-                    // 5. Update UI
-                    document.getElementById(loadingId).remove();
-                    appendMessage(agentId, 'ai', replyText);
                     historyContainer.scrollTop = historyContainer.scrollHeight;
-
-                } catch (e) {
-                    document.getElementById(loadingId).remove();
-                    appendMessage(agentId, 'ai', 'Error: Could not reach agent.');
-                    console.error(e);
                 }
-            }
+            } catch (e) { console.log("History error", e); }
+        }
 
-            function appendMessage(agentId, sender, text, id = null) {
-                const container = document.getElementById(`chat-history-${agentId}`);
-                const div = document.createElement('div');
-                div.className = `message ${sender === 'user' ? 'msg-user' : 'msg-ai'}`;
-                div.innerHTML = text;
-                if (id) div.id = id;
-                container.appendChild(div);
+        async function sendChatMessage(agentId) {
+            const input = document.getElementById(`chat-input-${agentId}`);
+            const text = input.value.trim();
+            if (!text) return;
+
+            // UI Update
+            appendMessage(agentId, 'user', text);
+            input.value = '';
+            const historyContainer = document.getElementById(`chat-history-${agentId}`);
+            historyContainer.scrollTop = historyContainer.scrollHeight;
+            const loadingId = `loading-${Date.now()}`;
+            appendMessage(agentId, 'ai', '...', loadingId);
+
+            try {
+                // 1. Get Session ID (Reuse logic or cache it)
+                let { data: session } = await supabase
+                    .from('test_chat_sessions')
+                    .select('id')
+                    .eq('org_id', currentUserOrgId)
+                    .eq('agent_type', agentId)
+                    .single();
+
+                if (!session) { // Should exist from load, but double check
+                    const { data: newSession } = await supabase.from('test_chat_sessions').insert([{ org_id: currentUserOrgId, agent_type: agentId }]).select().single();
+                    session = newSession;
+                }
+
+                // 2. Save User Message (MEMORY)
+                await supabase.from('test_chat_messages').insert({
+                    session_id: session.id,
+                    role: 'user',
+                    content: text
+                });
+
+                // 3. Call AI Webhook (BRAIN)
+                // We keep this to generate the actual smart response
+                const response = await fetch(CHAT_WEBHOOK, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        agent_source: agentId,
+                        message: text,
+                        sender: 'user',
+                        org_id: currentUserOrgId, // Pass context
+                        timestamp: new Date().toISOString()
+                    })
+                });
+
+                const data = await response.json();
+                const replyText = data.reply || data.output || "No reply received.";
+
+                // 4. Save AI Response (MEMORY)
+                await supabase.from('test_chat_messages').insert({
+                    session_id: session.id,
+                    role: 'assistant',
+                    content: replyText
+                });
+
+                // 5. Update UI
+                document.getElementById(loadingId).remove();
+                appendMessage(agentId, 'ai', replyText);
+                historyContainer.scrollTop = historyContainer.scrollHeight;
+
+            } catch (e) {
+                document.getElementById(loadingId).remove();
+                appendMessage(agentId, 'ai', 'Error: Could not reach agent.');
+                console.error(e);
             }
+        }
+
+        function appendMessage(agentId, sender, text, id = null) {
+            const container = document.getElementById(`chat-history-${agentId}`);
+            const div = document.createElement('div');
+            div.className = `message ${sender === 'user' ? 'msg-user' : 'msg-ai'}`;
+            div.innerHTML = text;
+            if (id) div.id = id;
+            container.appendChild(div);
+        }
     </script>
 </body>
 
