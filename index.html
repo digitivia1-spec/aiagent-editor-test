@@ -2177,7 +2177,7 @@
                             <div class="platform-selector">
                                 <button class="platform-btn" style="background:#5BAEB0" onclick="loadInbox('website', false)">${iconWebsite}</button>
                                 <button class="platform-btn" style="background:#57B078" onclick="loadInbox('whatsapp', false)">${iconWhatsapp}</button>
-                                <button class="platform-btn" style="background:#5B89CE" onclick="loadInbox('page', false)">${iconMessenger}</button>
+                                <button class="platform-btn" style="background:#5B89CE" onclick="loadInbox('messenger', false)">${iconMessenger}</button>
                                 <button class="platform-btn" style="background:#C66B8D" onclick="loadInbox('instagram', false)">${iconInstagram}</button>
                             </div>
                             <div style="padding:10px; font-size:0.8rem; text-align:center; color:#888;">Select Platform</div>
@@ -2650,7 +2650,8 @@
                 currentInboxPlatform = platform;
                 let color = '#5BAEB0';
                 if (platform === 'whatsapp') color = '#57B078';
-                if (platform === 'page') color = '#5B89CE';
+                if (platform === 'whatsapp') color = '#57B078';
+                if (platform === 'messenger') color = '#5B89CE';
                 if (platform === 'instagram') color = '#C66B8D';
                 document.documentElement.style.setProperty('--theme-color', color);
             }
@@ -2843,12 +2844,12 @@
 
                 // Initialize State
                 AGENTS.forEach(agent => {
-                    const config = configs.find(c => c.agent_type === agent.id) || {};
+                    const config = configs.find(c => c.agent === agent.id) || {};
                     const links = linksData ? linksData.filter(l => l.agent_type === agent.id).map(l => l.url) : [];
 
                     // Populate Inputs
                     document.getElementById(`prompt-${agent.id}`).value = config.system_prompt || "";
-                    document.getElementById(`tone-${agent.id}`).value = config.agent_tone || "";
+                    document.getElementById(`tone-${agent.id}`).value = config.tone || "";
                     document.getElementById(`status-${agent.id}`).checked = config.is_active || false;
 
                     // Render Links
@@ -2860,7 +2861,7 @@
                     // Store Initial State
                     initialStates[agent.id] = {
                         prompt: config.system_prompt || "",
-                        tone: config.agent_tone || "",
+                        tone: config.tone || "",
                         links: links
                     };
                     isDirtyState[agent.id] = false;
@@ -2882,17 +2883,23 @@
             btn.innerText = "Saving...";
 
             try {
-                const { error: configError } = await supabaseClient
-                    .from('agent_configs')
-                    .upsert({
-                        org_id: currentUserOrgId,
-                        agent_type: agentId,
-                        system_prompt: prompt,
-                        agent_tone: tone,
-                        updated_at: new Date().toISOString()
-                    }, { onConflict: 'org_id, agent_type' });
+                const updates = {
+                    org_id: currentUserOrgId,
+                    agent: agentId,
+                    system_prompt: prompt,
+                    tone: tone,
+                    updated_at: new Date().toISOString()
+                };
 
-                if (configError) throw configError;
+                // Remove undefined keys (if any)
+                Object.keys(updates).forEach(key => updates[key] === undefined && delete updates[key]);
+
+                // 2. Upsert Config
+                const { error } = await supabaseClient
+                    .from('agent_configs')
+                    .upsert(updates, { onConflict: 'org_id, agent' });
+
+                if (error) throw error;
 
                 const inputs = document.querySelectorAll(`#links-container-${agentId} .link-input`);
                 const newLinks = Array.from(inputs).map(input => input.value.trim()).filter(val => val !== "");
@@ -2990,14 +2997,14 @@
                     .from('test_chat_sessions')
                     .select('id')
                     .eq('org_id', currentUserOrgId)
-                    .eq('agent_type', agentId)
+                    .eq('agent', agentId)
                     .single();
 
                 // Create if not exists
                 if (!session) {
                     const { data: newSession, error: createErr } = await supabaseClient
                         .from('test_chat_sessions')
-                        .insert([{ org_id: currentUserOrgId, agent_type: agentId }])
+                        .insert([{ org_id: currentUserOrgId, agent: agentId }])
                         .select()
                         .single();
                     if (newSession) session = newSession;
@@ -3042,11 +3049,11 @@
                     .from('test_chat_sessions')
                     .select('id')
                     .eq('org_id', currentUserOrgId)
-                    .eq('agent_type', agentId)
+                    .eq('agent', agentId)
                     .single();
 
                 if (!session) { // Should exist from load, but double check
-                    const { data: newSession } = await supabaseClient.from('test_chat_sessions').insert([{ org_id: currentUserOrgId, agent_type: agentId }]).select().single();
+                    const { data: newSession } = await supabaseClient.from('test_chat_sessions').insert([{ org_id: currentUserOrgId, agent: agentId }]).select().single();
                     session = newSession;
                 }
 
