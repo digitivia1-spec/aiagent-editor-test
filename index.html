@@ -798,7 +798,7 @@
                 <span class="nav-label">Website Agent</span>
             </li>
             <li class="nav-item" onclick="switchTab('whatsapp', this)">
-                <div class="nav-icon"><svg viewBox="0 0 24 24"><path d="M16.75 13.96c.25.13.36.06.44-.06.08-.13.37-1.41.44-1.78.05-.27.05-.5.01-.74-.04-.24-.24-.46-.46-.58-.23-.11-.87-.51-1.2-.72-.33-.21-1.01-.26-1.57.43-.56.69-1.29 1.48-1.56 1.76-.27.28-.56.12-.87-.03-.31-.15-1.44-.81-2.09-1.53-.5-.56-1.12-1.37-1.37-1.81-.25-.44-.1-.66.12-.89.2-.21.41-.54.61-.8.2-.26.27-.44.41-.72.13-.28.07-.53-.03-.73-.1-.2-.87-2.12-1.19-2.9-.3-.72-.61-.62-.84-.63-.22-.01-.48-.01-.73-.01-.25 0-.66.09-1 .45-.34.36-1.31 1.28-1.31 3.12 0 1.84 1.34 3.62 1.53 3.87.19.25 2.64 4.03 6.4 5.65 3.76 1.62 3.76 1.08 4.42 1.01.66-.07 1.53-.63 1.75-1.23.22-.6.22-1.12.15-1.23-.07-.11-.26-.18-.54-.32z"/></svg></div>
+                <div class="nav-icon"><svg viewBox="0 0 24 24"><path d="M16.75 13.96c.25.13.36.06.44-.06.08-.13.37-1.41.44-1.78.05-.27.05-.5.01-.74-.04-.24-.46-.46-.58-.23-.11-.87-.51-1.2-.72-.33-.21-1.01-.26-1.57.43-.56.69-1.29 1.48-1.56 1.76-.27.28-.56.12-.87-.03-.31-.15-1.44-.81-2.09-1.53-.5-.56-1.12-1.37-1.37-1.81-.25-.44-.1-.66.12-.89.2-.21.41-.54.61-.8.2-.26.27-.44.41-.72.13-.28.07-.53-.03-.73-.1-.2-.87-2.12-1.19-2.9-.3-.72-.61-.62-.84-.63-.22-.01-.48-.01-.73-.01-.25 0-.66.09-1 .45-.34.36-1.31 1.28-1.31 3.12 0 1.84 1.34 3.62 1.53 3.87.19.25 2.64 4.03 6.4 5.65 3.76 1.62 3.76 1.08 4.42 1.01.66-.07 1.53-.63 1.75-1.23.22-.6.22-1.12.15-1.23-.07-.11-.26-.18-.54-.32z"/></svg></div>
                 <span class="nav-label">WhatsApp Agent</span>
             </li>
             <li class="nav-item" onclick="switchTab('messenger', this)">
@@ -889,15 +889,13 @@
 
     <script>
         // --- 3. SUPABASE CONFIGURATION ---
-        // Using provided Safe/Anon keys from Reference
         const SUPABASE_URL = "https://xrycghxaxqzvkmzqzzkx.supabase.co";
         const SUPABASE_KEY = "sb_publishable_E_BXMYVOxgwahNXw-JhgbA_pUWoIpUB"; 
         
         // Initialize Supabase Client
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        // --- OLD WEBHOOKS (Kept for Phase 2/3 transition, but AUTH is now Supabase) ---
-        const CONFIG_WEBHOOK = "https://n8n.srv1174105.hstgr.cloud/webhook/promptAgent";
+        // --- OLD WEBHOOKS (Removed CONFIG_WEBHOOK in Phase 2) ---
         const CHAT_WEBHOOK   = "https://n8n.srv1174105.hstgr.cloud/webhook/chatHandler";
         const HISTORY_WEBHOOK = "https://n8n.srv1174105.hstgr.cloud/webhook/getchathistory"; 
         const INSIGHTS_WEBHOOK = "https://n8n.srv1174105.hstgr.cloud/webhook/insightsgrab";
@@ -922,30 +920,28 @@
         let currentChatUser = null;
         let currentChatUserName = null; 
         let agentToUnlock = null; // Track which agent is being unlocked
+        let currentUserOrgId = null; // Store Org ID for RLS
         
         let insightPlatform = 'facebook';
         let insightPeriod = 'day';
         let cachedPosts = [];
-        let cachedLeads = []; // Store leads for export
+        let cachedLeads = []; 
 
         // ==========================================
         //        AUTH LOGIC (GATEKEEPER)
         // ==========================================
         
-        // Check for Session on Load
         window.onload = async function() {
             const { data: { session } } = await supabase.auth.getSession();
             if (session) {
-                // User is logged in, ensure profile exists then show app
+                // Ensure profile exists and get Org ID
                 await ensureUserProfile(session.user);
                 showApp();
             } else {
-                // Stay on login screen
                 document.getElementById('login-container').style.display = 'flex';
             }
         };
 
-        // Login with Email/Password
         async function performLogin() {
             const email = document.getElementById('login-user').value;
             const pass = document.getElementById('login-pass').value;
@@ -965,7 +961,6 @@
 
                 if (error) throw error;
 
-                // Success
                 await ensureUserProfile(data.user);
                 showApp();
 
@@ -977,7 +972,6 @@
             }
         }
 
-        // Sign Up with Email/Password
         async function performSignUp() {
             const email = document.getElementById('login-user').value;
             const pass = document.getElementById('login-pass').value;
@@ -1006,13 +1000,12 @@
             }
         }
 
-        // Login with OAuth (Google/LinkedIn)
         async function performOAuthLogin(provider) {
             try {
                 const { data, error } = await supabase.auth.signInWithOAuth({
                     provider: provider,
                     options: {
-                        redirectTo: window.location.href // Returns to this page
+                        redirectTo: window.location.href 
                     }
                 });
                 if (error) throw error;
@@ -1027,19 +1020,20 @@
             location.reload(); 
         }
 
-        // --- SECTION 9 LOGIC: Ensure Profile Exists ---
         async function ensureUserProfile(user) {
             try {
-                // 1. Check if profile exists
+                // 1. Get Profile & Org ID
                 const { data: profile, error } = await supabase
                     .from('profiles')
-                    .select('*')
+                    .select('org_id')
                     .eq('user_id', user.id)
                     .single();
 
-                if (!profile) {
-                    // 2. Create if missing (RLS allows insert for own user_id)
-                    const { error: insertError } = await supabase
+                if (profile) {
+                    currentUserOrgId = profile.org_id;
+                } else {
+                    // Create if missing
+                    const { data: newProfile, error: insertError } = await supabase
                         .from('profiles')
                         .insert([
                             { 
@@ -1048,10 +1042,9 @@
                                 full_name: user.user_metadata.full_name || '',
                                 avatar_url: user.user_metadata.avatar_url || ''
                             }
-                        ]);
+                        ]).select().single();
                     
-                    if (insertError) console.error("Error creating profile:", insertError);
-                    else console.log("Profile created successfully");
+                    if (!insertError && newProfile) currentUserOrgId = newProfile.org_id;
                 }
             } catch (e) {
                 console.error("Profile check failed", e);
@@ -1066,7 +1059,6 @@
                     b.style.opacity = "0.7";
                     b.disabled = true;
                 } else {
-                    // Reset text based on type
                     if(b.classList.contains('secondary')) b.innerText = "REGISTER";
                     else b.innerText = "LOGIN";
                     b.style.opacity = "1";
@@ -1080,9 +1072,8 @@
             const app = document.getElementById('app-container');
             app.style.display = 'flex';
             
-            // Initialize App
             buildInterface();
-            fetchCurrentConfigurations();
+            fetchCurrentConfigurations(); // Phase 2 Logic
             document.getElementById('loader-overlay').style.display = 'none';
             startAutoRefresh();
         }
@@ -1104,7 +1095,6 @@
             const container = document.getElementById('dynamic-content-area');
             let html = '';
 
-            // A. CONFIG TABS
             AGENTS.forEach((agent) => {
                 html += `
                 <div id="${agent.id}" class="tab-content">
@@ -1179,6 +1169,9 @@
                 </div>`;
             });
 
+            // ... (Insights, Inbox, Leads HTML remains identical to previous phases)
+            // [Truncated for brevity since it didn't change]
+            
             // B. LIVE INSIGHTS TAB
             const iconFacebook = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12c0 5 3.66 9.13 8.41 9.88V14.9h-2.53v-2.9h2.53V9.79c0-2.5 1.47-3.89 3.77-3.89 1.1 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56v1.88h2.78l-.45 2.9h-2.33v6.98C18.34 21.13 22 17 22 12c0-5.52-4.48-10-10-10z"/></svg>`;
             const iconInsta = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8 1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3z"/></svg>`;
@@ -1221,8 +1214,7 @@
             const iconWebsite = `<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>`;
             const iconWhatsapp = `<svg viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.664-.698c1.024.558 1.815.842 2.802.842h.002c3.178 0 5.769-2.587 5.769-5.766 0-1.545-.601-2.997-1.692-4.088-1.09-1.091-2.539-1.691-4.085-1.691zm0-2c2.083 0 4.041.812 5.513 2.285 1.472 1.474 2.282 3.432 2.281 5.515 0 4.296-3.499 7.794-7.796 7.794-1.312 0-2.551-.33-3.666-.921l-4.093 1.073 1.092-3.987c-.672-1.163-1.025-2.478-1.025-3.959.001-4.301 3.502-7.8 7.802-7.8"/></svg>`;
             const iconMessenger = `<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.03 2 11c0 2.87 1.5 5.43 3.86 7.02-.06.71-.24 2.53-.54 3.79 1.43-.37 3.39-1.01 4.58-1.55.67.19 1.39.3 2.1.3 5.52 0 10-4.03 10-9S17.52 2 12 2zm1.2 12.39l-2.67-2.85-5.23 2.85 5.76-6.11 2.64 2.85 5.26-2.85-5.76 6.11z"/></svg>`;
-           // Replace the old iconInstagram line with this one:
-const iconInstagram = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8 1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3z" fill-rule="evenodd"/></svg>`;
+            const iconInstagram = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8 1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3z" fill-rule="evenodd"/></svg>`;
 
             html += `
             <div id="inbox" class="tab-content">
@@ -1800,101 +1792,133 @@ const iconInstagram = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7.
             return Array.from(inputs).map(input => input.value.trim()).filter(val => val !== "").join(', ');
         }
 
-        // --- UPDATED CONFIG FETCH (INCLUDES SWITCH STATUS) ---
+        // --- PHASE 2: CONNECT CONFIGS TO SUPABASE ---
         async function fetchCurrentConfigurations() {
-            try {
-                const response = await fetch(CONFIG_WEBHOOK, { method: 'GET' });
-                if (response.ok) {
-                    const data = await response.json();
-                    AGENTS.forEach(agent => {
-                        // 1. Load System Prompt
-                        const promptVal = data[`system_prompt_${agent.id}`];
-                        if(promptVal) document.getElementById(`prompt-${agent.id}`).value = promptVal;
-                        
-                        // 2. Load Tone
-                        const toneVal = data[`agent_tone_${agent.id}`];
-                        if(toneVal) document.getElementById(`tone-${agent.id}`).value = toneVal;
-                        
-                        // 3. Load Links
-                        const linksVal = data[`links_${agent.id}`];
-                        if(linksVal) {
-                            const linksArray = linksVal.split(',');
-                            linksArray.forEach(link => addLinkField(agent.id, link.trim()));
-                        } else {
-                            addLinkField(agent.id);
-                        }
-
-                        // 4. Load Active Switch Status (NEW)
-                        // Assuming your DB returns a key like "active_website" or similar
-                        // If it doesn't exist yet, it defaults to false (OFF)
-                        const isActive = data[`active_${agent.id}`] === true || data[`active_${agent.id}`] === "true";
-                        document.getElementById(`status-${agent.id}`).checked = isActive;
-                    });
+            if(!currentUserOrgId) {
+                // Try fetching again if somehow missing, though ensured on login
+                const { data: { user } } = await supabase.auth.getUser();
+                if(user) await ensureUserProfile(user);
+                if(!currentUserOrgId) {
+                    showToast("No Organization Found. Please contact admin.", "error");
+                    return;
                 }
-            } catch (error) { AGENTS.forEach(a => addLinkField(a.id)); } 
+            }
+
+            try {
+                // 1. Fetch Configs for this Org
+                const { data: configs, error } = await supabase
+                    .from('agent_configs')
+                    .select('*')
+                    .eq('org_id', currentUserOrgId);
+
+                if (error) throw error;
+
+                // 2. Fetch Links for this Org (if using agent_kb_links table)
+                const { data: linksData, error: linksError } = await supabase
+                    .from('agent_kb_links')
+                    .select('*')
+                    .eq('org_id', currentUserOrgId);
+
+                // Map DB results to UI
+                AGENTS.forEach(agent => {
+                    const config = configs.find(c => c.agent_type === agent.id);
+                    if (config) {
+                        document.getElementById(`prompt-${agent.id}`).value = config.system_prompt || '';
+                        if(config.agent_tone) document.getElementById(`tone-${agent.id}`).value = config.agent_tone;
+                        document.getElementById(`status-${agent.id}`).checked = config.is_active || false;
+                    }
+
+                    // Populate Links
+                    const agentLinks = linksData ? linksData.filter(l => l.agent_type === agent.id || l.config_id === config?.id) : [];
+                    if (agentLinks.length > 0) {
+                        agentLinks.forEach(l => addLinkField(agent.id, l.url));
+                    } else {
+                        addLinkField(agent.id);
+                    }
+                });
+
+            } catch (error) { 
+                console.error("Error fetching configs:", error);
+                AGENTS.forEach(a => addLinkField(a.id)); 
+            } 
         }
 
         async function saveRole(agentId) {
+            if(!currentUserOrgId) { showToast("Missing Organization ID", "error"); return; }
+
             const prompt = document.getElementById(`prompt-${agentId}`).value;
             const tone = document.getElementById(`tone-${agentId}`).value;
-            const linksString = getLinksAsCommaString(agentId);
             const btn = document.querySelector(`#${agentId} .save-btn`);
             const originalText = btn.innerText;
             btn.innerText = "Saving...";
             
             try {
-                const payload = {
-                    agent_source: agentId,
-                    system_prompt: prompt,
-                    timestamp: new Date().toISOString()
-                };
-                payload[`agent_tone_${agentId}`] = tone;
-                payload[`links_${agentId}`] = linksString;
+                // 1. Upsert Agent Config
+                const { error: configError } = await supabase
+                    .from('agent_configs')
+                    .upsert({ 
+                        org_id: currentUserOrgId,
+                        agent_type: agentId,
+                        system_prompt: prompt,
+                        agent_tone: tone,
+                        updated_at: new Date().toISOString()
+                    }, { onConflict: 'org_id, agent_type' }); // Assuming composite unique constraint
+
+                if(configError) throw configError;
+
+                // 2. Handle Links (Delete All & Insert All strategy for simplicity)
+                const inputs = document.querySelectorAll(`#links-container-${agentId} .link-input`);
+                const newLinks = Array.from(inputs).map(input => input.value.trim()).filter(val => val !== "");
+
+                // Delete existing links for this agent
+                await supabase.from('agent_kb_links').delete().match({ org_id: currentUserOrgId, agent_type: agentId });
                 
-                // We send a normal "save config" action here
-                // The switch status is saved separately when toggled, but good to send here too if you want
-                
-                await fetch(CONFIG_WEBHOOK, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
+                // Insert new links
+                if(newLinks.length > 0) {
+                    const linksPayload = newLinks.map(url => ({
+                        org_id: currentUserOrgId,
+                        agent_type: agentId,
+                        url: url
+                    }));
+                    await supabase.from('agent_kb_links').insert(linksPayload);
+                }
+
                 showToast("Saved Successfully!", "success");
                 
-                // HIDE WARNING ON SUCCESSFUL SAVE AND RELOCK
                 const warn = document.getElementById(`warning-${agentId}`);
                 if(warn) warn.classList.remove('show');
-                
-                // Optional: Re-Lock after saving? Let's leave it unlocked so they can continue edits until reload.
-                // But remove the warning banner is good.
 
-            } catch(e) { showToast("Error saving data", "error"); } 
+            } catch(e) { 
+                console.error(e);
+                showToast("Error saving data: " + e.message, "error"); 
+            } 
             finally { btn.innerText = originalText; }
         }
 
-        // --- NEW FUNCTION: TOGGLE AGENT STATUS ---
         async function toggleAgentStatus(agentId) {
+            if(!currentUserOrgId) return;
+
             const isChecked = document.getElementById(`status-${agentId}`).checked;
             const label = document.querySelector(`#${agentId} .toggle-label`);
-            
-            // Visual feedback immediately
             label.style.opacity = "0.5";
             
             try {
-                await fetch(CONFIG_WEBHOOK, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        action: 'toggle_status', // Special flag for n8n
-                        agent_source: agentId,
-                        is_active: isChecked
-                    })
-                });
+                // Upsert only the status
+                const { error } = await supabase
+                    .from('agent_configs')
+                    .upsert({
+                        org_id: currentUserOrgId,
+                        agent_type: agentId,
+                        is_active: isChecked,
+                        updated_at: new Date().toISOString()
+                    }, { onConflict: 'org_id, agent_type' });
+
+                if(error) throw error;
+
                 showToast(`${isChecked ? 'Activated' : 'Deactivated'} ${agentId}`, "success");
             } catch (e) {
                 console.error(e);
                 showToast("Failed to update status", "error");
-                // Revert switch if failed
                 document.getElementById(`status-${agentId}`).checked = !isChecked;
             } finally {
                 label.style.opacity = "1";
