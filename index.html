@@ -3378,59 +3378,59 @@
                             console.warn('Organization fetch error:', orgError.message);
                         }
                     }
-                }
 
-                // Update Top Bar avatar with user initial
-                const name = profile.full_name || profile.email || 'U';
-                const avatarEl = document.getElementById('top-bar-avatar');
-                if (avatarEl) avatarEl.innerText = name.charAt(0).toUpperCase();
-            } else {
-                const { data: newProfile, error: insertError } = await supabaseClient
-                    .from('profiles')
-                    .insert([
-                        {
-                            user_id: user.id,
-                            email: user.email,
-                            full_name: user.user_metadata?.full_name || '',
-                            avatar_url: user.user_metadata?.avatar_url || ''
+                    // Update Top Bar avatar with user initial
+                    const name = profile.full_name || profile.email || 'U';
+                    const avatarEl = document.getElementById('top-bar-avatar');
+                    if (avatarEl) avatarEl.innerText = name.charAt(0).toUpperCase();
+                } else {
+                    // Create new profile
+                    const { data: newProfile, error: insertError } = await supabaseClient
+                        .from('profiles')
+                        .insert([
+                            {
+                                user_id: user.id,
+                                email: user.email,
+                                full_name: user.user_metadata?.full_name || '',
+                                avatar_url: user.user_metadata?.avatar_url || ''
+                            }
+                        ]).select().single();
+
+                    if (!insertError && newProfile) {
+                        currentUserOrgId = newProfile.org_id;
+                        currentUserProfile = newProfile;
+
+                        // EXTRACT ORG NAME FROM EMAIL
+                        let extractedName = "";
+                        const email = user.email || "";
+                        if (email.includes('@')) {
+                            const [username, domain] = email.split('@');
+                            const domainParts = domain.split('.');
+                            const mainDomain = domainParts[0].toLowerCase();
+
+                            const commonDomains = ['gmail', 'yahoo', 'hotmail', 'outlook', 'icloud', 'protonmail', 'live', 'msn'];
+                            if (commonDomains.includes(mainDomain)) {
+                                extractedName = username.charAt(0).toUpperCase() + username.slice(1) + "'s Organization";
+                            } else {
+                                extractedName = mainDomain.charAt(0).toUpperCase() + mainDomain.slice(1);
+                            }
                         }
-                    ]).select().single();
 
-                if (!insertError && newProfile) {
-                    currentUserOrgId = newProfile.org_id;
-                    currentUserProfile = newProfile;
+                        // Update default organization name
+                        if (extractedName && newProfile.org_id) {
+                            await supabaseClient
+                                .from('organizations')
+                                .update({ name: extractedName })
+                                .eq('id', newProfile.org_id);
 
-                    // EXTRACT ORG NAME FROM EMAIL
-                    let extractedName = "";
-                    const email = user.email || "";
-                    if (email.includes('@')) {
-                        const [username, domain] = email.split('@');
-                        const domainParts = domain.split('.');
-                        const mainDomain = domainParts[0].toLowerCase();
-
-                        const commonDomains = ['gmail', 'yahoo', 'hotmail', 'outlook', 'icloud', 'protonmail', 'live', 'msn'];
-                        if (commonDomains.includes(mainDomain)) {
-                            extractedName = username.charAt(0).toUpperCase() + username.slice(1) + "'s Organization";
-                        } else {
-                            extractedName = mainDomain.charAt(0).toUpperCase() + mainDomain.slice(1);
+                            // Initialize currentOrgData
+                            currentOrgData = { name: extractedName, subscription_tier: 'Free' };
                         }
                     }
-
-                    // Update default organization name
-                    if (extractedName && newProfile.org_id) {
-                        await supabaseClient
-                            .from('organizations')
-                            .update({ name: extractedName })
-                            .eq('id', newProfile.org_id);
-
-                        // Initialize currentOrgData
-                        currentOrgData = { name: extractedName, subscription_tier: 'Free', consultation_meetings_used: 0 };
-                    }
                 }
+            } catch (e) {
+                console.error("Profile check failed", e);
             }
-        } catch (e) {
-            console.error("Profile check failed", e);
-        }
         }
 
         function setLoadingState(isLoading, text, isSecondary = false) {
