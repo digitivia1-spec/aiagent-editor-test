@@ -1808,7 +1808,7 @@
 
         // Update ALL references in your code from 'supabase' to 'supabaseClient'
         // Example:
-        // const { data, error } = await supabaseClientClient.auth.signInWithPassword(...)
+        // const { data, error } = await supabaseClient.auth.signInWithPassword(...)
 
         // --- WEBHOOKS (Kept CHAT for Brain, Removed Others) ---
         const CHAT_WEBHOOK = "https://n8n.srv1174105.hstgr.cloud/webhook/chatHandler";
@@ -1866,7 +1866,7 @@
             setLoadingState(true, "LOGGING IN...");
 
             try {
-                const { data, error } = await supabaseClientClient.auth.signInWithPassword({
+                const { data, error } = await supabaseClient.auth.signInWithPassword({
                     email: email,
                     password: pass,
                 });
@@ -1896,7 +1896,7 @@
             setLoadingState(true, "REGISTERING...");
 
             try {
-                const { data, error } = await supabaseClientClient.auth.signUp({
+                const { data, error } = await supabaseClient.auth.signUp({
                     email: email,
                     password: pass,
                 });
@@ -1914,7 +1914,7 @@
 
         async function performOAuthLogin(provider) {
             try {
-                const { data, error } = await supabaseClientClient.auth.signInWithOAuth({
+                const { data, error } = await supabaseClient.auth.signInWithOAuth({
                     provider: provider,
                     options: {
                         redirectTo: window.location.href
