@@ -2481,15 +2481,23 @@
 
         /* Language Toggle Button */
         .lang-toggle {
-            min-width: 45px;
+            min-width: 48px;
+            padding: 8px 12px !important;
             font-weight: 700;
-            font-size: 0.8rem !important;
-            background: linear-gradient(135deg, rgba(91, 174, 176, 0.2), rgba(91, 174, 176, 0.05)) !important;
-            border: 1px solid var(--theme-color) !important;
+            font-size: 0.85rem !important;
+            background: linear-gradient(135deg, #5BAEB0, #4a9a9c) !important;
+            border: none !important;
+            border-radius: 20px !important;
+            color: white !important;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 8px rgba(91, 174, 176, 0.4);
         }
 
         .lang-toggle:hover {
-            background: var(--theme-color) !important;
+            background: linear-gradient(135deg, #4a9a9c, #3d8284) !important;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(91, 174, 176, 0.5);
         }
     </style>
 </head>
@@ -3359,67 +3367,70 @@
 
                     // Fetch organization data if org_id exists
                     if (profile.org_id) {
-                        const { data: orgData } = await supabaseClient
+                        const { data: orgData, error: orgError } = await supabaseClient
                             .from('organizations')
-                            .select('name, subscription_tier, meeting_booking_count')
+                            .select('name, subscription_tier')
                             .eq('id', profile.org_id)
                             .single();
                         if (orgData) {
                             currentOrgData = orgData;
-                        }
-                    }
-
-                    // Update Top Bar avatar with user initial
-                    const name = profile.full_name || profile.email || 'U';
-                    const avatarEl = document.getElementById('top-bar-avatar');
-                    if (avatarEl) avatarEl.innerText = name.charAt(0).toUpperCase();
-                } else {
-                    const { data: newProfile, error: insertError } = await supabaseClient
-                        .from('profiles')
-                        .insert([
-                            {
-                                user_id: user.id,
-                                email: user.email,
-                                full_name: user.user_metadata?.full_name || '',
-                                avatar_url: user.user_metadata?.avatar_url || ''
-                            }
-                        ]).select().single();
-
-                    if (!insertError && newProfile) {
-                        currentUserOrgId = newProfile.org_id;
-                        currentUserProfile = newProfile;
-
-                        // EXTRACT ORG NAME FROM EMAIL
-                        let extractedName = "";
-                        const email = user.email || "";
-                        if (email.includes('@')) {
-                            const [username, domain] = email.split('@');
-                            const domainParts = domain.split('.');
-                            const mainDomain = domainParts[0].toLowerCase();
-
-                            const commonDomains = ['gmail', 'yahoo', 'hotmail', 'outlook', 'icloud', 'protonmail', 'live', 'msn'];
-                            if (commonDomains.includes(mainDomain)) {
-                                extractedName = username.charAt(0).toUpperCase() + username.slice(1) + "'s Organization";
-                            } else {
-                                extractedName = mainDomain.charAt(0).toUpperCase() + mainDomain.slice(1);
-                            }
-                        }
-
-                        // Update default organization name
-                        if (extractedName && newProfile.org_id) {
-                            await supabaseClient
-                                .from('organizations')
-                                .update({ name: extractedName })
-                                .eq('id', newProfile.org_id);
-
-                            // Initialize currentOrgData
-                            currentOrgData = { name: extractedName, subscription_tier: 'Free', consultation_meetings_used: 0 };
+                        } else if (orgError) {
+                            console.warn('Organization fetch error:', orgError.message);
                         }
                     }
                 }
-            } catch (e) {
-                console.error("Profile check failed", e);
+
+                // Update Top Bar avatar with user initial
+                const name = profile.full_name || profile.email || 'U';
+                const avatarEl = document.getElementById('top-bar-avatar');
+                if (avatarEl) avatarEl.innerText = name.charAt(0).toUpperCase();
+            } else {
+                const { data: newProfile, error: insertError } = await supabaseClient
+                    .from('profiles')
+                    .insert([
+                        {
+                            user_id: user.id,
+                            email: user.email,
+                            full_name: user.user_metadata?.full_name || '',
+                            avatar_url: user.user_metadata?.avatar_url || ''
+                        }
+                    ]).select().single();
+
+                if (!insertError && newProfile) {
+                    currentUserOrgId = newProfile.org_id;
+                    currentUserProfile = newProfile;
+
+                    // EXTRACT ORG NAME FROM EMAIL
+                    let extractedName = "";
+                    const email = user.email || "";
+                    if (email.includes('@')) {
+                        const [username, domain] = email.split('@');
+                        const domainParts = domain.split('.');
+                        const mainDomain = domainParts[0].toLowerCase();
+
+                        const commonDomains = ['gmail', 'yahoo', 'hotmail', 'outlook', 'icloud', 'protonmail', 'live', 'msn'];
+                        if (commonDomains.includes(mainDomain)) {
+                            extractedName = username.charAt(0).toUpperCase() + username.slice(1) + "'s Organization";
+                        } else {
+                            extractedName = mainDomain.charAt(0).toUpperCase() + mainDomain.slice(1);
+                        }
+                    }
+
+                    // Update default organization name
+                    if (extractedName && newProfile.org_id) {
+                        await supabaseClient
+                            .from('organizations')
+                            .update({ name: extractedName })
+                            .eq('id', newProfile.org_id);
+
+                        // Initialize currentOrgData
+                        currentOrgData = { name: extractedName, subscription_tier: 'Free', consultation_meetings_used: 0 };
+                    }
+                }
             }
+        } catch (e) {
+            console.error("Profile check failed", e);
+        }
         }
 
         function setLoadingState(isLoading, text, isSecondary = false) {
