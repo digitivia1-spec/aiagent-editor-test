@@ -3063,6 +3063,7 @@
                 // 2. Save User Message (MEMORY)
                 await supabaseClient.from('test_chat_messages').insert({
                     session_id: session.id,
+                    org_id: currentUserOrgId,
                     role: 'user',
                     content: text
                 });
@@ -3087,6 +3088,7 @@
                 // 4. Save AI Response (MEMORY)
                 await supabaseClient.from('test_chat_messages').insert({
                     session_id: session.id,
+                    org_id: currentUserOrgId,
                     role: 'assistant',
                     content: replyText
                 });
