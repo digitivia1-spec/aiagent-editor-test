@@ -1705,6 +1705,22 @@
             transform: scale(1.1);
         }
 
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            backdrop-filter: blur(2px);
+        }
+
+        .sidebar-overlay.show {
+            display: block;
+        }
+
         /* === PRICING MODAL === */
         .pricing-modal-overlay {
             display: none;
@@ -2098,141 +2114,47 @@
         @media (max-width: 768px) {
             .top-bar {
                 left: 0;
+                top: 60px;
+                /* Sit below mobile-top-bar */
                 padding: 0 10px;
+                height: 50px;
+                justify-content: flex-end;
+                background: rgba(15, 16, 20, 0.98);
+                gap: 5px;
+            }
+
+            .top-bar-btn {
+                padding: 6px 10px;
+                font-size: 0.75rem;
             }
 
             .top-bar-btn span {
                 display: none;
             }
+
+            .agent-header-row {
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+
+            .agent-title {
+                font-size: 1.2rem;
+                width: 100%;
+            }
+
+            .connect-btn {
+                order: 3;
+                width: 100%;
+                justify-content: center;
+            }
+
+            main {
+                padding-top: 130px;
+                /* Increased to avoid Top Bar overlap on mobile */
+            }
         }
 
-        /* === DOCUMENTATION MODAL === */
-        .docs-modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.9);
-            z-index: 6000;
-            align-items: center;
-            justify-content: center;
-            backdrop-filter: blur(8px);
-        }
-
-        .docs-modal-overlay.show {
-            display: flex;
-        }
-
-        .docs-modal {
-            background: linear-gradient(145deg, #1a1b20 0%, #0f1014 100%);
-            border: 1px solid var(--glass-border);
-            border-radius: 20px;
-            max-width: 900px;
-            width: 95%;
-            max-height: 85vh;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            animation: popIn 0.3s ease;
-        }
-
-        .docs-header {
-            padding: 25px 30px;
-            border-bottom: 1px solid var(--glass-border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .docs-header h2 {
-            background: linear-gradient(90deg, var(--theme-color), #a78bfa);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-size: 1.5rem;
-        }
-
-        .docs-content {
-            flex: 1;
-            overflow-y: auto;
-            padding: 30px;
-        }
-
-        .docs-section {
-            margin-bottom: 30px;
-        }
-
-        .docs-section h3 {
-            color: var(--theme-color);
-            margin-bottom: 15px;
-            font-size: 1.1rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .docs-section p,
-        .docs-section li {
-            color: var(--text-muted);
-            line-height: 1.7;
-            margin-bottom: 10px;
-        }
-
-        .docs-section ul {
-            padding-left: 20px;
-        }
-
-        .docs-section ul li {
-            margin-bottom: 8px;
-        }
-
-        .docs-tip {
-            background: rgba(91, 174, 176, 0.1);
-            border-left: 3px solid var(--theme-color);
-            padding: 15px;
-            border-radius: 0 8px 8px 0;
-            margin: 15px 0;
-        }
-
-        .docs-tip strong {
-            color: var(--theme-color);
-        }
-
-        .docs-cta {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--theme-color);
-            border-radius: 12px;
-            padding: 25px;
-            text-align: center;
-            margin-top: 20px;
-        }
-
-        .docs-cta h4 {
-            color: white;
-            margin-bottom: 10px;
-        }
-
-        .docs-cta p {
-            color: var(--text-muted);
-            margin-bottom: 15px;
-        }
-
-        .docs-cta button {
-            background: var(--theme-color);
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            border-radius: 50px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .docs-cta button:hover {
-            filter: brightness(1.2);
-        }
-
+        /* Documentation Modal Mobile adjustments */
         @media (max-width: 600px) {
             .docs-modal {
                 max-height: 90vh;
@@ -2241,6 +2163,27 @@
             .docs-content {
                 padding: 20px;
             }
+        }
+
+        .connect-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: 50px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid var(--theme-color);
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+
+        .connect-btn:hover {
+            background: var(--theme-color);
+            box-shadow: 0 0 15px rgba(91, 174, 176, 0.4);
         }
     </style>
 </head>
@@ -2282,6 +2225,8 @@
         <div class="mobile-hamburger-btn" onclick="toggleMobileMenu()">☰</div>
         <img src="cropped-White.png" alt="Digitivia" class="mobile-logo-img">
     </div>
+
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleMobileMenu()"></div>
 
     <div class="sidebar" id="mainSidebar">
         <div class="sidebar-header">
@@ -2774,25 +2719,37 @@
                 return;
             }
 
-            if (!currentUserOrgId) return;
+            if (!currentUserOrgId) {
+                console.error("Missing currentUserOrgId");
+                showToast("User session issue. Please reload.", "error");
+                return;
+            }
 
             const btn = document.getElementById('save-org-btn');
             btn.innerText = "SAVING...";
             btn.disabled = true;
 
+            console.log("Updating organization:", currentUserOrgId, "to new name:", newName);
+
             try {
-                const { error } = await supabaseClient
+                const { data, error } = await supabaseClient
                     .from('organizations')
                     .update({ name: newName })
-                    .eq('id', currentUserOrgId);
+                    .eq('id', currentUserOrgId)
+                    .select();
 
-                if (error) throw error;
+                if (error) {
+                    console.error("Supabase error updating organization:", error);
+                    throw error;
+                }
+
+                console.log("Supabase response:", data);
 
                 if (currentOrgData) currentOrgData.name = newName;
                 showToast("Organization name updated!", "success");
             } catch (e) {
-                console.error(e);
-                showToast("Failed to update organization name", "error");
+                console.error("Error in saveOrganizationName:", e);
+                showToast(`Failed: ${e.message || "Unknown error"}`, "error");
             } finally {
                 btn.innerText = "Save Organization Name";
                 btn.disabled = false;
@@ -3084,8 +3041,8 @@
                             <h2 class="agent-title">
                                 <span class="icon-circle" style="background: ${agent.color};"></span> ${agent.name}
                             </h2>
-                            <div style="display: flex; gap: 10px; align-items: center;">
-                                <button class="pill-btn" onclick="window.open(CALENDAR_URL, '_blank')" style="background:rgba(255,255,255,0.1); border:1px solid var(--theme-color); font-size:0.8rem; height: 32px;">🔗 Connect Channel</button>
+                            <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                                <a href="${CALENDAR_URL}" target="_blank" class="connect-btn">🔗 Connect Channel</a>
                                 <div class="agent-toggle-container">
                                     <span class="toggle-label">LIVE</span>
                                     <label class="switch">
@@ -3310,6 +3267,12 @@
 
         // --- THEME & NAVIGATION ---
         function switchTab(tabId, element) {
+            // Close mobile menu on switch
+            const sidebar = document.getElementById('mainSidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            if (sidebar) sidebar.classList.remove('mobile-open');
+            if (overlay) overlay.classList.remove('show');
+
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
             document.getElementById(tabId).classList.add('active');
@@ -3320,7 +3283,7 @@
             if (tabId === 'page' || tabId === 'messenger') color = '#5B89CE';
             if (tabId === 'instagram') color = '#C66B8D';
             if (tabId === 'website') color = '#5BAEB0';
-            if (tabId === 'inbox') color = '#6366f1'; // Indigo for inbox, avoid pure white for profile visibility
+            if (tabId === 'inbox') color = '#6366f1'; // Indigo for inbox
             if (tabId === 'leads') {
                 color = '#e6b72a'; // Gold for leads
                 fetchLeads(); // Fetch data when tab opens
@@ -3335,13 +3298,13 @@
             if (tabId === 'followups') color = '#20B2AA'; // SeaGreen for followups
 
             document.documentElement.style.setProperty('--theme-color', color);
-
-            // Mobile Menu Close
-            document.getElementById('mainSidebar').classList.remove('mobile-open');
         }
 
         function toggleMobileMenu() {
-            document.getElementById('mainSidebar').classList.toggle('mobile-open');
+            const sidebar = document.getElementById('mainSidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            sidebar.classList.toggle('mobile-open');
+            if (overlay) overlay.classList.toggle('show');
         }
 
         // ==========================================
@@ -3560,20 +3523,28 @@
                     .select('*')
                     .eq('org_id', currentUserOrgId)
                     .eq('platform', insightPlatform)
-                    .order('created_at', { ascending: false }) // Assuming created_at or 'date' column
+                    .order('created_at', { ascending: false })
                     .limit(1)
                     .single();
 
-                if (error && error.code !== 'PGRST116') throw error; // Ignore "no rows found" error
+                if (error && error.code !== 'PGRST116') throw error;
 
-                // Use fetched data or empty object if null
-                const metrics = data || {};
+                // If no data, show empty state
+                if (!data) {
+                    throw new Error("No Data");
+                }
 
-                renderInsightCards(metrics);
+                renderInsightCards(data);
 
             } catch (e) {
-                console.error(e);
-                grid.innerHTML = '<div style="grid-column: 1/-1; text-align:center; color: var(--error);">Failed to load insights. Check connection.</div>';
+                console.warn("Insights fetch failed or empty:", e);
+                grid.innerHTML = `
+                <div style="grid-column: 1/-1; text-align:center; padding: 60px; color:#888;">
+                    <div style="font-size: 3rem; margin-bottom: 20px;">📊</div>
+                    <h3>No Data Available</h3>
+                    <p>Connect your ${insightPlatform.charAt(0).toUpperCase() + insightPlatform.slice(1)} account to see live performance insights.</p>
+                    <button class="pill-btn primary" onclick="window.open(CALENDAR_URL, '_blank')" style="margin-top: 20px;">Connect Insights</button>
+                </div>`;
             }
         }
 
