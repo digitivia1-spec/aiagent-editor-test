@@ -798,7 +798,7 @@
                 <span class="nav-label">Website Agent</span>
             </li>
             <li class="nav-item" onclick="switchTab('whatsapp', this)">
-                <div class="nav-icon"><svg viewBox="0 0 24 24"><path d="M16.75 13.96c.25.13.36.06.44-.06.08-.13.37-1.41.44-1.78.05-.27.05-.5.01-.74-.04-.24-.46-.46-.58-.23-.11-.87-.51-1.2-.72-.33-.21-1.01-.26-1.57.43-.56.69-1.29 1.48-1.56 1.76-.27.28-.56.12-.87-.03-.31-.15-1.44-.81-2.09-1.53-.5-.56-1.12-1.37-1.37-1.81-.25-.44-.1-.66.12-.89.2-.21.41-.54.61-.8.2-.26.27-.44.41-.72.13-.28.07-.53-.03-.73-.1-.2-.87-2.12-1.19-2.9-.3-.72-.61-.62-.84-.63-.22-.01-.48-.01-.73-.01-.25 0-.66.09-1 .45-.34.36-1.31 1.28-1.31 3.12 0 1.84 1.34 3.62 1.53 3.87.19.25 2.64 4.03 6.4 5.65 3.76 1.62 3.76 1.08 4.42 1.01.66-.07 1.53-.63 1.75-1.23.22-.6.22-1.12.15-1.23-.07-.11-.26-.18-.54-.32z"/></svg></div>
+                <div class="nav-icon"><svg viewBox="0 0 24 24"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2z"/></svg></div>
                 <span class="nav-label">WhatsApp Agent</span>
             </li>
             <li class="nav-item" onclick="switchTab('messenger', this)">
@@ -891,9 +891,15 @@
         // --- 3. SUPABASE CONFIGURATION ---
         const SUPABASE_URL = "https://xrycghxaxqzvkmzqzzkx.supabase.co";
         const SUPABASE_KEY = "sb_publishable_E_BXMYVOxgwahNXw-JhgbA_pUWoIpUB"; 
+
         
         // Initialize Supabase Client
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        // NEW (Fixed)
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// Update ALL references in your code from 'supabase' to 'supabaseClient'
+// Example:
+const { data, error } = await supabaseClient.auth.signInWithPassword(...)
 
         // --- WEBHOOKS (Kept CHAT for Brain, Removed Others) ---
         const CHAT_WEBHOOK = "https://n8n.srv1174105.hstgr.cloud/webhook/chatHandler";
