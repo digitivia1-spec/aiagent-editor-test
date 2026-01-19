@@ -3025,7 +3025,7 @@
                 if (messages && messages.length > 0) {
                     historyContainer.innerHTML = '';
                     messages.forEach(msg => {
-                        const sender = msg.role === 'user' ? 'user' : 'ai';
+                        const sender = msg.direction === 'inbound' ? 'user' : 'ai';
                         appendMessage(agentId, sender, msg.content);
                     });
                     historyContainer.scrollTop = historyContainer.scrollHeight;
@@ -3063,7 +3063,8 @@
                 // 2. Save User Message (MEMORY)
                 await supabaseClient.from('test_chat_messages').insert({
                     session_id: session.id,
-                    role: 'user',
+                    org_id: currentUserOrgId,
+                    direction: 'inbound',
                     content: text
                 });
 
@@ -3087,7 +3088,8 @@
                 // 4. Save AI Response (MEMORY)
                 await supabaseClient.from('test_chat_messages').insert({
                     session_id: session.id,
-                    role: 'assistant',
+                    org_id: currentUserOrgId,
+                    direction: 'outbound',
                     content: replyText
                 });
 
