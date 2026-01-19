@@ -1104,6 +1104,15 @@
             height: 400px;
         }
 
+        main {
+            flex: 1;
+            padding: 30px;
+            padding-top: 100px;
+            /* Increased to avoid Top Bar overlap */
+            overflow-y: auto;
+            position: relative;
+        }
+
         .chat-history {
             flex: 1;
             padding: 1rem;
@@ -2096,6 +2105,143 @@
                 display: none;
             }
         }
+
+        /* === DOCUMENTATION MODAL === */
+        .docs-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 6000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(8px);
+        }
+
+        .docs-modal-overlay.show {
+            display: flex;
+        }
+
+        .docs-modal {
+            background: linear-gradient(145deg, #1a1b20 0%, #0f1014 100%);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            max-width: 900px;
+            width: 95%;
+            max-height: 85vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            animation: popIn 0.3s ease;
+        }
+
+        .docs-header {
+            padding: 25px 30px;
+            border-bottom: 1px solid var(--glass-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .docs-header h2 {
+            background: linear-gradient(90deg, var(--theme-color), #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 1.5rem;
+        }
+
+        .docs-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 30px;
+        }
+
+        .docs-section {
+            margin-bottom: 30px;
+        }
+
+        .docs-section h3 {
+            color: var(--theme-color);
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .docs-section p,
+        .docs-section li {
+            color: var(--text-muted);
+            line-height: 1.7;
+            margin-bottom: 10px;
+        }
+
+        .docs-section ul {
+            padding-left: 20px;
+        }
+
+        .docs-section ul li {
+            margin-bottom: 8px;
+        }
+
+        .docs-tip {
+            background: rgba(91, 174, 176, 0.1);
+            border-left: 3px solid var(--theme-color);
+            padding: 15px;
+            border-radius: 0 8px 8px 0;
+            margin: 15px 0;
+        }
+
+        .docs-tip strong {
+            color: var(--theme-color);
+        }
+
+        .docs-cta {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--theme-color);
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .docs-cta h4 {
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        .docs-cta p {
+            color: var(--text-muted);
+            margin-bottom: 15px;
+        }
+
+        .docs-cta button {
+            background: var(--theme-color);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .docs-cta button:hover {
+            filter: brightness(1.2);
+        }
+
+        @media (max-width: 600px) {
+            .docs-modal {
+                max-height: 90vh;
+            }
+
+            .docs-content {
+                padding: 20px;
+            }
+        }
     </style>
 </head>
 
@@ -2194,6 +2340,20 @@
                     </svg></div>
                 <span class="nav-label">Leads Area</span>
             </li>
+            <li class="nav-item" onclick="switchTab('reviews', this)">
+                <div class="nav-icon"><svg viewBox="0 0 24 24">
+                        <path
+                            d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                    </svg></div>
+                <span class="nav-label">Customer Reviews</span>
+            </li>
+            <li class="nav-item" onclick="switchTab('followups', this)">
+                <div class="nav-icon"><svg viewBox="0 0 24 24">
+                        <path
+                            d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z" />
+                    </svg></div>
+                <span class="nav-label">Follow-ups</span>
+            </li>
         </ul>
         <div class="sidebar-footer">
             <div class="nav-item" onclick="performLogout()">
@@ -2215,6 +2375,13 @@
                         d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1.41 16.09V20h-2.67v-1.93c-1.71-.36-3.16-1.46-3.27-3.4h1.96c.1 1.05.82 1.87 2.65 1.87 1.96 0 2.4-.98 2.4-1.59 0-.83-.44-1.61-2.67-2.14-2.48-.6-4.18-1.62-4.18-3.67 0-1.72 1.39-2.84 3.11-3.21V4h2.67v1.95c1.86.45 2.79 1.86 2.85 3.39H14.3c-.05-1.11-.64-1.87-2.22-1.87-1.5 0-2.4.68-2.4 1.64 0 .84.65 1.39 2.67 1.91s4.18 1.39 4.18 3.91c-.01 1.83-1.38 2.83-3.12 3.16z" />
                 </svg>
                 <span>Pricing</span>
+            </button>
+            <button class="top-bar-btn" onclick="openDocsModal()">
+                <svg viewBox="0 0 24 24">
+                    <path
+                        d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z" />
+                </svg>
+                <span>Docs</span>
             </button>
             <button class="top-bar-btn" onclick="openHelpModal()">
                 <svg viewBox="0 0 24 24">
@@ -2347,6 +2514,69 @@
         </div>
     </div>
 
+    <!-- DOCUMENTATION MODAL -->
+    <div id="docs-modal" class="docs-modal-overlay" onclick="closeDocsModal(event)">
+        <div class="docs-modal" onclick="event.stopPropagation()">
+            <div class="docs-header">
+                <h2>Documentation & User Guide</h2>
+                <button class="pricing-close" onclick="closeDocsModal()" style="position: static;">&times;</button>
+            </div>
+            <div class="docs-content">
+                <div class="docs-section">
+                    <h3>🚀 Getting Started</h3>
+                    <p>Welcome to Digitivia AI Agent! This platform allows you to create, manage, and monitor powerful
+                        AI agents across multiple communication channels.</p>
+                </div>
+
+                <div class="docs-section">
+                    <h3>🤖 Configuring Your Agents</h3>
+                    <p>Each agent (Website, WhatsApp, Messenger, Instagram) can be customized independently:</p>
+                    <ul>
+                        <li><strong>System Prompt:</strong> This is the "brain" of your agent. Define its personality,
+                            knowledge, and boundaries.</li>
+                        <li><strong>Tone:</strong> Choose how the agent should sound (e.g., Professional, Friendly,
+                            Helpful).</li>
+                        <li><strong>Knowledge Base Links:</strong> Add URLs that your agent should use as a reference to
+                            answer questions accurately.</li>
+                    </ul>
+                    <div class="docs-tip">
+                        <strong>Pro Tip:</strong> Be specific in your System Prompt. Instead of "You are a helpful
+                        assistant," try "You are an expert real estate consultant for Acme Realty, specializing in
+                        downtown apartments."
+                    </div>
+                </div>
+
+                <div class="docs-section">
+                    <h3>🔌 Connecting Channels</h3>
+                    <p>To start receiving messages, you need to connect your social channels:</p>
+                    <ul>
+                        <li>Go to the specific agent tab in the left sidebar.</li>
+                        <li>Click the <strong>"Connect Channel"</strong> button.</li>
+                        <li>Follow the integration steps (currently requires a consultation for setup).</li>
+                    </ul>
+                </div>
+
+                <div class="docs-section">
+                    <h3>📨 Using the Live Inbox & Leads</h3>
+                    <ul>
+                        <li><strong>Live Inbox:</strong> Monitor real-time conversations between your agents and
+                            customers. You can step in at any time to take over the chat.</li>
+                        <li><strong>Leads Area:</strong> Automatically captures contact details and interests from
+                            conversations, allowing you to export or manage your pipeline.</li>
+                        <li><strong>Live Insights:</strong> View performance metrics, message volume, and engagement
+                            statistics across all platforms.</li>
+                    </ul>
+                </div>
+
+                <div class="docs-cta">
+                    <h4>Need more help?</h4>
+                    <p>If you're stuck or need a custom implementation, our team is here to help.</p>
+                    <button onclick="closeDocsModal(); openHelpModal();">Book Free Consultation</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- PROFILE MODAL -->
     <div id="profile-modal" class="profile-modal-overlay" onclick="closeProfileModal(event)">
         <div class="profile-modal" onclick="event.stopPropagation()">
@@ -2355,15 +2585,21 @@
             <div class="email" id="profile-email">user@example.com</div>
             <div class="profile-info-row">
                 <span class="profile-info-label">Organization</span>
-                <span class="profile-info-value" id="profile-org">—</span>
+                <input type="text" id="profile-org-input" class="login-input"
+                    style="margin:0; padding:5px 10px; font-size:0.9rem;" placeholder="Organization Name">
             </div>
             <div class="profile-info-row">
                 <span class="profile-info-label">Current Plan</span>
                 <span class="profile-info-value" id="profile-plan">Free</span>
             </div>
-            <div class="profile-actions">
-                <button class="btn-upgrade" onclick="closeProfileModal(); openPricingModal();">Upgrade Plan</button>
-                <button class="btn-logout" onclick="performLogout()">Logout</button>
+            <div class="profile-actions" style="flex-direction: column; gap: 10px;">
+                <button class="btn-confirm" id="save-org-btn" onclick="saveOrganizationName()"
+                    style="width:100%; border-radius:8px;">Save Organization Name</button>
+                <div style="display: flex; gap: 10px; width: 100%;">
+                    <button class="btn-upgrade" onclick="closeProfileModal(); openPricingModal();"
+                        style="flex:1;">Upgrade Plan</button>
+                    <button class="btn-logout" onclick="performLogout()" style="flex:1;">Logout</button>
+                </div>
             </div>
         </div>
     </div>
@@ -2442,6 +2678,15 @@
             document.getElementById('pricing-modal').classList.remove('show');
         }
 
+        function openDocsModal() {
+            document.getElementById('docs-modal').classList.add('show');
+        }
+
+        function closeDocsModal(event) {
+            if (event && event.target !== event.currentTarget) return;
+            document.getElementById('docs-modal').classList.remove('show');
+        }
+
         function openProfileModal() {
             updateProfileModalData();
             document.getElementById('profile-modal').classList.add('show');
@@ -2518,8 +2763,40 @@
             document.getElementById('top-bar-avatar').innerText = initial;
             document.getElementById('profile-name').innerText = name;
             document.getElementById('profile-email').innerText = currentUserProfile?.email || '';
-            document.getElementById('profile-org').innerText = currentOrgData?.name || '—';
+            document.getElementById('profile-org-input').value = currentOrgData?.name || '';
             document.getElementById('profile-plan').innerText = currentOrgData?.subscription_tier || 'Free';
+        }
+
+        async function saveOrganizationName() {
+            const newName = document.getElementById('profile-org-input').value.trim();
+            if (!newName) {
+                showToast("Organization name cannot be empty", "error");
+                return;
+            }
+
+            if (!currentUserOrgId) return;
+
+            const btn = document.getElementById('save-org-btn');
+            btn.innerText = "SAVING...";
+            btn.disabled = true;
+
+            try {
+                const { error } = await supabaseClient
+                    .from('organizations')
+                    .update({ name: newName })
+                    .eq('id', currentUserOrgId);
+
+                if (error) throw error;
+
+                if (currentOrgData) currentOrgData.name = newName;
+                showToast("Organization name updated!", "success");
+            } catch (e) {
+                console.error(e);
+                showToast("Failed to update organization name", "error");
+            } finally {
+                btn.innerText = "Save Organization Name";
+                btn.disabled = false;
+            }
         }
 
         async function initiateCheckout(plan) {
@@ -2720,6 +2997,33 @@
                     if (!insertError && newProfile) {
                         currentUserOrgId = newProfile.org_id;
                         currentUserProfile = newProfile;
+
+                        // EXTRACT ORG NAME FROM EMAIL
+                        let extractedName = "";
+                        const email = user.email || "";
+                        if (email.includes('@')) {
+                            const [username, domain] = email.split('@');
+                            const domainParts = domain.split('.');
+                            const mainDomain = domainParts[0].toLowerCase();
+
+                            const commonDomains = ['gmail', 'yahoo', 'hotmail', 'outlook', 'icloud', 'protonmail', 'live', 'msn'];
+                            if (commonDomains.includes(mainDomain)) {
+                                extractedName = username.charAt(0).toUpperCase() + username.slice(1) + "'s Organization";
+                            } else {
+                                extractedName = mainDomain.charAt(0).toUpperCase() + mainDomain.slice(1);
+                            }
+                        }
+
+                        // Update default organization name
+                        if (extractedName && newProfile.org_id) {
+                            await supabaseClient
+                                .from('organizations')
+                                .update({ name: extractedName })
+                                .eq('id', newProfile.org_id);
+
+                            // Initialize currentOrgData
+                            currentOrgData = { name: extractedName, subscription_tier: 'Free', consultation_meetings_used: 0 };
+                        }
                     }
                 }
             } catch (e) {
@@ -2780,12 +3084,15 @@
                             <h2 class="agent-title">
                                 <span class="icon-circle" style="background: ${agent.color};"></span> ${agent.name}
                             </h2>
-                            <div class="agent-toggle-container">
-                                <span class="toggle-label">LIVE</span>
-                                <label class="switch">
-                                    <input type="checkbox" id="status-${agent.id}" onchange="toggleAgentStatus('${agent.id}')">
-                                    <span class="slider"></span>
-                                </label>
+                            <div style="display: flex; gap: 10px; align-items: center;">
+                                <button class="pill-btn" onclick="window.open(CALENDAR_URL, '_blank')" style="background:rgba(255,255,255,0.1); border:1px solid var(--theme-color); font-size:0.8rem; height: 32px;">🔗 Connect Channel</button>
+                                <div class="agent-toggle-container">
+                                    <span class="toggle-label">LIVE</span>
+                                    <label class="switch">
+                                        <input type="checkbox" id="status-${agent.id}" onchange="toggleAgentStatus('${agent.id}')">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
                             </div>
                         </div>
 
@@ -2875,7 +3182,12 @@
                         </select>
                     </div>
                     <div id="insights-grid" class="stats-grid">
-                        <div style="grid-column: 1/-1; text-align:center; padding: 40px; color:#888;">Select a platform to view data</div>
+                        <div style="grid-column: 1/-1; text-align:center; padding: 60px; color:#888;">
+                            <div style="font-size: 3rem; margin-bottom: 20px;">📊</div>
+                            <h3>No Data Available</h3>
+                            <p>Connect your platform accounts to see live performance insights and post engagement.</p>
+                            <button class="pill-btn primary" onclick="window.open(CALENDAR_URL, '_blank')" style="margin-top: 20px;">Connect Insights</button>
+                        </div>
                     </div>
                     <div class="posts-container" id="posts-section" style="display:none;">
                         <div class="posts-header">Recent Posts Performance</div>
@@ -2892,9 +3204,9 @@
 
             html += `
             <div id="inbox" class="tab-content">
-                <div class="card glass" style="padding:0; overflow:hidden;">
+                <div class="card glass" style="padding:0; overflow:hidden; background: #0f1014;">
                     <div class="inbox-layout">
-                        <div class="inbox-sidebar">
+                        <div class="inbox-sidebar" style="background: rgba(255,255,255,0.03); border-right: 1px solid var(--glass-border);">
                             <div class="platform-selector">
                                 <button class="platform-btn" style="background:#5BAEB0" onclick="loadInbox('website', false)">${iconWebsite}</button>
                                 <button class="platform-btn" style="background:#57B078" onclick="loadInbox('whatsapp', false)">${iconWhatsapp}</button>
@@ -2904,9 +3216,16 @@
                             <div style="padding:10px; font-size:0.8rem; text-align:center; color:#888;">Select Platform</div>
                             <div id="contact-list" class="contact-list"></div>
                         </div>
-                        <div class="inbox-main">
+                        <div class="inbox-main" style="background: radial-gradient(circle at center, rgba(91, 174, 176, 0.05) 0%, transparent 70%);">
                             <div class="inbox-header" id="inbox-header-title">Select a conversation</div>
-                            <div id="inbox-messages" class="chat-history" style="background:rgba(0,0,0,0.2);"></div>
+                            <div id="inbox-messages" class="chat-history">
+                                <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; color:#888; text-align:center; padding:40px;">
+                                    <div style="font-size: 3rem; margin-bottom: 20px;">💬</div>
+                                    <h3>No Conversations Yet</h3>
+                                    <p>Connect your social channels to start chatting with your customers in real-time.</p>
+                                    <button class="pill-btn primary" onclick="window.open(CALENDAR_URL, '_blank')" style="margin-top: 20px;">Connect Channels</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -2930,7 +3249,58 @@
                         </div>
                     </div>
                     <div id="leads-grid" class="leads-grid">
+                         <div style="grid-column: 1/-1; text-align:center; padding: 60px; color:#888;">
+                            <div style="font-size: 3rem; margin-bottom: 20px;">👥</div>
+                            <h3>No Leads Yet</h3>
+                            <p>Connect your channels to start capturing leads from conversations.</p>
+                            <button class="pill-btn primary" onclick="window.open(CALENDAR_URL, '_blank')" style="margin-top: 20px;">Connect Your Channels</button>
+                         </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- E. CUSTOMER REVIEWS TAB -->
+            <div id="reviews" class="tab-content">
+                <div class="card glass">
+                    <div class="leads-controls">
+                        <h2>Customer Reviews</h2>
+                        <button class="export-btn" onclick="window.open(CALENDAR_URL, '_blank')">
+                            Connect Google Reviews
+                        </button>
+                    </div>
+                    <div class="stats-grid" id="reviews-stats">
+                        <div class="stat-card">
+                            <div style="color:var(--text-muted); font-size:0.8rem;">Average Rating</div>
+                            <div style="font-size:1.8rem; font-weight:700; color:var(--theme-color);">0.0</div>
                         </div>
+                        <div class="stat-card">
+                            <div style="color:var(--text-muted); font-size:0.8rem;">Total Reviews</div>
+                            <div style="font-size:1.8rem; font-weight:700; color:var(--theme-color);">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <div style="color:var(--text-muted); font-size:0.8rem;">Positive (4-5★)</div>
+                            <div style="font-size:1.8rem; font-weight:700; color:var(--theme-color);">0%</div>
+                        </div>
+                    </div>
+                    <div style="text-align:center; padding: 60px; color:#888;">
+                        <div style="font-size: 3rem; margin-bottom: 20px;">⭐</div>
+                        <h3>No Reviews Connected</h3>
+                        <p>Link your Google Business profile to monitor and reply to reviews here.</p>
+                        <button class="pill-btn primary" onclick="window.open(CALENDAR_URL, '_blank')" style="margin-top: 20px;">Connect Google Reviews</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- F. FOLLOW-UPS TAB -->
+            <div id="followups" class="tab-content">
+                <div class="card glass">
+                    <h2>Scheduled Follow-ups</h2>
+                    <div style="text-align:center; padding: 60px; color:#888;">
+                        <div style="font-size: 3rem; margin-bottom: 20px;">🗓️</div>
+                        <h3>No Scheduled Tasks</h3>
+                        <p>When your agents schedule callbacks or follow-ups, they will appear here.</p>
+                        <button class="pill-btn primary" onclick="window.open(CALENDAR_URL, '_blank')" style="margin-top: 20px;">Set Up Automations</button>
+                    </div>
                 </div>
             </div>`;
 
@@ -2950,7 +3320,7 @@
             if (tabId === 'page' || tabId === 'messenger') color = '#5B89CE';
             if (tabId === 'instagram') color = '#C66B8D';
             if (tabId === 'website') color = '#5BAEB0';
-            if (tabId === 'inbox') color = '#ffffff';
+            if (tabId === 'inbox') color = '#6366f1'; // Indigo for inbox, avoid pure white for profile visibility
             if (tabId === 'leads') {
                 color = '#e6b72a'; // Gold for leads
                 fetchLeads(); // Fetch data when tab opens
@@ -2961,6 +3331,8 @@
                     setInsightPlatform('facebook');
                 }
             }
+            if (tabId === 'reviews') color = '#FFD700'; // Gold for reviews
+            if (tabId === 'followups') color = '#20B2AA'; // SeaGreen for followups
 
             document.documentElement.style.setProperty('--theme-color', color);
 
