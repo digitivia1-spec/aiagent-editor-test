@@ -3101,7 +3101,11 @@
             } catch (e) {
                 document.getElementById(loadingId).remove();
                 appendMessage(agentId, 'ai', 'Error: Could not reach agent.');
-                console.error(e);
+                console.error("Chat Error Details:", e);
+                if (e.code) console.error("Code:", e.code);
+                if (e.message) console.error("Message:", e.message);
+                if (e.details) console.error("Details:", e.details);
+                if (e.hint) console.error("Hint:", e.hint);
             }
         }
 
