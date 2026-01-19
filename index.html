@@ -1808,7 +1808,7 @@
 
         // Update ALL references in your code from 'supabase' to 'supabaseClient'
         // Example:
-        // const { data, error } = await supabaseClient.auth.signInWithPassword(...)
+        // const { data, error } = await supabaseClientClient.auth.signInWithPassword(...)
 
         // --- WEBHOOKS (Kept CHAT for Brain, Removed Others) ---
         const CHAT_WEBHOOK = "https://n8n.srv1174105.hstgr.cloud/webhook/chatHandler";
@@ -1866,7 +1866,7 @@
             setLoadingState(true, "LOGGING IN...");
 
             try {
-                const { data, error } = await supabaseClient.auth.signInWithPassword({
+                const { data, error } = await supabaseClientClient.auth.signInWithPassword({
                     email: email,
                     password: pass,
                 });
@@ -1896,7 +1896,7 @@
             setLoadingState(true, "REGISTERING...");
 
             try {
-                const { data, error } = await supabaseClient.auth.signUp({
+                const { data, error } = await supabaseClientClient.auth.signUp({
                     email: email,
                     password: pass,
                 });
@@ -1914,7 +1914,7 @@
 
         async function performOAuthLogin(provider) {
             try {
-                const { data, error } = await supabaseClient.auth.signInWithOAuth({
+                const { data, error } = await supabaseClientClient.auth.signInWithOAuth({
                     provider: provider,
                     options: {
                         redirectTo: window.location.href
@@ -2272,7 +2272,7 @@
 
             try {
                 // PHASE 3: Direct Supabase Query
-                const { data: leads, error } = await supabase
+                const { data: leads, error } = await supabaseClient
                     .from('leads')
                     .select('*')
                     .eq('org_id', currentUserOrgId)
@@ -2417,7 +2417,7 @@
 
             try {
                 // PHASE 3: Direct Supabase Query for Metrics
-                const { data, error } = await supabase
+                const { data, error } = await supabaseClient
                     .from('platform_metrics')
                     .select('*')
                     .eq('org_id', currentUserOrgId)
@@ -2453,7 +2453,7 @@
 
                 const dbPlatform = platform === 'facebook' ? 'facebook' : 'instagram';
 
-                const { data: posts, error } = await supabase
+                const { data: posts, error } = await supabaseClient
                     .from('social_posts')
                     .select('*, social_post_metrics(*)')
                     .eq('org_id', currentUserOrgId)
@@ -2615,7 +2615,7 @@
 
             try {
                 // PHASE 4: Fetch from inbox_contacts (Supabase)
-                const { data: contacts, error } = await supabase
+                const { data: contacts, error } = await supabaseClient
                     .from('inbox_contacts')
                     .select('*')
                     .eq('org_id', currentUserOrgId)
@@ -2666,12 +2666,12 @@
                 container.innerHTML = '<div style="padding:20px; text-align:center;">Loading history...</div>';
 
                 // Cleanup old subscription
-                if (realtimeSubscription) supabase.removeChannel(realtimeSubscription);
+                if (realtimeSubscription) supabaseClient.removeChannel(realtimeSubscription);
             }
 
             try {
                 // 1. Get Conversation ID for this Contact
-                const { data: conversation, error: convError } = await supabase
+                const { data: conversation, error: convError } = await supabaseClient
                     .from('inbox_conversations')
                     .select('id')
                     .eq('org_id', currentUserOrgId)
@@ -2686,7 +2686,7 @@
                 const conversationId = conversation.id;
 
                 // 2. Fetch Messages
-                const { data: messages, error } = await supabase
+                const { data: messages, error } = await supabaseClient
                     .from('inbox_messages')
                     .select('*')
                     .eq('conversation_id', conversationId)
@@ -2710,7 +2710,7 @@
 
                 // 3. Setup Realtime (Only once per selection)
                 if (!isAutoRefresh) {
-                    realtimeSubscription = supabase
+                    realtimeSubscription = supabaseClient
                         .channel('public:inbox_messages')
                         .on('postgres_changes', {
                             event: 'INSERT',
@@ -2760,7 +2760,7 @@
         // --- PHASE 2: CONNECT CONFIGS TO SUPABASE ---
         async function fetchCurrentConfigurations() {
             if (!currentUserOrgId) {
-                const { data: { user } } = await supabase.auth.getUser();
+                const { data: { user } } = await supabaseClient.auth.getUser();
                 if (user) await ensureUserProfile(user);
                 if (!currentUserOrgId) {
                     showToast("No Organization Found. Please contact admin.", "error");
@@ -2769,14 +2769,14 @@
             }
 
             try {
-                const { data: configs, error } = await supabase
+                const { data: configs, error } = await supabaseClient
                     .from('agent_configs')
                     .select('*')
                     .eq('org_id', currentUserOrgId);
 
                 if (error) throw error;
 
-                const { data: linksData, error: linksError } = await supabase
+                const { data: linksData, error: linksError } = await supabaseClient
                     .from('agent_kb_links')
                     .select('*')
                     .eq('org_id', currentUserOrgId);
@@ -2813,7 +2813,7 @@
             btn.innerText = "Saving...";
 
             try {
-                const { error: configError } = await supabase
+                const { error: configError } = await supabaseClient
                     .from('agent_configs')
                     .upsert({
                         org_id: currentUserOrgId,
@@ -2828,7 +2828,7 @@
                 const inputs = document.querySelectorAll(`#links-container-${agentId} .link-input`);
                 const newLinks = Array.from(inputs).map(input => input.value.trim()).filter(val => val !== "");
 
-                await supabase.from('agent_kb_links').delete().match({ org_id: currentUserOrgId, agent_type: agentId });
+                await supabaseClient.from('agent_kb_links').delete().match({ org_id: currentUserOrgId, agent_type: agentId });
 
                 if (newLinks.length > 0) {
                     const linksPayload = newLinks.map(url => ({
@@ -2836,7 +2836,7 @@
                         agent_type: agentId,
                         url: url
                     }));
-                    await supabase.from('agent_kb_links').insert(linksPayload);
+                    await supabaseClient.from('agent_kb_links').insert(linksPayload);
                 }
 
                 showToast("Saved Successfully!", "success");
