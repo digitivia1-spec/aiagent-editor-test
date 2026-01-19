@@ -1785,6 +1785,7 @@
             margin-bottom: 10px;
             background: linear-gradient(90deg, var(--theme-color), #a78bfa);
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
@@ -2165,25 +2166,166 @@
             }
         }
 
-        .connect-btn {
+        /* === DOCUMENTATION MODAL === */
+        .docs-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 6000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(8px);
+        }
+
+        .docs-modal-overlay.show {
+            display: flex;
+        }
+
+        .docs-modal {
+            background: linear-gradient(145deg, #1a1b20 0%, #0f1014 100%);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            max-width: 900px;
+            width: 95%;
+            max-height: 85vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            animation: popIn 0.3s ease;
+        }
+
+        .docs-header {
+            padding: 25px 30px;
+            border-bottom: 1px solid var(--glass-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .docs-header h2 {
+            background: linear-gradient(90deg, var(--theme-color), #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 1.5rem;
+            margin: 0;
+        }
+
+        .docs-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 30px;
+        }
+
+        .docs-section {
+            margin-bottom: 30px;
+        }
+
+        .docs-section h3 {
+            color: var(--theme-color);
+            margin-bottom: 15px;
+            font-size: 1.1rem;
             display: flex;
             align-items: center;
+            gap: 10px;
+        }
+
+        .docs-section p,
+        .docs-section li {
+            color: var(--text-muted);
+            line-height: 1.7;
+            margin-bottom: 10px;
+        }
+
+        .docs-section ul {
+            padding-left: 20px;
+        }
+
+        .docs-section ul li {
+            margin-bottom: 8px;
+        }
+
+        .docs-tip {
+            background: rgba(91, 174, 176, 0.1);
+            border-left: 3px solid var(--theme-color);
+            padding: 15px;
+            border-radius: 0 8px 8px 0;
+            margin: 15px 0;
+        }
+
+        .docs-tip strong {
+            color: var(--theme-color);
+        }
+
+        .docs-cta {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--theme-color);
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .docs-cta h4 {
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        .docs-cta p {
+            color: var(--text-muted);
+            margin-bottom: 15px;
+        }
+
+        .docs-cta button {
+            background: var(--theme-color);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .docs-cta button:hover {
+            filter: brightness(1.2);
+        }
+
+        /* Connect Channel Button - Fluid and Responsive */
+        .connect-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
             gap: 8px;
             padding: 10px 20px;
             border-radius: 50px;
-            background: rgba(255, 255, 255, 0.1);
+            background: linear-gradient(135deg, rgba(91, 174, 176, 0.15), rgba(91, 174, 176, 0.05));
             color: white;
             border: 1px solid var(--theme-color);
             cursor: pointer;
-            font-size: 0.9rem;
+            font-size: clamp(0.75rem, 2vw, 0.9rem);
             font-weight: 500;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
             text-decoration: none;
+            white-space: nowrap;
+            flex-shrink: 0;
         }
 
         .connect-btn:hover {
             background: var(--theme-color);
-            box-shadow: 0 0 15px rgba(91, 174, 176, 0.4);
+            box-shadow: 0 4px 20px rgba(91, 174, 176, 0.4);
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 768px) {
+            .connect-btn {
+                width: 100%;
+                padding: 12px 16px;
+                font-size: 0.85rem;
+            }
         }
     </style>
 </head>
@@ -2647,11 +2789,11 @@
             if (currentUserOrgId) {
                 const { data } = await supabaseClient
                     .from('organizations')
-                    .select('consultation_meetings_used')
+                    .select('meeting_booking_count')
                     .eq('id', currentUserOrgId)
                     .single();
                 if (data) {
-                    consultationMeetingsUsed = data.consultation_meetings_used || 0;
+                    consultationMeetingsUsed = data.meeting_booking_count || 0;
                 }
             }
 
@@ -2690,7 +2832,7 @@
                 const newCount = consultationMeetingsUsed + 1;
                 await supabaseClient
                     .from('organizations')
-                    .update({ consultation_meetings_used: newCount })
+                    .update({ meeting_booking_count: newCount })
                     .eq('id', currentUserOrgId);
                 consultationMeetingsUsed = newCount;
             }
@@ -2927,7 +3069,7 @@
                     if (profile.org_id) {
                         const { data: orgData } = await supabaseClient
                             .from('organizations')
-                            .select('name, subscription_tier, consultation_meetings_used')
+                            .select('name, subscription_tier, meeting_booking_count')
                             .eq('id', profile.org_id)
                             .single();
                         if (orgData) {
@@ -3575,7 +3717,13 @@
                 cachedPosts = posts || [];
 
                 if (cachedPosts.length === 0) {
-                    list.innerHTML = '<div style="padding:20px; text-align:center;">No recent posts found.</div>';
+                    list.innerHTML = `
+                    <div style="padding: 60px 20px; text-align:center; color:#888;">
+                        <div style="font-size: 3rem; margin-bottom: 20px;">📸</div>
+                        <h3>No Posts Yet</h3>
+                        <p>Connect your ${dbPlatform.charAt(0).toUpperCase() + dbPlatform.slice(1)} account to see your post performance here.</p>
+                        <button class="pill-btn primary" onclick="window.open(CALENDAR_URL, '_blank')" style="margin-top: 20px;">Connect Posts</button>
+                    </div>`;
                     return;
                 }
 
