@@ -2828,6 +2828,12 @@
                     .select('*')
                     .eq('org_id', currentUserOrgId);
 
+                // Debugging Schema
+                console.log("Supabase fetched configs:", configs);
+                if (configs && configs.length > 0) {
+                    console.log("Config keys:", Object.keys(configs[0]));
+                }
+
                 if (error) throw error;
 
                 const { data: linksData, error: linksError } = await supabaseClient
@@ -2980,7 +2986,7 @@
 
             try {
                 // 1. Get Session ID
-                let { data: session } = await supabase
+                let { data: session } = await supabaseClient
                     .from('test_chat_sessions')
                     .select('id')
                     .eq('org_id', currentUserOrgId)
@@ -2989,7 +2995,7 @@
 
                 // Create if not exists
                 if (!session) {
-                    const { data: newSession, error: createErr } = await supabase
+                    const { data: newSession, error: createErr } = await supabaseClient
                         .from('test_chat_sessions')
                         .insert([{ org_id: currentUserOrgId, agent_type: agentId }])
                         .select()
@@ -3000,7 +3006,7 @@
                 if (!session) return; // fail safe
 
                 // 2. Load Messages
-                const { data: messages } = await supabase
+                const { data: messages } = await supabaseClient
                     .from('test_chat_messages')
                     .select('*')
                     .eq('session_id', session.id)
@@ -3032,7 +3038,7 @@
 
             try {
                 // 1. Get Session ID (Reuse logic or cache it)
-                let { data: session } = await supabase
+                let { data: session } = await supabaseClient
                     .from('test_chat_sessions')
                     .select('id')
                     .eq('org_id', currentUserOrgId)
@@ -3040,12 +3046,12 @@
                     .single();
 
                 if (!session) { // Should exist from load, but double check
-                    const { data: newSession } = await supabase.from('test_chat_sessions').insert([{ org_id: currentUserOrgId, agent_type: agentId }]).select().single();
+                    const { data: newSession } = await supabaseClient.from('test_chat_sessions').insert([{ org_id: currentUserOrgId, agent_type: agentId }]).select().single();
                     session = newSession;
                 }
 
                 // 2. Save User Message (MEMORY)
-                await supabase.from('test_chat_messages').insert({
+                await supabaseClient.from('test_chat_messages').insert({
                     session_id: session.id,
                     role: 'user',
                     content: text
@@ -3069,7 +3075,7 @@
                 const replyText = data.reply || data.output || "No reply received.";
 
                 // 4. Save AI Response (MEMORY)
-                await supabase.from('test_chat_messages').insert({
+                await supabaseClient.from('test_chat_messages').insert({
                     session_id: session.id,
                     role: 'assistant',
                     content: replyText
