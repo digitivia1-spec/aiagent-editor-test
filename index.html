@@ -2530,6 +2530,56 @@
                 display: inline-block !important;
             }
 
+            /* --- RTL INBOX FIXES --- */
+            [dir="rtl"] .contact-item.active {
+                border-left: none;
+                border-right: 3px solid var(--theme-color);
+            }
+
+            [dir="rtl"] .contact-info {
+                margin-left: 0;
+                margin-right: 10px;
+                text-align: right;
+            }
+
+            [dir="rtl"] .lead-header {
+                flex-direction: row-reverse;
+                text-align: right;
+            }
+
+            [dir="rtl"] .lead-name {
+                flex-direction: row-reverse;
+            }
+
+            [dir="rtl"] .lead-info-row {
+                flex-direction: row-reverse;
+            }
+
+            /* Fix Message Bubbles in RTL */
+            [dir="rtl"] .msg-ai {
+                border-bottom-left-radius: 12px;
+                border-bottom-right-radius: 2px;
+            }
+
+            [dir="rtl"] .msg-user {
+                border-bottom-right-radius: 12px;
+                border-bottom-left-radius: 2px;
+            }
+
+            /* Fix Chat Input in RTL */
+            [dir="rtl"] .chat-input-area {
+                flex-direction: row;
+                /* Gap handles spacing, order handles visual */
+            }
+
+            [dir="rtl"] .chat-input-area input {
+                text-align: right;
+            }
+
+
+            /* Ensure sidebar opens from right in RTL */
+
+
             /* Ensure sidebar opens from right in RTL */
             [dir="rtl"] .sidebar {
                 transform: translateX(100%);
