@@ -2662,6 +2662,21 @@
                 left: 0;
             }
         }
+
+        /* Leads Export Fixes RTL */
+        [dir="rtl"] .leads-controls {
+            flex-direction: row-reverse;
+        }
+
+        [dir="rtl"] .export-group {
+            flex-direction: row-reverse;
+            gap: 10px;
+        }
+
+        [dir="rtl"] .export-btn {
+            flex-direction: row-reverse;
+            /* Flip icon/text */
+        }
     </style>
 </head>
 
