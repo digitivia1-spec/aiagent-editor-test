@@ -2513,6 +2513,8 @@
                 min-width: 40px !important;
                 padding: 6px 10px !important;
                 font-size: 0.75rem !important;
+                margin-inline-end: 8px !important;
+                /* Add spacing between button and avatar */
             }
 
             /* Ensure sidebar opens from right in RTL */
@@ -3021,6 +3023,8 @@
                 profile: { label_org: "Organization", label_plan: "Current Plan", btn_save: "Save Organization Name", btn_upgrade: "Upgrade Plan", btn_logout: "Logout", placeholder_org: "Organization Name" },
                 help: { title: "Free Consultation Meeting", btn_book: "Book Consultation", text: "Book a 30-minute consultation with our team to help you get the most out of your AI agents.", remaining: "You have <strong id='help-remaining-count'>2</strong> free consultation(s) remaining" }
             },
+            agents: { website: "Website Agent", whatsapp: "WhatsApp Agent", messenger: "Messenger Agent", instagram: "Instagram Agent" },
+            roles: { sales: "Sales Agent 🚀", service: "Customer Service ✨", service_short: "Customer Service", sales_short: "Sales Agent" },
             messages: { toast_saved: "Saved Successfully!", toast_org_updated: "Organization name updated!", loading_config: "Fetching Agent Configurations...", agent_activated: "Activated", agent_deactivated: "Deactivated", error_no_org: "No Organization Found. Please contact admin.", error_saving: "Error saving data: ", error_status_update: "Failed to update status" }
         };
 
@@ -3063,6 +3067,8 @@
                 profile: { label_org: "الشركة", label_plan: "الخطة الحالية", btn_save: "حفظ اسم الشركة", btn_upgrade: "ترقية الخطة", btn_logout: "تسجيل خروج", placeholder_org: "اسم الشركة" },
                 help: { title: "استشارة مجانية", btn_book: "حجز استشارة", text: "احجز استشارة لمدة 30 دقيقة مع فريقنا لمساعدتك في تحقيق أقصى استفادة من وكلاء الذكاء الاصطناعي الخاصين بك.", remaining: "لديك <strong id='help-remaining-count'>2</strong> استشارة مجانية متبقية" }
             },
+            agents: { website: "وكيل الموقع", whatsapp: "وكيل واتساب", messenger: "وكيل ماسنجر", instagram: "وكيل انستغرام" },
+            roles: { sales: "وكيل مبيعات 🚀", service: "خدمة عملاء ✨", service_short: "خدمة عملاء", sales_short: "وكيل مبيعات" },
             messages: { toast_saved: "تم الحفظ بنجاح!", toast_org_updated: "تم تحديث اسم الشركة!", loading_config: "جاري جلب الإعدادات...", agent_activated: "تم تفعيل", agent_deactivated: "تم تعطيل", error_no_org: "لم يتم العثور على شركة. يرجى الاتصال بالمسؤول.", error_saving: "خطأ في حفظ البيانات: ", error_status_update: "فشل تحديث الحالة" }
         };
 
@@ -3184,11 +3190,12 @@
                 try {
                     const { data, error } = await supabaseClient
                         .from('organizations')
-                        .select('meeting_booking_count')
+                        .select('*') // Wildcard to avoid column errors
                         .eq('id', currentUserOrgId)
                         .single();
 
                     if (!error && data) {
+                        // Check if property exists, default to 0
                         consultationMeetingsUsed = data.meeting_booking_count || 0;
                     }
                 } catch (e) {
@@ -3472,13 +3479,13 @@
                     if (profile.org_id) {
                         const { data: orgData, error: orgError } = await supabaseClient
                             .from('organizations')
-                            .select('name, subscription_tier')
+                            .select('*') // Wildcard to avoid specific column errors
                             .eq('id', profile.org_id)
                             .single();
                         if (orgData) {
                             currentOrgData = orgData;
                         } else if (orgError) {
-                            console.warn('Organization fetch error:', orgError.message);
+                            console.warn('Organization fetch warning:', orgError.message);
                         }
                     }
 
