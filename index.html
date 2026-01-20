@@ -2674,17 +2674,15 @@
         }
 
         [dir="rtl"] .export-btn {
-            flex-direction: row-reverse;
-            /* Flip icon/text */
+            flex-direction: row-reverse !important;
             width: auto !important;
-            /* Force pill shape */
             height: auto !important;
-            /* Force pill shape */
             border-radius: 50px !important;
             padding: 8px 16px !important;
             min-width: 120px;
-            /* Ensure enough space */
             justify-content: center;
+            display: flex !important;
+            align-items: center !important;
         }
     </style>
 </head>
