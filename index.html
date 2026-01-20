@@ -1587,17 +1587,46 @@
             .inbox-layout {
                 flex-direction: column;
                 height: auto;
+                position: relative;
+                /* Context for absolute positioning if needed */
             }
 
             .inbox-sidebar {
                 width: 100%;
-                height: 300px;
+                height: auto;
+                /* Allow it to grow */
+                min-height: 300px;
                 border-right: none;
                 border-bottom: 1px solid var(--glass-border);
+                display: flex;
+                /* Ensure it's visible */
             }
 
+            /* On Mobile: Hide Main Chat by default (show list) */
             .inbox-main {
-                height: 500px;
+                display: none;
+                height: 80vh;
+                /* Give it height when shown */
+                width: 100%;
+            }
+
+            /* When a class is toggled (we'll need JS for 'show-chat', but for now let's fix the layout first) 
+               Actually, to fix the visual mess in the screenshot:
+               The issue is likely flex-direction row-reverse making them side-by-side or weirdly stacked.
+            */
+
+            [dir="rtl"] .inbox-layout {
+                flex-direction: column;
+                /* Force column on mobile even in RTL */
+            }
+
+            [dir="rtl"] .inbox-sidebar {
+                width: 100%;
+                border-left: none;
+            }
+
+            [dir="rtl"] .contacts-list {
+                padding: 10px;
             }
 
             .post-row {
@@ -4398,7 +4427,6 @@
                     `;
                     newContent.appendChild(div);
                 });
-                list.innerHTML = '';
                 list.appendChild(newContent);
             } catch (e) {
                 console.error(e);
@@ -4406,9 +4434,56 @@
             }
         }
 
+        // --- MOBILE CHAT NAVIGATION ---
+        function showChatOnMobile() {
+            if (window.innerWidth <= 768) {
+                document.querySelector('.inbox-sidebar').style.display = 'none';
+                document.querySelector('.inbox-main').style.display = 'flex';
+                // Add back button if not exists
+                addMobileBackButton();
+            }
+        }
+
+        function hideChatOnMobile() {
+            if (window.innerWidth <= 768) {
+                document.querySelector('.inbox-sidebar').style.display = 'flex';
+                document.querySelector('.inbox-main').style.display = 'none';
+                currentChatUser = null; // Deselect
+                // Remove active class from items
+                document.querySelectorAll('.contact-item').forEach(el => el.classList.remove('active'));
+            }
+        }
+
+        function addMobileBackButton() {
+            const header = document.getElementById('inbox-header-title');
+            if (!header || document.getElementById('mobile-back-btn')) return;
+
+            const backBtn = document.createElement('button');
+            backBtn.id = 'mobile-back-btn';
+            backBtn.innerHTML = '←'; // Arrow
+            // RTL Arrow logic
+            if (document.documentElement.dir === 'rtl') backBtn.innerHTML = '→';
+
+            backBtn.style.cssText = `
+                background: none; border: none; color: white; font-size: 1.5rem; 
+                margin-right: 10px; cursor: pointer; padding: 0 5px;
+            `;
+            if (document.documentElement.dir === 'rtl') {
+                backBtn.style.marginRight = '0';
+                backBtn.style.marginLeft = '10px';
+            }
+
+            backBtn.onclick = hideChatOnMobile;
+            header.parentElement.insertBefore(backBtn, header);
+        }
+
         async function loadInboxMessages(platform, contactId, contactName, isAutoRefresh = false) {
             currentChatUser = contactId;
             currentChatUserName = contactName;
+
+            // Trigger Mobile View Transition
+            if (!isAutoRefresh) showChatOnMobile();
+
             const container = document.getElementById('inbox-messages');
 
             if (!isAutoRefresh) {
