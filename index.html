@@ -2499,6 +2499,44 @@
             transform: translateY(-1px);
             box-shadow: 0 4px 12px rgba(91, 174, 176, 0.5);
         }
+
+        /* Mobile Tweaks */
+        @media (max-width: 768px) {
+            .top-bar {
+                border-radius: 12px !important;
+                /* Fix roundness */
+                padding: 0 10px !important;
+                gap: 5px;
+            }
+
+            .lang-toggle {
+                min-width: 40px !important;
+                padding: 6px 10px !important;
+                font-size: 0.75rem !important;
+            }
+
+            /* Ensure sidebar opens from right in RTL */
+            [dir="rtl"] .sidebar {
+                transform: translateX(100%);
+                left: auto;
+                right: 0;
+            }
+
+            [dir="rtl"] .sidebar.mobile-open {
+                transform: translateX(0);
+            }
+
+            /* Ensure sidebar opens from left in LTR */
+            [dir="ltr"] .sidebar {
+                transform: translateX(-100%);
+                left: 0;
+                right: auto;
+            }
+
+            [dir="ltr"] .sidebar.mobile-open {
+                transform: translateX(0);
+            }
+        }
     </style>
 </head>
 
@@ -2910,10 +2948,10 @@
 
         // Define Agents & Colors
         const AGENTS = [
-            { id: 'website', name: 'Website Agent', color: '#5BAEB0' },
-            { id: 'whatsapp', name: 'WhatsApp Agent', color: '#57B078' },
-            { id: 'messenger', name: 'Messenger Agent', color: '#5B89CE' },
-            { id: 'instagram', name: 'Instagram Agent', color: '#C66B8D' }
+            { id: 'website', nameKey: 'agents.website', color: '#5BAEB0' },
+            { id: 'whatsapp', nameKey: 'agents.whatsapp', color: '#57B078' },
+            { id: 'messenger', nameKey: 'agents.messenger', color: '#5B89CE' },
+            { id: 'instagram', nameKey: 'agents.instagram', color: '#C66B8D' }
         ];
 
         const TONE_OPTIONS = ["Professional & Formal", "Friendly & Casual", "Empathetic & Helpful", "Sales-Oriented & Persuasive", "Witty & Humorous"];
@@ -3091,7 +3129,7 @@
                 const key = el.getAttribute('data-i18n');
                 const translated = t(key);
                 if (translated && translated !== key) {
-                    el.innerText = translated;
+                    el.innerHTML = translated;
                 }
             });
 
@@ -3150,30 +3188,31 @@
                         .eq('id', currentUserOrgId)
                         .single();
 
-                    if (error) throw error;
-
-                    if (data) {
+                    if (!error && data) {
                         consultationMeetingsUsed = data.meeting_booking_count || 0;
                     }
                 } catch (e) {
-                    console.warn("Could not fetch consultation count (likely RLS or schema):", e.message);
-                    consultationMeetingsUsed = 0;
+                    console.warn("Could not fetch consultation count:", e);
                 }
             }
 
             const remaining = Math.max(0, 2 - consultationMeetingsUsed);
-            document.getElementById('help-remaining-count').innerText = remaining;
+            const counterEl = document.getElementById('help-remaining-count');
+            if (counterEl) counterEl.innerText = remaining;
 
             const btn = document.getElementById('help-book-btn');
-            if (remaining <= 0) {
-                btn.innerText = 'Contact Sales';
-                btn.classList.add('exhausted');
-            } else {
-                btn.innerText = 'Book Consultation';
-                btn.classList.remove('exhausted');
+            if (btn) {
+                if (remaining <= 0) {
+                    btn.innerText = 'Contact Sales';
+                    btn.classList.add('exhausted');
+                } else {
+                    btn.innerText = t('modals.help.btn_book'); // Use translation
+                    btn.classList.remove('exhausted');
+                }
             }
 
-            document.getElementById('help-modal').classList.add('show');
+            const modal = document.getElementById('help-modal');
+            if (modal) modal.classList.add('show');
         }
 
         function closeHelpModal(event) {
@@ -3546,12 +3585,13 @@
             let html = '';
 
             AGENTS.forEach((agent) => {
+                const agentName = t(agent.nameKey);
                 html += `
                 <div id="${agent.id}" class="tab-content">
                     <div class="card glass">
                         <div class="agent-header-row">
                             <h2 class="agent-title">
-                                <span class="icon-circle" style="background: ${agent.color};"></span> ${agent.name}
+                                <span class="icon-circle" style="background: ${agent.color};"></span> ${agentName}
                             </h2>
                             <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
                                 <a href="${CALENDAR_URL}" target="_blank" class="connect-btn" data-i18n="agent_config.btn_connect_channel">🔗 Connect Channel</a>
@@ -3580,8 +3620,8 @@
                                 <textarea id="prompt-${agent.id}" class="textarea-locked" readonly data-i18n-placeholder="agent_config.placeholder_prompt" placeholder="Define how your agent should behave..." oninput="checkDirty('${agent.id}')"></textarea>
                                 
                                 <div class="suggestions">
-                                    <button class="pill-btn" onclick="applySuggestion('${agent.id}', 'customer_service')">✨ Customer Service</button>
-                                    <button class="pill-btn" onclick="applySuggestion('${agent.id}', 'sales')">🚀 Sales Agent</button>
+                                    <button class="pill-btn" onclick="applySuggestion('${agent.id}', 'customer_service')">${t('roles.service')}</button>
+                                    <button class="pill-btn" onclick="applySuggestion('${agent.id}', 'sales')">${t('roles.sales')}</button>
                                 </div>
                             </div>
                         </div>
@@ -3606,7 +3646,9 @@
                             <div id="${agent.id}-chat-sec" class="section-content">
                                 <div class="chat-container">
                                     <div id="chat-history-${agent.id}" class="chat-history">
-                                        <div class="message msg-ai">${t('agent_config.chat_greeting').replace('{name}', agent.name)}</div>
+                                    <div id="chat-history-${agent.id}" class="chat-history">
+                                        <div class="message msg-ai">${t('agent_config.chat_greeting').replace('{name}', agentName)}</div>
+                                    </div>
                                     </div>
                                     <div class="chat-input-area">
                                         <input type="text" id="chat-input-${agent.id}" placeholder="${t('agent_config.chat_placeholder')}" data-i18n-placeholder="agent_config.chat_placeholder" onkeypress="handleEnter(event, '${agent.id}')">
@@ -3739,23 +3781,23 @@
                     </div>
                     <div class="stats-grid" id="reviews-stats">
                         <div class="stat-card">
-                            <div style="color:var(--text-muted); font-size:0.8rem;" data-i18n="reviews.stat_avg_rating">Average Rating</div>
+                            <div style="color:var(--text-muted); font-size:0.8rem;" data-i18n="reviews.label_avg">Avg Rating</div>
                             <div style="font-size:1.8rem; font-weight:700; color:var(--theme-color);">0.0</div>
                         </div>
                         <div class="stat-card">
-                            <div style="color:var(--text-muted); font-size:0.8rem;" data-i18n="reviews.stat_total_reviews">Total Reviews</div>
+                            <div style="color:var(--text-muted); font-size:0.8rem;" data-i18n="reviews.label_total">Total Reviews</div>
                             <div style="font-size:1.8rem; font-weight:700; color:var(--theme-color);">0</div>
                         </div>
                         <div class="stat-card">
-                            <div style="color:var(--text-muted); font-size:0.8rem;" data-i18n="reviews.stat_positive">Positive (4-5★)</div>
+                            <div style="color:var(--text-muted); font-size:0.8rem;" data-i18n="reviews.label_positive">Positive (4-5★)</div>
                             <div style="font-size:1.8rem; font-weight:700; color:var(--theme-color);">0%</div>
                         </div>
                     </div>
                     <div style="text-align:center; padding: 60px; color:#888;">
                         <div style="font-size: 3rem; margin-bottom: 20px;">⭐</div>
-                        <h3>No Reviews Connected</h3>
-                        <p>Link your Google Business profile to monitor and reply to reviews here.</p>
-                        <button class="pill-btn primary" onclick="window.open(CALENDAR_URL, '_blank')" style="margin-top: 20px;">Connect Google Reviews</button>
+                        <h3 data-i18n="reviews.empty_title">No Reviews Connected</h3>
+                        <p data-i18n="reviews.empty_text">Link your Google Business profile to monitor and reply to reviews here.</p>
+                        <button class="pill-btn primary" onclick="window.open(CALENDAR_URL, '_blank')" style="margin-top: 20px;" data-i18n="reviews.btn_connect">Connect Google Reviews</button>
                     </div>
                 </div>
             </div>
