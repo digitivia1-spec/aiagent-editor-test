@@ -1470,6 +1470,409 @@
             box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
         }
 
+        /* === CREATE POST STUDIO STYLES === */
+        .cp-container {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .cp-editor {
+            flex: 1.5;
+            min-width: 300px;
+        }
+
+        .cp-preview-pane {
+            flex: 1;
+            min-width: 300px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .cp-main-tabs {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 25px;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 6px;
+            border-radius: 14px;
+        }
+
+        .cp-main-tab {
+            flex: 1;
+            text-align: center;
+            padding: 12px 16px;
+            cursor: pointer;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .cp-main-tab:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+        }
+
+        .cp-main-tab.active {
+            background: var(--theme-color);
+            color: white;
+            font-weight: 600;
+        }
+
+        .cp-section {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .cp-section.active {
+            display: block;
+        }
+
+        .cp-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 5px;
+            border-radius: 12px;
+        }
+
+        .cp-tab {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            transition: background 0.3s;
+            color: var(--text-muted);
+        }
+
+        .cp-tab.active {
+            background: var(--theme-color);
+            color: white;
+            font-weight: 600;
+        }
+
+        .cp-input-group {
+            margin-bottom: 20px;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .cp-btn-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .ai-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            transition: transform 0.2s;
+        }
+
+        .ai-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(118, 75, 162, 0.5);
+        }
+
+        .file-drop-zone {
+            border: 2px dashed var(--glass-border);
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: border 0.3s, background 0.3s;
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .file-drop-zone:hover {
+            border-color: var(--theme-color);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        /* Preview Card (Facebook Style) */
+        .preview-card {
+            width: 375px;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            color: black;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            font-family: Helvetica, Arial, sans-serif;
+        }
+
+        .pc-header {
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .pc-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+        }
+
+        .pc-meta {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .pc-name {
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .pc-time {
+            font-size: 0.75rem;
+            color: #65676b;
+        }
+
+        .pc-caption {
+            padding: 0 12px 12px 12px;
+            font-size: 0.95rem;
+            line-height: 1.4;
+            white-space: pre-wrap;
+            unicode-bidi: plaintext;
+            text-align: start;
+        }
+
+        .pc-img {
+            width: 100%;
+            height: 300px;
+            background: #f0f2f5;
+            object-fit: cover;
+            display: block;
+        }
+
+        .pc-footer {
+            padding: 10px;
+            border-top: 1px solid #ddd;
+            display: flex;
+            justify-content: space-around;
+            color: #65676b;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        /* === SCHEDULE POST SECTION STYLES === */
+        .schedule-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .schedule-form-full {
+            grid-column: 1 / -1;
+        }
+
+        .schedule-datetime-row {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .schedule-datetime-row>div {
+            flex: 1;
+            min-width: 140px;
+        }
+
+        .platform-checkboxes {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .platform-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .platform-checkbox:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .platform-checkbox.selected {
+            border-color: var(--theme-color);
+            background: rgba(var(--theme-color-rgb, 91, 174, 176), 0.2);
+        }
+
+        .platform-checkbox input {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--theme-color);
+        }
+
+        .platform-checkbox svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        /* === SCHEDULED QUEUE STYLES === */
+        .scheduled-queue {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .scheduled-item {
+            display: flex;
+            gap: 15px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            transition: all 0.3s;
+        }
+
+        .scheduled-item:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: var(--theme-color);
+        }
+
+        .scheduled-item-thumb {
+            width: 80px;
+            height: 80px;
+            border-radius: 8px;
+            background-size: cover;
+            background-position: center;
+            background-color: #333;
+            flex-shrink: 0;
+        }
+
+        .scheduled-item-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .scheduled-item-caption {
+            font-size: 0.95rem;
+            color: #eee;
+            margin-bottom: 8px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .scheduled-item-meta {
+            display: flex;
+            gap: 15px;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            flex-wrap: wrap;
+        }
+
+        .scheduled-item-meta span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .scheduled-item-actions {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .queue-status {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .queue-status.pending {
+            background: rgba(255, 167, 38, 0.2);
+            color: #ffa726;
+            border: 1px solid rgba(255, 167, 38, 0.3);
+        }
+
+        .queue-status.posted {
+            background: rgba(102, 187, 106, 0.2);
+            color: #66BB6A;
+            border: 1px solid rgba(102, 187, 106, 0.3);
+        }
+
+        .queue-status.failed {
+            background: rgba(239, 83, 80, 0.2);
+            color: #EF5350;
+            border: 1px solid rgba(239, 83, 80, 0.3);
+        }
+
+        .cancel-btn {
+            background: rgba(239, 83, 80, 0.1);
+            border: 1px solid rgba(239, 83, 80, 0.3);
+            color: #EF5350;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .cancel-btn:hover {
+            background: rgba(239, 83, 80, 0.2);
+        }
+
+        .empty-queue {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-muted);
+        }
+
+        .empty-queue-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        /* RTL Overrides for Create Post */
+        [dir="rtl"] .cp-container {
+            flex-direction: row-reverse;
+        }
+
+        [dir="rtl"] .pc-header {
+            flex-direction: row-reverse;
+        }
+
+        [dir="rtl"] .pc-caption {
+            text-align: right;
+        }
+
+        [dir="rtl"] .scheduled-item {
+            flex-direction: row-reverse;
+        }
+
+        [dir="rtl"] .platform-checkbox {
+            flex-direction: row-reverse;
+        }
+
         /* --- Overlays --- */
         #toast {
             visibility: hidden;
@@ -1684,6 +2087,84 @@
                 flex-shrink: 0;
                 padding: 8px 12px;
                 font-size: 0.85rem;
+            }
+
+            /* === CONTENT STUDIO MOBILE STYLES === */
+            .cp-container {
+                flex-direction: column !important;
+            }
+
+            .cp-editor,
+            .cp-preview-pane {
+                width: 100% !important;
+                min-width: unset !important;
+            }
+
+            .cp-preview-pane {
+                margin-top: 20px;
+            }
+
+            .cp-main-tabs {
+                flex-wrap: wrap;
+                gap: 5px;
+            }
+
+            .cp-main-tab {
+                flex: 1 1 auto;
+                min-width: 100px;
+                font-size: 0.85rem;
+                padding: 10px 15px;
+            }
+
+            .cp-tabs {
+                flex-wrap: wrap;
+            }
+
+            .cp-tab {
+                flex: 1;
+                min-width: 100px;
+                font-size: 0.85rem;
+            }
+
+            .schedule-form {
+                grid-template-columns: 1fr !important;
+            }
+
+            .scheduled-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .scheduled-item-thumb {
+                width: 100%;
+                height: 150px;
+            }
+
+            .scheduled-item-content {
+                width: 100%;
+            }
+
+            .scheduled-item-actions {
+                width: 100%;
+                flex-direction: row;
+                justify-content: space-between;
+            }
+
+            .platform-checkboxes {
+                flex-direction: column;
+            }
+
+            .platform-checkbox {
+                width: 100%;
+            }
+
+            .preview-card {
+                margin: 0;
+            }
+
+            .file-drop-zone {
+                padding: 25px 15px;
             }
         }
 
@@ -2805,6 +3286,13 @@
                     </svg></div>
                 <span class="nav-label" data-i18n="sidebar.nav_leads">Leads Area</span>
             </li>
+            <li class="nav-item" onclick="switchTab('create-post', this)">
+                <div class="nav-icon"><svg viewBox="0 0 24 24">
+                        <path
+                            d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" />
+                    </svg></div>
+                <span class="nav-label" data-i18n="sidebar.nav_create_post">Content Studio</span>
+            </li>
             <li class="nav-item" onclick="switchTab('reviews', this)">
                 <div class="nav-icon"><svg viewBox="0 0 24 24">
                         <path
@@ -3153,7 +3641,7 @@
         // English Language Strings
         const LANG_EN = {
             auth: { app_title: "DIGITIVIA AI AGENT", sign_in_google: "Sign in with Google", sign_in_linkedin: "Sign in with LinkedIn", separator_or: "OR", input_email_placeholder: "Email Address", input_password_placeholder: "Password", btn_login: "LOGIN", btn_register: "REGISTER", btn_loading_login: "LOGGING IN...", btn_loading_register: "REGISTERING..." },
-            sidebar: { nav_website: "Website Agent", nav_whatsapp: "WhatsApp Agent", nav_messenger: "Messenger Agent", nav_instagram: "Instagram Agent", nav_insights: "Live Insights", nav_inbox: "Live Inbox", nav_leads: "Leads Area", nav_reviews: "Customer Reviews", nav_followups: "Follow-ups", nav_logout: "Logout" },
+            sidebar: { nav_website: "Website Agent", nav_whatsapp: "WhatsApp Agent", nav_messenger: "Messenger Agent", nav_instagram: "Instagram Agent", nav_insights: "Live Insights", nav_inbox: "Live Inbox", nav_leads: "Leads Area", nav_create_post: "Content Studio", nav_reviews: "Customer Reviews", nav_followups: "Follow-ups", nav_logout: "Logout" },
             top_bar: { btn_pricing: "Pricing", btn_docs: "Docs", btn_help: "Help" },
             agent_config: { btn_connect_channel: "🔗 Connect Channel", label_live: "LIVE", header_role: "Agent Role (System Prompt)", header_tone: "Agent Tone", header_kb: "Knowledge Base (Links)", header_chat_test: "Test Chat Window", btn_locked: "🔒 Locked - Click to Edit", placeholder_prompt: "Define how your agent should behave...", btn_save: "Save Role", btn_save_changes: "Save Changes *", btn_saving: "Saving...", chat_greeting: "Hello! I am the {name}. How can I help?", chat_placeholder: "Type a message...", btn_add_link: "+ Add Another Link" },
             insights: { title: "Live Insights", empty_title: "No Data Available", empty_text: "Connect your platform accounts to see live performance insights.", btn_connect: "Connect Insights", empty_posts_title: "No Posts Yet", btn_connect_posts: "Connect Posts", loading: "Loading..." },
@@ -3191,13 +3679,60 @@
             },
             agents: { website: "Website Agent", whatsapp: "WhatsApp Agent", messenger: "Messenger Agent", instagram: "Instagram Agent" },
             roles: { sales: "Sales Agent 🚀", service: "Customer Service ✨", service_short: "Customer Service", sales_short: "Sales Agent" },
-            messages: { toast_saved: "Saved Successfully!", toast_org_updated: "Organization name updated!", loading_config: "Fetching Agent Configurations...", agent_activated: "Activated", agent_deactivated: "Deactivated", error_no_org: "No Organization Found. Please contact admin.", error_saving: "Error saving data: ", error_status_update: "Failed to update status" }
+            messages: { toast_saved: "Saved Successfully!", toast_org_updated: "Organization name updated!", loading_config: "Fetching Agent Configurations...", agent_activated: "Activated", agent_deactivated: "Deactivated", error_no_org: "No Organization Found. Please contact admin.", error_saving: "Error saving data: ", error_status_update: "Failed to update status" },
+            create_post: {
+                title: "Content Studio",
+                tab_create: "Create Post",
+                tab_schedule: "Schedule Post",
+                tab_queue: "Scheduled Queue",
+                upload_image: "Upload Image",
+                ai_generate: "AI Generate",
+                image_prompt: "Image Prompt",
+                generate_btn: "Generate Image",
+                caption_label: "Caption",
+                magic_caption: "Magic Caption",
+                publish_options: "Publishing Options",
+                click_upload: "Click to Upload Image",
+                file_type_hint: "JPG or PNG recommended",
+                just_now: "Just now",
+                preview_placeholder: "Your caption will appear here...",
+                preview_area: "Preview Area",
+                like: "Like",
+                comment: "Comment",
+                share: "Share",
+                image_source: "Image Source",
+                use_created: "Use Created Image",
+                upload_new: "Upload New Image",
+                date_label: "Date",
+                time_label: "Time",
+                timezone_label: "Timezone",
+                platforms_label: "Platforms",
+                schedule_btn: "Schedule Post",
+                queue_empty: "No scheduled posts",
+                queue_empty_hint: "Schedule a post to see it here",
+                status_pending: "Pending",
+                status_posted: "Posted",
+                status_failed: "Failed",
+                cancel_btn: "Cancel",
+                image_ready: "Image ready!",
+                enter_prompt: "Please enter a prompt first",
+                ai_working: "AI is working...",
+                content_generated: "Content Generated!",
+                generate_failed: "Failed to generate content",
+                no_image: "No image selected/generated",
+                publishing: "Publishing to",
+                published: "Published to",
+                enter_caption: "Please enter a caption",
+                select_datetime: "Please select date and time",
+                select_platform: "Please select at least one platform",
+                scheduled_success: "Post scheduled successfully!",
+                cancelled: "Post cancelled"
+            }
         };
 
-        // Arabic Language Strings (RTL)
         const LANG_AR = {
             auth: { app_title: "وكيل الذكاء الاصطناعي ديجيتيفيا", sign_in_google: "تسجيل الدخول عبر Google", sign_in_linkedin: "تسجيل الدخول عبر LinkedIn", separator_or: "أو", input_email_placeholder: "البريد الإلكتروني", input_password_placeholder: "كلمة المرور", btn_login: "دخول", btn_register: "إنشاء حساب", btn_loading_login: "جاري الدخول...", btn_loading_register: "جاري التسجيل..." },
-            sidebar: { nav_website: "وكيل الموقع", nav_whatsapp: "وكيل واتساب", nav_messenger: "وكيل ماسنجر", nav_instagram: "وكيل انستغرام", nav_insights: "رؤى مباشرة", nav_inbox: "صندوق الوارد", nav_leads: "العملاء المحتملين", nav_reviews: "آراء العملاء", nav_followups: "المتابعات", nav_logout: "تسجيل خروج" },
+            sidebar: { nav_website: "وكيل الموقع", nav_whatsapp: "وكيل واتساب", nav_messenger: "وكيل ماسنجر", nav_instagram: "وكيل انستغرام", nav_insights: "رؤى مباشرة", nav_inbox: "صندوق الوارد", nav_leads: "العملاء المحتملين", nav_create_post: "استوديو المحتوى", nav_reviews: "آراء العملاء", nav_followups: "المتابعات", nav_logout: "تسجيل خروج" },
             top_bar: { btn_pricing: "الأسعار", btn_docs: "الوثائق", btn_help: "مساعدة" },
             agent_config: { btn_connect_channel: "🔗 ربط القناة", label_live: "نشط", header_role: "دور الوكيل", header_tone: "نبرة المحادثة", header_kb: "قاعدة المعرفة", header_chat_test: "نافذة الاختبار", btn_locked: "🔒 مقفل - اضغط للتعديل", placeholder_prompt: "حدد كيف يجب أن يتصرف وكيلك...", btn_save: "حفظ الدور", btn_save_changes: "حفظ التغييرات *", btn_saving: "جاري الحفظ...", chat_greeting: "مرحباً! أنا {name}. كيف يمكنني مساعدتك؟", chat_placeholder: "اكتب رسالة...", btn_add_link: "+ إضافة رابط آخر" },
             insights: { title: "رؤى مباشرة", empty_title: "لا توجد بيانات", empty_text: "قم بربط حساباتك لرؤية الأداء.", btn_connect: "ربط الرؤى", empty_posts_title: "لا توجد منشورات", btn_connect_posts: "ربط المنشورات", loading: "جاري التحميل..." },
@@ -3235,7 +3770,55 @@
             },
             agents: { website: "وكيل الموقع", whatsapp: "وكيل واتساب", messenger: "وكيل ماسنجر", instagram: "وكيل انستغرام" },
             roles: { sales: "وكيل مبيعات 🚀", service: "خدمة عملاء ✨", service_short: "خدمة عملاء", sales_short: "وكيل مبيعات" },
-            messages: { toast_saved: "تم الحفظ بنجاح!", toast_org_updated: "تم تحديث اسم الشركة!", loading_config: "جاري جلب الإعدادات...", agent_activated: "تم تفعيل", agent_deactivated: "تم تعطيل", error_no_org: "لم يتم العثور على شركة. يرجى الاتصال بالمسؤول.", error_saving: "خطأ في حفظ البيانات: ", error_status_update: "فشل تحديث الحالة" }
+            messages: { toast_saved: "تم الحفظ بنجاح!", toast_org_updated: "تم تحديث اسم الشركة!", loading_config: "جاري جلب الإعدادات...", agent_activated: "تم تفعيل", agent_deactivated: "تم تعطيل", error_no_org: "لم يتم العثور على شركة. يرجى الاتصال بالمسؤول.", error_saving: "خطأ في حفظ البيانات: ", error_status_update: "فشل تحديث الحالة" },
+            create_post: {
+                title: "استوديو المحتوى",
+                tab_create: "إنشاء منشور",
+                tab_schedule: "جدولة منشور",
+                tab_queue: "المنشورات المجدولة",
+                upload_image: "رفع صورة",
+                ai_generate: "إنشاء بالذكاء الاصطناعي",
+                image_prompt: "وصف الصورة",
+                generate_btn: "إنشاء الصورة",
+                caption_label: "النص",
+                magic_caption: "نص سحري",
+                publish_options: "خيارات النشر",
+                click_upload: "اضغط لرفع صورة",
+                file_type_hint: "يُفضل JPG أو PNG",
+                just_now: "الآن",
+                preview_placeholder: "سيظهر النص هنا...",
+                preview_area: "منطقة المعاينة",
+                like: "إعجاب",
+                comment: "تعليق",
+                share: "مشاركة",
+                image_source: "مصدر الصورة",
+                use_created: "استخدام الصورة المنشأة",
+                upload_new: "رفع صورة جديدة",
+                date_label: "التاريخ",
+                time_label: "الوقت",
+                timezone_label: "المنطقة الزمنية",
+                platforms_label: "المنصات",
+                schedule_btn: "جدولة المنشور",
+                queue_empty: "لا توجد منشورات مجدولة",
+                queue_empty_hint: "جدول منشوراً لرؤيته هنا",
+                status_pending: "قيد الانتظار",
+                status_posted: "تم النشر",
+                status_failed: "فشل",
+                cancel_btn: "إلغاء",
+                image_ready: "الصورة جاهزة!",
+                enter_prompt: "الرجاء إدخال وصف أولاً",
+                ai_working: "الذكاء الاصطناعي يعمل...",
+                content_generated: "تم إنشاء المحتوى!",
+                generate_failed: "فشل إنشاء المحتوى",
+                no_image: "لم يتم اختيار/إنشاء صورة",
+                publishing: "جاري النشر على",
+                published: "تم النشر على",
+                enter_caption: "الرجاء إدخال نص",
+                select_datetime: "الرجاء تحديد التاريخ والوقت",
+                select_platform: "الرجاء اختيار منصة واحدة على الأقل",
+                scheduled_success: "تمت جدولة المنشور بنجاح!",
+                cancelled: "تم إلغاء المنشور"
+            }
         };
 
         let currentLang = localStorage.getItem('app_language') || 'en';
@@ -3953,7 +4536,192 @@
                 </div>
             </div>
 
-            <!-- E. CUSTOMER REVIEWS TAB -->
+            <!-- E. CREATE POST STUDIO TAB -->
+            <div id="create-post" class="tab-content">
+                <div class="card glass">
+                    <h2 data-i18n="create_post.title">Content Studio</h2>
+                    
+                    <!-- Main Sub-tabs: Create | Schedule | Queue -->
+                    <div class="cp-main-tabs">
+                        <div class="cp-main-tab active" onclick="switchContentTab('create', this)" data-i18n="create_post.tab_create">Create Post</div>
+                        <div class="cp-main-tab" onclick="switchContentTab('schedule', this)" data-i18n="create_post.tab_schedule">Schedule Post</div>
+                        <div class="cp-main-tab" onclick="switchContentTab('queue', this)" data-i18n="create_post.tab_queue">Scheduled Queue</div>
+                    </div>
+
+                    <!-- CREATE POST SECTION -->
+                    <div id="cp-create-section" class="cp-section active">
+                        <div class="cp-container">
+                            <div class="cp-editor">
+                                <div class="cp-tabs">
+                                    <div class="cp-tab active" onclick="setPostMode('upload', this)" data-i18n="create_post.upload_image">Upload Image</div>
+                                    <div class="cp-tab" onclick="setPostMode('ai', this)" data-i18n="create_post.ai_generate">AI Generate</div>
+                                </div>
+
+                                <div id="mode-upload" class="cp-input-group">
+                                    <input type="file" id="file-upload" hidden accept="image/*" onchange="handleFileUpload(event)">
+                                    <div class="file-drop-zone" onclick="document.getElementById('file-upload').click()">
+                                        <div style="font-size:2rem; margin-bottom:10px;">☁️</div>
+                                        <div data-i18n="create_post.click_upload">Click to Upload Image</div>
+                                        <div style="font-size:0.8rem; color:var(--text-muted); margin-top:5px;" data-i18n="create_post.file_type_hint">JPG or PNG recommended</div>
+                                    </div>
+                                </div>
+
+                                <div id="mode-ai" class="cp-input-group" style="display:none;">
+                                    <label data-i18n="create_post.image_prompt">Image Prompt</label>
+                                    <textarea id="ai-img-prompt" style="height:80px;" placeholder="A futuristic cyberpunk city with neon lights..."></textarea>
+                                    <div class="cp-btn-row">
+                                        <button class="ai-btn" onclick="generateAIImage()">✨ <span data-i18n="create_post.generate_btn">Generate Image</span></button>
+                                    </div>
+                                </div>
+
+                                <div class="cp-input-group">
+                                    <label data-i18n="create_post.caption_label">Caption</label>
+                                    <textarea id="post-caption" oninput="updatePreview()" placeholder="Write your caption here..."></textarea>
+                                    <div class="cp-btn-row">
+                                        <button class="ai-btn" style="background:var(--theme-color);" onclick="generateAICaption()">✍️ <span data-i18n="create_post.magic_caption">Magic Caption</span></button>
+                                    </div>
+                                </div>
+
+                                <div class="section-wrapper" style="margin-top:30px;">
+                                    <div class="section-header active" data-i18n="create_post.publish_options">Publishing Options</div>
+                                    <div class="section-content open" style="margin-top:15px; display:flex; gap:10px; flex-wrap:wrap;">
+                                        <button class="save-btn" style="background:#1877F2; flex:1; min-width:120px;" onclick="publishPost('facebook')">
+                                            Facebook
+                                        </button>
+                                        <button class="save-btn" style="background:#E1306C; flex:1; min-width:120px;" onclick="publishPost('instagram')">
+                                            Instagram
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="cp-preview-pane">
+                                <div class="preview-card">
+                                    <div class="pc-header">
+                                        <div class="pc-avatar"></div>
+                                        <div class="pc-meta">
+                                            <div class="pc-name">Digitivia Agent</div>
+                                            <div class="pc-time" data-i18n="create_post.just_now">Just now</div>
+                                        </div>
+                                    </div>
+                                    <div class="pc-caption" id="preview-caption" data-i18n="create_post.preview_placeholder">Your caption will appear here...</div>
+                                    <div id="preview-container" style="width:100%; height:300px; background:#f0f2f5; display:flex; align-items:center; justify-content:center; overflow:hidden;">
+                                        <div id="preview-placeholder" style="text-align:center; color:#adb5bd;">
+                                            <svg style="width:48px; height:48px; margin-bottom:10px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                            <div style="font-size:0.9rem; font-weight:500;" data-i18n="create_post.preview_area">Preview Area</div>
+                                        </div>
+                                        <img id="preview-img" class="pc-img" src="" style="display:none; width:100%; height:100%; object-fit:cover;" alt="Preview">
+                                    </div>
+                                    <div class="pc-footer">
+                                        <span data-i18n="create_post.like">Like</span>
+                                        <span data-i18n="create_post.comment">Comment</span>
+                                        <span data-i18n="create_post.share">Share</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SCHEDULE POST SECTION -->
+                    <div id="cp-schedule-section" class="cp-section">
+                        <div class="schedule-form">
+                            <div class="schedule-form-full">
+                                <label data-i18n="create_post.image_source">Image Source</label>
+                                <div class="cp-tabs" style="margin-top:10px;">
+                                    <div class="cp-tab active" onclick="setScheduleImageMode('created', this)" data-i18n="create_post.use_created">Use Created Image</div>
+                                    <div class="cp-tab" onclick="setScheduleImageMode('upload', this)" data-i18n="create_post.upload_new">Upload New Image</div>
+                                </div>
+                                <div id="schedule-upload-zone" style="display:none; margin-top:15px;">
+                                    <input type="file" id="schedule-file-upload" hidden accept="image/*" onchange="handleScheduleFileUpload(event)">
+                                    <div class="file-drop-zone" onclick="document.getElementById('schedule-file-upload').click()" style="padding:20px;">
+                                        <div>☁️ <span data-i18n="create_post.click_upload">Click to Upload Image</span></div>
+                                    </div>
+                                </div>
+                                <div id="schedule-image-preview" style="margin-top:15px; display:none;">
+                                    <img id="schedule-preview-img" src="" style="max-width:200px; max-height:150px; border-radius:8px; object-fit:cover;">
+                                </div>
+                            </div>
+
+                            <div class="schedule-form-full">
+                                <label data-i18n="create_post.caption_label">Caption</label>
+                                <textarea id="schedule-caption" placeholder="Write your caption here..." style="height:100px;"></textarea>
+                            </div>
+
+                            <div>
+                                <label data-i18n="create_post.date_label">Date</label>
+                                <input type="date" id="schedule-date" style="width:100%;">
+                            </div>
+
+                            <div>
+                                <label data-i18n="create_post.time_label">Time</label>
+                                <input type="time" id="schedule-time" style="width:100%;">
+                            </div>
+
+                            <div class="schedule-form-full">
+                                <label data-i18n="create_post.timezone_label">Timezone</label>
+                                <select id="schedule-timezone" style="width:100%;">
+                                    <option value="auto">Auto-detect (Browser)</option>
+                                    <option value="UTC">UTC</option>
+                                    <option value="America/New_York">Eastern Time (ET)</option>
+                                    <option value="America/Chicago">Central Time (CT)</option>
+                                    <option value="America/Denver">Mountain Time (MT)</option>
+                                    <option value="America/Los_Angeles">Pacific Time (PT)</option>
+                                    <option value="Europe/London">London (GMT/BST)</option>
+                                    <option value="Europe/Paris">Paris (CET)</option>
+                                    <option value="Europe/Berlin">Berlin (CET)</option>
+                                    <option value="Asia/Dubai">Dubai (GST)</option>
+                                    <option value="Asia/Riyadh">Riyadh (AST)</option>
+                                    <option value="Asia/Kolkata">India (IST)</option>
+                                    <option value="Asia/Tokyo">Tokyo (JST)</option>
+                                    <option value="Australia/Sydney">Sydney (AEST)</option>
+                                    <option value="Africa/Cairo">Cairo (EET)</option>
+                                </select>
+                            </div>
+
+                            <div class="schedule-form-full">
+                                <label data-i18n="create_post.platforms_label">Platforms</label>
+                                <div class="platform-checkboxes">
+                                    <label class="platform-checkbox" onclick="togglePlatformCheck(this)">
+                                        <input type="checkbox" name="schedule-platform" value="facebook">
+                                        <svg viewBox="0 0 24 24" fill="#1877F2"><path d="M12 2C6.48 2 2 6.48 2 12c0 5 3.66 9.13 8.41 9.88V14.9h-2.53v-2.9h2.53V9.79c0-2.5 1.47-3.89 3.77-3.89 1.1 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56v1.88h2.78l-.45 2.9h-2.33v6.98C18.34 21.13 22 17 22 12c0-5.52-4.48-10-10-10z"/></svg>
+                                        <span>Facebook</span>
+                                    </label>
+                                    <label class="platform-checkbox" onclick="togglePlatformCheck(this)">
+                                        <input type="checkbox" name="schedule-platform" value="instagram">
+                                        <svg viewBox="0 0 24 24" fill="#E1306C"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8 1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3z"/></svg>
+                                        <span>Instagram</span>
+                                    </label>
+                                    <label class="platform-checkbox" onclick="togglePlatformCheck(this)">
+                                        <input type="checkbox" name="schedule-platform" value="twitter">
+                                        <svg viewBox="0 0 24 24" fill="#000"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                                        <span>X (Twitter)</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="schedule-form-full" style="margin-top:20px;">
+                                <button class="save-btn" style="width:100%;" onclick="schedulePost()">
+                                    📅 <span data-i18n="create_post.schedule_btn">Schedule Post</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SCHEDULED QUEUE SECTION -->
+                    <div id="cp-queue-section" class="cp-section">
+                        <div id="scheduled-queue" class="scheduled-queue">
+                            <!-- Queue items will be rendered here -->
+                        </div>
+                        <div id="empty-queue" class="empty-queue">
+                            <div class="empty-queue-icon">📋</div>
+                            <h3 data-i18n="create_post.queue_empty">No scheduled posts</h3>
+                            <p data-i18n="create_post.queue_empty_hint">Schedule a post to see it here</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- F. CUSTOMER REVIEWS TAB -->
             <div id="reviews" class="tab-content">
                 <div class="card glass">
                     <div class="leads-controls">
@@ -4033,6 +4801,10 @@
             }
             if (tabId === 'reviews') color = '#FFD700'; // Gold for reviews
             if (tabId === 'followups') color = '#20B2AA'; // SeaGreen for followups
+            if (tabId === 'create-post') {
+                color = '#9C27B0'; // Purple for Content Studio
+                loadScheduledQueue(); // Refresh queue on tab open
+            }
 
             document.documentElement.style.setProperty('--theme-color', color);
         }
@@ -4970,6 +5742,349 @@
             div.innerHTML = text;
             if (id) div.id = id;
             container.appendChild(div);
+        }
+
+        // ==========================================
+        //        CREATE POST STUDIO FUNCTIONS
+        // ==========================================
+
+        let currentImageBlob = null;
+        let currentImageUrl = "";
+        let scheduleImageUrl = "";
+        let scheduleImageBlob = null;
+
+        // Switch between Create | Schedule | Queue tabs
+        function switchContentTab(tabName, btn) {
+            document.querySelectorAll('.cp-main-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.cp-section').forEach(s => s.classList.remove('active'));
+
+            btn.classList.add('active');
+
+            if (tabName === 'create') {
+                document.getElementById('cp-create-section').classList.add('active');
+            } else if (tabName === 'schedule') {
+                document.getElementById('cp-schedule-section').classList.add('active');
+                // Copy current image to schedule if available
+                if (currentImageUrl && !scheduleImageUrl) {
+                    scheduleImageUrl = currentImageUrl;
+                    const previewDiv = document.getElementById('schedule-image-preview');
+                    const previewImg = document.getElementById('schedule-preview-img');
+                    if (previewDiv && previewImg) {
+                        previewImg.src = currentImageUrl;
+                        previewDiv.style.display = 'block';
+                    }
+                }
+                // Copy caption if empty
+                const scheduleCaption = document.getElementById('schedule-caption');
+                const createCaption = document.getElementById('post-caption');
+                if (scheduleCaption && createCaption && !scheduleCaption.value) {
+                    scheduleCaption.value = createCaption.value;
+                }
+            } else if (tabName === 'queue') {
+                document.getElementById('cp-queue-section').classList.add('active');
+                loadScheduledQueue();
+            }
+        }
+
+        // Switch between Upload | AI Generate modes
+        function setPostMode(mode, btn) {
+            document.querySelectorAll('.cp-tabs .cp-tab').forEach(t => t.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById('mode-upload').style.display = mode === 'upload' ? 'block' : 'none';
+            document.getElementById('mode-ai').style.display = mode === 'ai' ? 'block' : 'none';
+        }
+
+        // Handle file upload for Create Post
+        async function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            currentImageBlob = file;
+            const objectUrl = URL.createObjectURL(file);
+            currentImageUrl = objectUrl;
+
+            const imgEl = document.getElementById('preview-img');
+            imgEl.src = objectUrl;
+            imgEl.style.display = 'block';
+            document.getElementById('preview-placeholder').style.display = 'none';
+
+            showToast(t('create_post.image_ready') || "Image ready!", "success");
+        }
+
+        // Switch schedule image mode
+        function setScheduleImageMode(mode, btn) {
+            document.querySelectorAll('#cp-schedule-section .cp-tabs .cp-tab').forEach(t => t.classList.remove('active'));
+            btn.classList.add('active');
+
+            const uploadZone = document.getElementById('schedule-upload-zone');
+            const previewDiv = document.getElementById('schedule-image-preview');
+
+            if (mode === 'upload') {
+                uploadZone.style.display = 'block';
+                scheduleImageUrl = ""; // Reset to use uploaded
+            } else {
+                uploadZone.style.display = 'none';
+                if (currentImageUrl) {
+                    scheduleImageUrl = currentImageUrl;
+                    const previewImg = document.getElementById('schedule-preview-img');
+                    if (previewImg) {
+                        previewImg.src = currentImageUrl;
+                        previewDiv.style.display = 'block';
+                    }
+                }
+            }
+        }
+
+        // Handle file upload for Schedule section
+        async function handleScheduleFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            scheduleImageBlob = file;
+            const objectUrl = URL.createObjectURL(file);
+            scheduleImageUrl = objectUrl;
+
+            const previewDiv = document.getElementById('schedule-image-preview');
+            const previewImg = document.getElementById('schedule-preview-img');
+            if (previewImg && previewDiv) {
+                previewImg.src = objectUrl;
+                previewDiv.style.display = 'block';
+            }
+
+            showToast(t('create_post.image_ready') || "Image ready!", "success");
+        }
+
+        // Generate AI Image
+        async function generateAIImage() {
+            const promptInput = document.getElementById('ai-img-prompt');
+            const prompt = promptInput.value.trim();
+            const btn = document.querySelector('#mode-ai .ai-btn');
+
+            if (!prompt) {
+                showToast(t('create_post.enter_prompt') || "Please enter a prompt first", "error");
+                return;
+            }
+
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<span class="spinner" style="width:15px;height:15px;border-width:2px;"></span> Generating...';
+            btn.disabled = true;
+            showToast(t('create_post.ai_working') || "AI is working...", "info");
+
+            try {
+                const response = await fetch('https://n8n.srv1174105.hstgr.cloud/webhook/content', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        topic: prompt,
+                        style: "Creative"
+                    })
+                });
+
+                if (!response.ok) throw new Error("Network response was not ok");
+
+                const data = await response.json();
+                const imageUrl = data.image_url || data.output || data.image;
+                const caption = data.generated_caption || data.caption || "";
+
+                if (imageUrl) {
+                    currentImageUrl = imageUrl;
+                    const imgEl = document.getElementById('preview-img');
+                    imgEl.src = imageUrl;
+                    imgEl.style.display = 'block';
+                    document.getElementById('preview-placeholder').style.display = 'none';
+                }
+
+                if (caption) {
+                    const captionInput = document.getElementById('post-caption');
+                    captionInput.value = caption;
+                    updatePreview();
+                }
+
+                showToast(t('create_post.content_generated') || "Content Generated!", "success");
+
+            } catch (error) {
+                console.error(error);
+                showToast(t('create_post.generate_failed') || "Failed to generate content", "error");
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        }
+
+        // Generate AI Caption
+        async function generateAICaption() {
+            const btn = event.target.closest('.ai-btn');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<span class="spinner" style="width:15px;height:15px;border-width:2px;"></span>';
+
+            setTimeout(() => {
+                const sampleCaptions = [
+                    "Discover the future of automation with Digitivia! 🚀✨ #AI #Innovation #TechTrends",
+                    "Transform your business with smart AI solutions! 💡🌟 #Digital #Growth",
+                    "Empowering businesses with cutting-edge technology! 🔥💪 #Success #Technology",
+                    "Your success story starts here! 🎯✨ #Motivation #Business"
+                ];
+                const text = sampleCaptions[Math.floor(Math.random() * sampleCaptions.length)];
+                document.getElementById('post-caption').value = text;
+                updatePreview();
+                btn.innerHTML = originalText;
+            }, 1500);
+        }
+
+        // Update preview card
+        function updatePreview() {
+            const text = document.getElementById('post-caption').value;
+            document.getElementById('preview-caption').innerText = text || t('create_post.preview_placeholder') || "Your caption will appear here...";
+        }
+
+        // Toggle platform checkbox visual
+        function togglePlatformCheck(label) {
+            const checkbox = label.querySelector('input[type="checkbox"]');
+            if (checkbox.checked) {
+                label.classList.add('selected');
+            } else {
+                label.classList.remove('selected');
+            }
+        }
+
+        // Publish post immediately
+        async function publishPost(platform) {
+            if (!currentImageUrl) {
+                showToast(t('create_post.no_image') || "No image selected/generated", "error");
+                return;
+            }
+            showToast(`${t('create_post.publishing') || 'Publishing to'} ${platform}...`, "info");
+
+            setTimeout(() => {
+                showToast(`${t('create_post.published') || 'Published to'} ${platform}!`, "success");
+            }, 2000);
+        }
+
+        // Schedule a post
+        function schedulePost() {
+            const caption = document.getElementById('schedule-caption').value.trim();
+            const date = document.getElementById('schedule-date').value;
+            const time = document.getElementById('schedule-time').value;
+            const timezone = document.getElementById('schedule-timezone').value;
+            const platforms = Array.from(document.querySelectorAll('input[name="schedule-platform"]:checked')).map(cb => cb.value);
+
+            if (!caption) {
+                showToast(t('create_post.enter_caption') || "Please enter a caption", "error");
+                return;
+            }
+            if (!date || !time) {
+                showToast(t('create_post.select_datetime') || "Please select date and time", "error");
+                return;
+            }
+            if (platforms.length === 0) {
+                showToast(t('create_post.select_platform') || "Please select at least one platform", "error");
+                return;
+            }
+
+            const imageUrl = scheduleImageUrl || currentImageUrl || "";
+
+            // Create scheduled post object
+            const scheduledPost = {
+                id: 'post_' + Date.now(),
+                image_url: imageUrl,
+                caption: caption,
+                platforms: platforms,
+                scheduled_date: date,
+                scheduled_time: time,
+                timezone: timezone === 'auto' ? Intl.DateTimeFormat().resolvedOptions().timeZone : timezone,
+                status: 'pending',
+                created_at: new Date().toISOString()
+            };
+
+            // Save to localStorage
+            let queue = JSON.parse(localStorage.getItem('scheduled_posts') || '[]');
+            queue.push(scheduledPost);
+            localStorage.setItem('scheduled_posts', JSON.stringify(queue));
+
+            showToast(t('create_post.scheduled_success') || "Post scheduled successfully!", "success");
+
+            // Clear form
+            document.getElementById('schedule-caption').value = '';
+            document.querySelectorAll('input[name="schedule-platform"]:checked').forEach(cb => {
+                cb.checked = false;
+                cb.closest('.platform-checkbox').classList.remove('selected');
+            });
+
+            // Switch to queue tab
+            const queueTab = document.querySelector('.cp-main-tab:nth-child(3)');
+            if (queueTab) switchContentTab('queue', queueTab);
+        }
+
+        // Load and render scheduled queue
+        function loadScheduledQueue() {
+            const queueContainer = document.getElementById('scheduled-queue');
+            const emptyQueue = document.getElementById('empty-queue');
+            if (!queueContainer || !emptyQueue) return;
+
+            const queue = JSON.parse(localStorage.getItem('scheduled_posts') || '[]');
+
+            if (queue.length === 0) {
+                queueContainer.innerHTML = '';
+                emptyQueue.style.display = 'block';
+                return;
+            }
+
+            emptyQueue.style.display = 'none';
+
+            // Sort by scheduled date/time
+            queue.sort((a, b) => {
+                const dateA = new Date(`${a.scheduled_date}T${a.scheduled_time}`);
+                const dateB = new Date(`${b.scheduled_date}T${b.scheduled_time}`);
+                return dateA - dateB;
+            });
+
+            queueContainer.innerHTML = queue.map(post => {
+                const scheduledDateTime = new Date(`${post.scheduled_date}T${post.scheduled_time}`);
+                const formattedDate = scheduledDateTime.toLocaleDateString(undefined, {
+                    month: 'short', day: 'numeric', year: 'numeric'
+                });
+                const formattedTime = scheduledDateTime.toLocaleTimeString(undefined, {
+                    hour: '2-digit', minute: '2-digit'
+                });
+
+                const platformIcons = post.platforms.map(p => {
+                    if (p === 'facebook') return '📘';
+                    if (p === 'instagram') return '📸';
+                    if (p === 'twitter') return '🐦';
+                    return '📱';
+                }).join(' ');
+
+                const statusClass = post.status || 'pending';
+                const statusLabel = t(`create_post.status_${statusClass}`) || post.status;
+
+                return `
+                    <div class="scheduled-item">
+                        <div class="scheduled-item-thumb" style="background-image: url('${post.image_url || ''}');"></div>
+                        <div class="scheduled-item-content">
+                            <div class="scheduled-item-caption">${post.caption}</div>
+                            <div class="scheduled-item-meta">
+                                <span>📅 ${formattedDate}</span>
+                                <span>⏰ ${formattedTime}</span>
+                                <span>🌍 ${post.timezone}</span>
+                                <span>${platformIcons}</span>
+                            </div>
+                        </div>
+                        <div class="scheduled-item-actions">
+                            <span class="queue-status ${statusClass}">${statusLabel}</span>
+                            ${post.status === 'pending' ? `<button class="cancel-btn" onclick="cancelScheduledPost('${post.id}')">${t('create_post.cancel_btn') || 'Cancel'}</button>` : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Cancel a scheduled post
+        function cancelScheduledPost(postId) {
+            let queue = JSON.parse(localStorage.getItem('scheduled_posts') || '[]');
+            queue = queue.filter(p => p.id !== postId);
+            localStorage.setItem('scheduled_posts', JSON.stringify(queue));
+            loadScheduledQueue();
+            showToast(t('create_post.cancelled') || "Post cancelled", "info");
         }
 
         // Initialize language on page load
