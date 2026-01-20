@@ -2504,9 +2504,17 @@
         @media (max-width: 768px) {
             .top-bar {
                 border-radius: 12px !important;
-                /* Fix roundness */
                 padding: 0 10px !important;
                 gap: 5px;
+            }
+
+            /* Hide text labels in top bar buttons on mobile to save space */
+            .top-bar button span:not(#lang-toggle-label) {
+                display: none !important;
+            }
+
+            .top-bar button svg {
+                margin: 0 !important;
             }
 
             .lang-toggle {
@@ -2993,7 +3001,7 @@
             insights: { title: "Live Insights", empty_title: "No Data Available", empty_text: "Connect your platform accounts to see live performance insights.", btn_connect: "Connect Insights", empty_posts_title: "No Posts Yet", btn_connect_posts: "Connect Posts", loading: "Loading..." },
             inbox: { empty_title: "No Conversations Yet", empty_text: "Connect your social channels to start chatting with your customers.", btn_connect: "Connect Channels", label_platform: "Select Platform", header_select: "Select a conversation", loading: "Loading...", no_chats: "No chats found.", chat_with: "Chat with {name}", loading_history: "Loading history...", no_messages: "No messages yet.", error_loading: "Error loading contacts." },
             leads: { title: "Leads Area", btn_export_csv: "Export CSV", btn_export_excel: "Export Excel", empty_title: "No Leads Yet", empty_text: "Connect your channels to start capturing leads from conversations.", btn_connect: "Connect Your Channels", fetching: "Fetching Leads...", no_leads_found: "No leads found.", failed_load: "Failed to load leads. Check connection.", unknown_user: "Unknown User", no_phone: "No Phone", no_message: "No message" },
-            reviews: { title: "Customer Reviews", empty_title: "No Reviews Connected", btn_connect: "Connect Google Reviews", stat_avg_rating: "Average Rating", stat_total_reviews: "Total Reviews", stat_positive: "Positive (4-5★)" },
+            reviews: { title: "Customer Reviews", empty_title: "No Reviews Connected", empty_text: "Connect your Google Reviews to see what customers are saying.", btn_connect: "Connect Google Reviews", label_avg: "Average Rating", label_total: "Total Reviews", label_positive: "Positive (4-5★)" },
             followups: { title: "Scheduled Follow-ups", empty_title: "No Scheduled Tasks", empty_text: "When your agents schedule callbacks or follow-ups, they will appear here.", btn_setup: "Set Up Automations" },
             posts: { loading: "Loading posts...", no_posts_found: "No posts found.", failed_load: "Failed to load posts", no_caption: "No caption", view_details: "➜ View Details", comments_not_loaded: "Comments not loaded", reach: "Reach" },
             metrics: { video_views: "Video Views", video_view_time: "Video View Time", post_engagements: "Post Engagements", unique_reach: "Unique Reach", total_impressions: "Total Impressions", profile_views: "Profile Views", website_clicks: "Website Clicks", total_interactions: "Total Interactions", total_connections: "Total Connections", new_conversations: "New Conversations" },
@@ -3037,7 +3045,7 @@
             insights: { title: "رؤى مباشرة", empty_title: "لا توجد بيانات", empty_text: "قم بربط حساباتك لرؤية الأداء.", btn_connect: "ربط الرؤى", empty_posts_title: "لا توجد منشورات", btn_connect_posts: "ربط المنشورات", loading: "جاري التحميل..." },
             inbox: { empty_title: "لا توجد محادثات", empty_text: "قم بربط قنواتك للبدء في الدردشة.", btn_connect: "ربط القنوات", label_platform: "اختر المنصة", header_select: "اختر محادثة", loading: "جاري التحميل...", no_chats: "لا توجد محادثات.", chat_with: "محادثة مع {name}", loading_history: "جاري تحميل السجل...", no_messages: "لا توجد رسائل بعد.", error_loading: "خطأ في تحميل جهات الاتصال." },
             leads: { title: "العملاء المحتملين", btn_export_csv: "تصدير CSV", btn_export_excel: "تصدير Excel", empty_title: "لا يوجد عملاء", empty_text: "قم بربط قنواتك للبدء في جلب العملاء المحتملين.", btn_connect: "ربط القنوات", fetching: "جاري جلب العملاء...", no_leads_found: "لم يتم العثور على عملاء.", failed_load: "فشل تحميل العملاء. تحقق من الاتصال.", unknown_user: "مستخدم غير معروف", no_phone: "لا يوجد هاتف", no_message: "لا توجد رسالة" },
-            reviews: { title: "آراء العملاء", empty_title: "التقييمات غير متصلة", btn_connect: "ربط تقييمات جوجل", stat_avg_rating: "متوسط التقييم", stat_total_reviews: "إجمالي التقييمات", stat_positive: "إيجابية (4-5★)" },
+            reviews: { title: "آراء العملاء", empty_title: "التقييمات غير متصلة", empty_text: "قم بربط تقييمات جوجل لرؤية آراء العملاء.", btn_connect: "ربط تقييمات جوجل", label_avg: "متوسط التقييم", label_total: "إجمالي التقييمات", label_positive: "إيجابية (4-5★)" },
             followups: { title: "المتابعات المجدولة", empty_title: "لا توجد مهام", empty_text: "عندما يقوم وكلاؤك بجدولة مكالمات أو متابعات، ستظهر هنا.", btn_setup: "إعداد الأتمتة" },
             posts: { loading: "جاري تحميل المنشورات...", no_posts_found: "لم يتم العثور على منشورات.", failed_load: "فشل تحميل المنشورات", no_caption: "لا يوجد تعليق", view_details: "➜ عرض التفاصيل", comments_not_loaded: "التعليقات غير محملة", reach: "الوصول" },
             metrics: { video_views: "مشاهدات الفيديو", video_view_time: "وقت مشاهدة الفيديو", post_engagements: "تفاعلات المنشور", unique_reach: "وصول فريد", total_impressions: "إجمالي الظهور", profile_views: "زيارات الملف الشخصي", website_clicks: "نقرات الموقع", total_interactions: "إجمالي التفاعلات", total_connections: "إجمالي الاتصالات", new_conversations: "محادثات جديدة" },
@@ -4125,7 +4133,7 @@
 
                 const { data: posts, error } = await supabaseClient
                     .from('social_posts')
-                    .select('*, social_post_metrics(*)')
+                    .select('*') // Simplified to avoid 400 error if metrics relation is missing
                     .eq('org_id', currentUserOrgId)
                     .eq('platform', dbPlatform)
                     .order('created_at', { ascending: false })
