@@ -4568,13 +4568,20 @@
             loadDashboard();
 
             // Ensure only dashboard is active if it's the default
+            // Ensure only dashboard is active (Robust Fix)
             setTimeout(() => {
-                const activeNav = document.querySelector('.nav-item.active');
-                if (activeNav && activeNav.innerText.includes('Dashboard')) {
-                    document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-                    document.getElementById('dashboard').classList.add('active');
-                }
-            }, 100);
+                // 1. Reset all tabs and navs
+                document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+                document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+
+                // 2. Activate Dashboard Tab
+                const dashTab = document.getElementById('dashboard');
+                if (dashTab) dashTab.classList.add('active');
+
+                // 3. Activate Dashboard Nav Item
+                const dashNav = document.querySelector('.nav-item[onclick*="switchTab(\'dashboard\'"]');
+                if (dashNav) dashNav.classList.add('active');
+            }, 50);
         }
 
         function startAutoRefresh() {
@@ -4594,7 +4601,7 @@
             const container = document.getElementById('dynamic-content-area');
             let html = `
             <!-- DASHBOARD TAB -->
-            <div id="dashboard" class="tab-content active">
+            <div id="dashboard" class="tab-content">
                 <div class="dashboard-header">
                     <h1 class="welcome-text">
                         <span data-i18n="dashboard.welcome">Welcome back,</span> 
