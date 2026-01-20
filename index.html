@@ -1668,31 +1668,22 @@
             /* RTL MOBILE OVERRIDES FOR LEADS EXPORT BUTTONS */
             [dir="rtl"] .leads-controls {
                 flex-direction: column;
-                align-items: stretch;
+                align-items: flex-start;
             }
 
             [dir="rtl"] .export-group {
-                flex-direction: row-reverse;
-                justify-content: flex-start;
-                gap: 10px;
+                flex-wrap: wrap;
+                justify-content: flex-end;
+                gap: 8px;
+                width: 100%;
             }
 
             [dir="rtl"] .export-btn {
                 flex-direction: row-reverse;
                 white-space: nowrap;
-                /* PREVENT TEXT WRAPPING */
-                width: auto;
-                min-width: auto;
+                flex-shrink: 0;
                 padding: 8px 12px;
-                justify-content: center;
-                align-items: center;
-                display: inline-flex;
-                /* Shrink to content */
-            }
-
-            [dir="rtl"] .export-btn span {
-                white-space: nowrap;
-                /* Ensure span text doesn't wrap */
+                font-size: 0.85rem;
             }
         }
 
