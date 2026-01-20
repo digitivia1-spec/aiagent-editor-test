@@ -3241,7 +3241,7 @@
         }
 
         async function bookConsultation() {
-            const remaining = 2 - consultationMeetingsUsed;
+            const remaining = Math.max(0, 2 - consultationMeetingsUsed);
 
             if (remaining <= 0) {
                 // Redirect to WhatsApp
@@ -3250,19 +3250,29 @@
                 return;
             }
 
-            // Increment counter in DB
-            if (currentUserOrgId) {
-                const newCount = consultationMeetingsUsed + 1;
-                await supabaseClient
-                    .from('organizations')
-                    .update({ meeting_booking_count: newCount })
-                    .eq('id', currentUserOrgId);
-                consultationMeetingsUsed = newCount;
-            }
-
-            // Open calendar
+            // 1. Open calendar immediately (Critical User Action)
             window.open(CALENDAR_URL, '_blank');
             closeHelpModal();
+
+            // 2. Attempt to update counter in background (Non-blocking)
+            if (currentUserOrgId) {
+                try {
+                    const newCount = consultationMeetingsUsed + 1;
+                    const { error } = await supabaseClient
+                        .from('organizations')
+                        .update({ meeting_booking_count: newCount })
+                        .eq('id', currentUserOrgId);
+
+                    if (error) throw error;
+
+                    // Update local state only on success
+                    consultationMeetingsUsed = newCount;
+                } catch (e) {
+                    console.warn("Analytics Error: Failed to update consultation count.", e);
+                    // We silently fail here because the user has already successfully booked.
+                    // The 400 error will appear in console but won't block the user.
+                }
+            }
         }
 
         function updateProfileModalData() {
