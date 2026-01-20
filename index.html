@@ -1679,10 +1679,20 @@
 
             [dir="rtl"] .export-btn {
                 flex-direction: row-reverse;
+                white-space: nowrap;
+                /* PREVENT TEXT WRAPPING */
                 width: auto;
-                min-width: 100px;
-                padding: 8px 16px;
+                min-width: auto;
+                padding: 8px 12px;
                 justify-content: center;
+                align-items: center;
+                display: inline-flex;
+                /* Shrink to content */
+            }
+
+            [dir="rtl"] .export-btn span {
+                white-space: nowrap;
+                /* Ensure span text doesn't wrap */
             }
         }
 
