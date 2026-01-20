@@ -3863,9 +3863,14 @@
         // English Language Strings
         const LANG_EN = {
             auth: { app_title: "DIGITIVIA AI AGENT", sign_in_google: "Sign in with Google", sign_in_linkedin: "Sign in with LinkedIn", separator_or: "OR", input_email_placeholder: "Email Address", input_password_placeholder: "Password", btn_login: "LOGIN", btn_register: "REGISTER", btn_loading_login: "LOGGING IN...", btn_loading_register: "REGISTERING..." },
-            sidebar: { nav_website: "Website Agent", nav_whatsapp: "WhatsApp Agent", nav_messenger: "Messenger Agent", nav_instagram: "Instagram Agent", nav_insights: "Live Insights", nav_inbox: "Live Inbox", nav_leads: "Leads Area", nav_create_post: "Content Studio", nav_reviews: "Customer Reviews", nav_followups: "Follow-ups", nav_logout: "Logout" },
+            sidebar: { nav_dashboard: "Dashboard", nav_website: "Website Agent", nav_whatsapp: "WhatsApp Agent", nav_messenger: "Messenger Agent", nav_instagram: "Instagram Agent", nav_insights: "Live Insights", nav_inbox: "Live Inbox", nav_leads: "Leads Area", nav_create_post: "Content Studio", nav_reviews: "Customer Reviews", nav_followups: "Follow-ups", nav_logout: "Logout" },
             top_bar: { btn_pricing: "Pricing", btn_docs: "Docs", btn_help: "Help" },
             agent_config: { btn_connect_channel: "🔗 Connect Channel", label_live: "LIVE", header_role: "Agent Role (System Prompt)", header_tone: "Agent Tone", header_kb: "Knowledge Base (Links)", header_chat_test: "Test Chat Window", btn_locked: "🔒 Locked - Click to Edit", placeholder_prompt: "Define how your agent should behave...", btn_save: "Save Role", btn_save_changes: "Save Changes *", btn_saving: "Saving...", chat_greeting: "Hello! I am the {name}. How can I help?", chat_placeholder: "Type a message...", btn_add_link: "+ Add Another Link" },
+            dashboard: {
+                welcome: "Welcome back,",
+                stats: { conversations: "Total Conversations", messages: "Total Messages", leads: "Total Leads", reviews: "Total Reviews" },
+                headers: { recent_activity: "Recent Activity", agent_performance: "Agent Performance" }
+            },
             insights: { title: "Live Insights", empty_title: "No Data Available", empty_text: "Connect your platform accounts to see live performance insights.", btn_connect: "Connect Insights", empty_posts_title: "No Posts Yet", btn_connect_posts: "Connect Posts", loading: "Loading..." },
             inbox: { empty_title: "No Conversations Yet", empty_text: "Connect your social channels to start chatting with your customers.", btn_connect: "Connect Channels", label_platform: "Select Platform", header_select: "Select a conversation", loading: "Loading...", no_chats: "No chats found.", chat_with: "Chat with {name}", loading_history: "Loading history...", no_messages: "No messages yet.", error_loading: "Error loading contacts." },
             leads: { title: "Leads Area", btn_export_csv: "Export CSV", btn_export_excel: "Export Excel", empty_title: "No Leads Yet", empty_text: "Connect your channels to start capturing leads from conversations.", btn_connect: "Connect Your Channels", fetching: "Fetching Leads...", no_leads_found: "No leads found.", failed_load: "Failed to load leads. Check connection.", unknown_user: "Unknown User", no_phone: "No Phone", no_message: "No message" },
@@ -3954,9 +3959,14 @@
 
         const LANG_AR = {
             auth: { app_title: "وكيل الذكاء الاصطناعي ديجيتيفيا", sign_in_google: "تسجيل الدخول عبر Google", sign_in_linkedin: "تسجيل الدخول عبر LinkedIn", separator_or: "أو", input_email_placeholder: "البريد الإلكتروني", input_password_placeholder: "كلمة المرور", btn_login: "دخول", btn_register: "إنشاء حساب", btn_loading_login: "جاري الدخول...", btn_loading_register: "جاري التسجيل..." },
-            sidebar: { nav_website: "وكيل الموقع", nav_whatsapp: "وكيل واتساب", nav_messenger: "وكيل ماسنجر", nav_instagram: "وكيل انستغرام", nav_insights: "رؤى مباشرة", nav_inbox: "صندوق الوارد", nav_leads: "العملاء المحتملين", nav_create_post: "استوديو المحتوى", nav_reviews: "آراء العملاء", nav_followups: "المتابعات", nav_logout: "تسجيل خروج" },
+            sidebar: { nav_dashboard: "لوحة التحكم", nav_website: "وكيل الموقع", nav_whatsapp: "وكيل واتساب", nav_messenger: "وكيل ماسنجر", nav_instagram: "وكيل انستغرام", nav_insights: "رؤى مباشرة", nav_inbox: "صندوق الوارد", nav_leads: "العملاء المحتملين", nav_create_post: "استوديو المحتوى", nav_reviews: "آراء العملاء", nav_followups: "المتابعات", nav_logout: "تسجيل خروج" },
             top_bar: { btn_pricing: "الأسعار", btn_docs: "الوثائق", btn_help: "مساعدة" },
             agent_config: { btn_connect_channel: "🔗 ربط القناة", label_live: "نشط", header_role: "دور الوكيل", header_tone: "نبرة المحادثة", header_kb: "قاعدة المعرفة", header_chat_test: "نافذة الاختبار", btn_locked: "🔒 مقفل - اضغط للتعديل", placeholder_prompt: "حدد كيف يجب أن يتصرف وكيلك...", btn_save: "حفظ الدور", btn_save_changes: "حفظ التغييرات *", btn_saving: "جاري الحفظ...", chat_greeting: "مرحباً! أنا {name}. كيف يمكنني مساعدتك؟", chat_placeholder: "اكتب رسالة...", btn_add_link: "+ إضافة رابط آخر" },
+            dashboard: {
+                welcome: "مرحباً بك،",
+                stats: { conversations: "إجمالي المحادثات", messages: "إجمالي الرسائل", leads: "إجمالي العملاء", reviews: "إجمالي التقييمات" },
+                headers: { recent_activity: "النشاط الأخير", agent_performance: "أداء الوكيل" }
+            },
             insights: { title: "رؤى مباشرة", empty_title: "لا توجد بيانات", empty_text: "قم بربط حساباتك لرؤية الأداء.", btn_connect: "ربط الرؤى", empty_posts_title: "لا توجد منشورات", btn_connect_posts: "ربط المنشورات", loading: "جاري التحميل..." },
             inbox: { empty_title: "لا توجد محادثات", empty_text: "قم بربط قنواتك للبدء في الدردشة.", btn_connect: "ربط القنوات", label_platform: "اختر المنصة", header_select: "اختر محادثة", loading: "جاري التحميل...", no_chats: "لا توجد محادثات.", chat_with: "محادثة مع {name}", loading_history: "جاري تحميل السجل...", no_messages: "لا توجد رسائل بعد.", error_loading: "خطأ في تحميل جهات الاتصال." },
             leads: { title: "العملاء المحتملين", btn_export_csv: "تصدير CSV", btn_export_excel: "تصدير Excel", empty_title: "لا يوجد عملاء", empty_text: "قم بربط قنواتك للبدء في جلب العملاء المحتملين.", btn_connect: "ربط القنوات", fetching: "جاري جلب العملاء...", no_leads_found: "لم يتم العثور على عملاء.", failed_load: "فشل تحميل العملاء. تحقق من الاتصال.", unknown_user: "مستخدم غير معروف", no_phone: "لا يوجد هاتف", no_message: "لا توجد رسالة" },
@@ -4553,6 +4563,18 @@
 
             // Apply translations to dynamic content
             applyTranslations();
+
+            // Force load Dashboard
+            loadDashboard();
+
+            // Ensure only dashboard is active if it's the default
+            setTimeout(() => {
+                const activeNav = document.querySelector('.nav-item.active');
+                if (activeNav && activeNav.innerText.includes('Dashboard')) {
+                    document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+                    document.getElementById('dashboard').classList.add('active');
+                }
+            }, 100);
         }
 
         function startAutoRefresh() {
