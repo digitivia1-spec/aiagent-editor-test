@@ -5696,15 +5696,15 @@
 
                 // 3. Call AI Webhook (BRAIN)
                 // We keep this to generate the actual smart response
-                const response = await fetch(CHAT_WEBHOOK, {
+                const systemPrompt = document.getElementById(`prompt-${agentId}`).value;
+
+                const response = await fetch('https://n8n.srv1174105.hstgr.cloud/webhook/test_chat', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        agent_source: agentId,
                         message: text,
-                        sender: 'user',
-                        org_id: currentUserOrgId, // Pass context
-                        timestamp: new Date().toISOString()
+                        system_prompt: systemPrompt,
+                        agent_id: agentId
                     })
                 });
 
