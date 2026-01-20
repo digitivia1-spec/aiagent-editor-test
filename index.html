@@ -2631,6 +2631,37 @@
                 transform: translateX(0);
             }
         }
+
+        /* --- GLOBAL RTL LAYOUT FIXES --- */
+        [dir="rtl"] #app-container {
+            margin-left: 0;
+            margin-right: var(--sidebar-width);
+        }
+
+        [dir="rtl"] .top-bar {
+            left: 0;
+            right: var(--sidebar-width);
+        }
+
+        /* Handle Expanded Sidebar in RTL */
+        [dir="rtl"] .sidebar.expanded~#app-container .top-bar,
+        [dir="rtl"] .sidebar:hover~#app-container .top-bar {
+            left: 0;
+            right: var(--sidebar-expanded);
+        }
+
+        /* RTL Mobile Resets */
+        @media (max-width: 768px) {
+            [dir="rtl"] #app-container {
+                margin-right: 0;
+            }
+
+            [dir="rtl"] .top-bar {
+                right: 0;
+                width: 100%;
+                left: 0;
+            }
+        }
     </style>
 </head>
 
