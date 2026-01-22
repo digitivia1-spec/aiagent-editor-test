@@ -4760,22 +4760,24 @@
                         if (orgData) {
                             currentOrgData = orgData;
 
-                            // FETCH SUBSCRIPTION PLAN
+                            // FETCH SUBSCRIPTION PLAN (Split query to avoid 406 errors on joins)
                             const { data: subData } = await supabaseClient
                                 .from('org_subscriptions')
-                                .select(`
-                                    status,
-                                    billing_plans (
-                                        plan_name
-                                    )
-                                `)
+                                .select('status, plan_id')
                                 .eq('org_id', profile.org_id)
-                                .eq('status', 'active') // Only active plans
-                                .single();
+                                .eq('status', 'active')
+                                .maybeSingle(); // Use maybeSingle to avoid errors if no sub
 
-                            if (subData && subData.billing_plans) {
-                                // Map to subscription_tier so UI uses it
-                                currentOrgData.subscription_tier = subData.billing_plans.plan_name;
+                            if (subData && subData.plan_id) {
+                                const { data: planData } = await supabaseClient
+                                    .from('billing_plans')
+                                    .select('plan_name')
+                                    .eq('id', subData.plan_id)
+                                    .single();
+
+                                if (planData) {
+                                    currentOrgData.subscription_tier = planData.plan_name;
+                                }
                             }
                         } else if (orgError) {
                             console.warn('Organization fetch warning:', orgError.message);
