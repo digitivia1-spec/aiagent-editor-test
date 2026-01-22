@@ -4141,7 +4141,7 @@
         // English Language Strings
         const LANG_EN = {
             auth: { app_title: "DIGITIVIA AI AGENT", sign_in_google: "Sign in with Google", sign_in_linkedin: "Sign in with LinkedIn", separator_or: "OR", input_email_placeholder: "Email Address", input_password_placeholder: "Password", btn_login: "LOGIN", btn_register: "REGISTER", btn_loading_login: "LOGGING IN...", btn_loading_register: "REGISTERING..." },
-            sidebar: { nav_dashboard: "Dashboard", nav_website: "Website Agent", nav_whatsapp: "WhatsApp Agent", nav_messenger: "Messenger Agent", nav_instagram: "Instagram Agent", nav_insights: "Live Insights", nav_inbox: "Live Inbox", nav_leads: "Leads Area", nav_create_post: "Content Studio", nav_reviews: "Customer Reviews", nav_followups: "Follow-ups", nav_logout: "Logout" },
+            sidebar: { nav_dashboard: "Dashboard", nav_website: "Website Agent", nav_whatsapp: "WhatsApp Agent", nav_messenger: "Messenger Agent", nav_instagram: "Instagram Agent", nav_insights: "Live Insights", nav_inbox: "Live Inbox", nav_leads: "Leads Area", nav_create_post: "Content Studio", nav_reviews: "Customer Reviews", nav_followups: "Follow-ups", nav_plans: "Plans", nav_logout: "Logout" },
             top_bar: { btn_pricing: "Pricing", btn_docs: "Docs", btn_help: "Help" },
             agent_config: { btn_connect_channel: "🔗 Connect Channel", label_live: "LIVE", header_role: "Agent Role (System Prompt)", header_tone: "Agent Tone", header_kb: "Knowledge Base (Links)", header_chat_test: "Test Chat Window", btn_locked: "🔒 Locked - Click to Edit", placeholder_prompt: "Define how your agent should behave...", btn_save: "Save Role", btn_save_changes: "Save Changes *", btn_saving: "Saving...", chat_greeting: "Hello! I am the {name}. How can I help?", chat_placeholder: "Type a message...", btn_add_link: "+ Add Another Link" },
             dashboard: {
@@ -4243,7 +4243,7 @@
 
         const LANG_AR = {
             auth: { app_title: "وكيل الذكاء الاصطناعي ديجيتيفيا", sign_in_google: "تسجيل الدخول عبر Google", sign_in_linkedin: "تسجيل الدخول عبر LinkedIn", separator_or: "أو", input_email_placeholder: "البريد الإلكتروني", input_password_placeholder: "كلمة المرور", btn_login: "دخول", btn_register: "إنشاء حساب", btn_loading_login: "جاري الدخول...", btn_loading_register: "جاري التسجيل..." },
-            sidebar: { nav_dashboard: "لوحة التحكم", nav_website: "وكيل الموقع", nav_whatsapp: "وكيل واتساب", nav_messenger: "وكيل ماسنجر", nav_instagram: "وكيل انستغرام", nav_insights: "رؤى مباشرة", nav_inbox: "صندوق الوارد", nav_leads: "العملاء المحتملين", nav_create_post: "استوديو المحتوى", nav_reviews: "آراء العملاء", nav_followups: "المتابعات", nav_logout: "تسجيل خروج" },
+            sidebar: { nav_dashboard: "لوحة التحكم", nav_website: "وكيل الموقع", nav_whatsapp: "وكيل واتساب", nav_messenger: "وكيل ماسنجر", nav_instagram: "وكيل انستغرام", nav_insights: "رؤى مباشرة", nav_inbox: "صندوق الوارد", nav_leads: "العملاء المحتملين", nav_create_post: "استوديو المحتوى", nav_reviews: "آراء العملاء", nav_followups: "المتابعات", nav_plans: "الخطط", nav_logout: "تسجيل خروج" },
             top_bar: { btn_pricing: "الأسعار", btn_docs: "الوثائق", btn_help: "مساعدة" },
             agent_config: { btn_connect_channel: "🔗 ربط القناة", label_live: "نشط", header_role: "دور الوكيل", header_tone: "نبرة المحادثة", header_kb: "قاعدة المعرفة", header_chat_test: "نافذة الاختبار", btn_locked: "🔒 مقفل - اضغط للتعديل", placeholder_prompt: "حدد كيف يجب أن يتصرف وكيلك...", btn_save: "حفظ الدور", btn_save_changes: "حفظ التغييرات *", btn_saving: "جاري الحفظ...", chat_greeting: "مرحباً! أنا {name}. كيف يمكنني مساعدتك؟", chat_placeholder: "اكتب رسالة...", btn_add_link: "+ إضافة رابط آخر" },
             dashboard: {
@@ -6864,42 +6864,6 @@
     </script>
     <script>
         const STRIPE_PUBLIC_KEY = 'pk_test_placeholder'; // User to replace
-
-        // Fallback Plans if DB is empty or RPC fails
-        const DEFAULT_PLANS = [
-            {
-                plan_slug: 'free_trial',
-                plan_name: 'Bundle',
-                currency: 'EGP',
-                unit_amount_cents: 0,
-                billing_interval: '14 days',
-                features: ['500 conversations', 'Basic Auto Replies', 'Standard Dashboard']
-            },
-            {
-                plan_slug: 'starter',
-                plan_name: 'Starter',
-                currency: 'EGP',
-                unit_amount_cents: 395000, // 3,950 EGP
-                billing_interval: 'month',
-                features: ['5,000 conversations', '24/7 Auto Replies', 'Lead Qualification', 'Advanced Lead Qualify', 'Order Confirmation', 'CRM Integration']
-            },
-            {
-                plan_slug: 'growth',
-                plan_name: 'Growth',
-                currency: 'EGP',
-                unit_amount_cents: 795000, // 7,950 EGP
-                billing_interval: 'month',
-                features: ['12,000 conversations', 'Advanced Lead Qualify', 'Order Confirmation', 'CRM Integration']
-            },
-            {
-                plan_slug: 'pro',
-                plan_name: 'Pro',
-                currency: 'EGP',
-                unit_amount_cents: 2095000, // 20,950 EGP
-                billing_interval: 'month',
-                features: ['30,000 conversations', 'CRM Integration', 'Priority Support']
-            }
-        ];
 
         let currentCurrency = 'EGP';
         let billingPeriod = 'monthly'; // 'monthly' or 'yearly'
