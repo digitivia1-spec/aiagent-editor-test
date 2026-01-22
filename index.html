@@ -7268,14 +7268,25 @@
                 const { data: orgMember } = await supabaseClient.from('profiles').select('org_id').eq('user_id', user.id).single();
                 if (!orgMember || !orgMember.org_id) throw new Error('Organization not found');
 
-                // Call Checkout Function
+                // Fetch Session Token
+                const { data: { session } } = await supabaseClient.auth.getSession();
+                const token = session?.access_token;
+
+                if (!token) throw new Error("No active session token");
+
+                // Call Checkout Function with access_token in body for reliable auth
                 const { data, error } = await supabaseClient.functions.invoke('billing-create-checkout-session', {
                     body: {
                         plan_slug: planSlug,
                         currency: currentCurrency,
                         org_id: orgMember.org_id,
                         success_url: window.location.href.split('?')[0] + `?payment=success&plan=${planSlug}`,
-                        cancel_url: window.location.href.split('?')[0] + '?payment=cancel'
+                        cancel_url: window.location.href.split('?')[0] + '?payment=cancel',
+                        access_token: token,
+                        user_email: user.email
+                    },
+                    headers: {
+                        Authorization: `Bearer ${token}`
                     }
                 });
 
