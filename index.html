@@ -3959,83 +3959,10 @@
                 </div>
             </div>
 
-            <div class="pricing-grid">
-                <!-- FREE TRIAL -->
-                <div class="plan-card" id="plan-card-trial">
-                    <div class="plan-badge" data-i18n="modals.pricing.badge_trial">14-Day Free Trial</div>
-                    <div class="plan-name" data-i18n="modals.pricing.plan_trial">Free Trial</div>
-                    <div class="plan-price"><span class="currency-symbol">$</span>0<span class="period">/14 days</span>
-                    </div>
-                    <ul class="plan-features">
-                        <li data-i18n="modals.pricing.feat_trial_1">Full Access to All Features</li>
-                        <li data-i18n="modals.pricing.feat_trial_2">3 AI Agents</li>
-                        <li data-i18n="modals.pricing.feat_trial_3">No Credit Card Required</li>
-                    </ul>
-                    <button class="plan-btn secondary" id="btn-trial" onclick="activateFreeTrial()"
-                        data-i18n="modals.pricing.btn_start_trial">Start Free Trial</button>
-                </div>
-
-                <!-- STARTER -->
-                <div class="plan-card" id="plan-card-starter">
-                    <div class="plan-name" data-i18n="modals.pricing.plan_starter">Starter</div>
-                    <div class="plan-price" id="price-starter"><span class="currency-symbol">$</span>40<span
-                            class="period">/mo</span></div>
-                    <div class="plan-price-yearly hidden" id="price-starter-yearly"><span
-                            class="currency-symbol">$</span>32<span class="period">/mo</span></div>
-                    <ul class="plan-features">
-                        <li data-i18n="modals.pricing.feat_starter_1">2,000 Messages/mo</li>
-                        <li data-i18n="modals.pricing.feat_starter_2">2 AI Agents</li>
-                        <li data-i18n="modals.pricing.feat_starter_3">Basic Analytics</li>
-                    </ul>
-                    <button class="plan-btn primary" id="btn-starter"
-                        onclick="initiateStripeCheckout('starter')">Upgrade</button>
-                </div>
-
-                <!-- GROWTH -->
-                <div class="plan-card popular" id="plan-card-growth">
-                    <div class="plan-badge" data-i18n="modals.pricing.badge_popular">Most Popular</div>
-                    <div class="plan-name" data-i18n="modals.pricing.plan_growth">Growth</div>
-                    <div class="plan-price" id="price-growth"><span class="currency-symbol">$</span>80<span
-                            class="period">/mo</span></div>
-                    <div class="plan-price-yearly hidden" id="price-growth-yearly"><span
-                            class="currency-symbol">$</span>64<span class="period">/mo</span></div>
-                    <ul class="plan-features">
-                        <li data-i18n="modals.pricing.feat_growth_1">10,000 Messages/mo</li>
-                        <li data-i18n="modals.pricing.feat_growth_2">5 AI Agents</li>
-                        <li data-i18n="modals.pricing.feat_growth_3">Advanced Analytics</li>
-                        <li data-i18n="modals.pricing.feat_growth_4">Priority Support</li>
-                    </ul>
-                    <button class="plan-btn primary" id="btn-growth"
-                        onclick="initiateStripeCheckout('growth')">Upgrade</button>
-                </div>
-
-                <!-- PRO -->
-                <div class="plan-card" id="plan-card-pro">
-                    <div class="plan-name" data-i18n="modals.pricing.plan_pro">Pro</div>
-                    <div class="plan-price" id="price-pro"><span class="currency-symbol">$</span>160<span
-                            class="period">/mo</span></div>
-                    <div class="plan-price-yearly hidden" id="price-pro-yearly"><span
-                            class="currency-symbol">$</span>128<span class="period">/mo</span></div>
-                    <ul class="plan-features">
-                        <li data-i18n="modals.pricing.feat_pro_1">Unlimited Messages</li>
-                        <li data-i18n="modals.pricing.feat_pro_2">10 AI Agents</li>
-                        <li data-i18n="modals.pricing.feat_pro_3">Custom Integrations</li>
-                    </ul>
-                    <button class="plan-btn primary" id="btn-pro"
-                        onclick="initiateStripeCheckout('pro')">Upgrade</button>
-                </div>
-
-                <!-- CUSTOMIZE -->
-                <div class="plan-card" id="plan-card-custom">
-                    <div class="plan-name" data-i18n="modals.pricing.plan_custom">Customize</div>
-                    <div class="plan-price" data-i18n="modals.pricing.price_custom">Custom</div>
-                    <ul class="plan-features">
-                        <li data-i18n="modals.pricing.feat_custom_1">Tailored Solutions</li>
-                        <li data-i18n="modals.pricing.feat_custom_2">White Labeling</li>
-                        <li data-i18n="modals.pricing.feat_custom_3">Dedicated Manager</li>
-                    </ul>
-                    <button class="plan-btn secondary" onclick="contactSales()">Contact Sales</button>
-                </div>
+            <div class="pricing-grid" id="pricing-grid">
+                <!-- Content will be loaded dynamically by JS -->
+                <div style="color:white; text-align:center; width:100%; grid-column:1/-1; padding:30px;">Loading
+                    plans...</div>
             </div>
             <div class="pricing-footer">
                 <p data-i18n="modals.pricing.secure_payment">🔒 Secure Payment via Stripe</p>
@@ -4230,7 +4157,13 @@
             posts: { loading: "Loading posts...", no_posts_found: "No posts found.", failed_load: "Failed to load posts", no_caption: "No caption", view_details: "➜ View Details", comments_not_loaded: "Comments not loaded", reach: "Reach" },
             metrics: { video_views: "Video Views", video_view_time: "Video View Time", post_engagements: "Post Engagements", unique_reach: "Unique Reach", total_impressions: "Total Impressions", profile_views: "Profile Views", website_clicks: "Website Clicks", total_interactions: "Total Interactions", total_connections: "Total Connections", new_conversations: "New Conversations" },
             modals: {
-                pricing: { header_title: "Choose Your Plan" },
+                pricing: {
+                    header_title: "Choose Your Plan",
+                    subtitle: "Scale your AI agents with the perfect plan",
+                    monthly: "Monthly",
+                    yearly: "Yearly",
+                    secure_payment: "🔒 Secure Payment via Stripe"
+                },
                 docs: {
                     title: "Documentation & User Guide",
                     section_roles_title: "🤖 Agent Roles & System Prompts",
@@ -4326,7 +4259,13 @@
             posts: { loading: "جاري تحميل المنشورات...", no_posts_found: "لم يتم العثور على منشورات.", failed_load: "فشل تحميل المنشورات", no_caption: "لا يوجد تعليق", view_details: "➜ عرض التفاصيل", comments_not_loaded: "التعليقات غير محملة", reach: "الوصول" },
             metrics: { video_views: "مشاهدات الفيديو", video_view_time: "وقت مشاهدة الفيديو", post_engagements: "تفاعلات المنشور", unique_reach: "وصول فريد", total_impressions: "إجمالي الظهور", profile_views: "زيارات الملف الشخصي", website_clicks: "نقرات الموقع", total_interactions: "إجمالي التفاعلات", total_connections: "إجمالي الاتصالات", new_conversations: "محادثات جديدة" },
             modals: {
-                pricing: { header_title: "اختر خطتك" },
+                pricing: {
+                    header_title: "اختر خطتك",
+                    subtitle: "وسع نطاق وكلائك مع الخطة المثالية",
+                    monthly: "شهري",
+                    yearly: "سنوي",
+                    secure_payment: "🔒 دفع آمن عبر Stripe"
+                },
                 docs: {
                     title: "التوثيق ودليل المستخدم",
                     section_roles_title: "🤖 أدوار الوكيل وموجهات النظام",
@@ -4487,15 +4426,7 @@
             setLanguage(savedLang);
         }
 
-        // --- MODAL FUNCTIONS ---
-        function openPricingModal() {
-            document.getElementById('pricing-modal').classList.add('show');
-        }
 
-        function closePricingModal(event) {
-            if (event && event.target !== event.currentTarget) return;
-            document.getElementById('pricing-modal').classList.remove('show');
-        }
 
         function openDocsModal() {
             document.getElementById('docs-modal').classList.add('show');
@@ -7013,6 +6944,42 @@
                 currentCurrency = 'EGP';
             }
         }
+
+        // Fallback Plans if DB is empty or RPC fails
+        const DEFAULT_PLANS = [
+            {
+                plan_slug: 'free_trial',
+                plan_name: 'Bundle',
+                currency: 'EGP',
+                unit_amount_cents: 0,
+                billing_interval: '14 days',
+                features: ['500 conversations', 'Basic Auto Replies', 'Standard Dashboard']
+            },
+            {
+                plan_slug: 'starter',
+                plan_name: 'Starter',
+                currency: 'EGP',
+                unit_amount_cents: 395000, // 3,950 EGP
+                billing_interval: 'month',
+                features: ['5,000 conversations', '24/7 Auto Replies', 'Lead Qualification', 'Advanced Lead Qualify', 'Order Confirmation', 'CRM Integration']
+            },
+            {
+                plan_slug: 'growth',
+                plan_name: 'Growth',
+                currency: 'EGP',
+                unit_amount_cents: 795000, // 7,950 EGP
+                billing_interval: 'month',
+                features: ['12,000 conversations', 'Advanced Lead Qualify', 'Order Confirmation', 'CRM Integration']
+            },
+            {
+                plan_slug: 'pro',
+                plan_name: 'Pro',
+                currency: 'EGP',
+                unit_amount_cents: 2095000, // 20,950 EGP
+                billing_interval: 'month',
+                features: ['30,000 conversations', 'CRM Integration', 'Priority Support']
+            }
+        ];
 
         async function loadBillingPlans(currency) {
             const grid = document.getElementById('pricing-grid');
