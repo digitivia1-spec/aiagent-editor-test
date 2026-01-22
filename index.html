@@ -3704,6 +3704,69 @@
             display: flex !important;
             align-items: center !important;
         }
+
+        /* ============================================== */
+        /*         USAGE WIDGET RESPONSIVE & RTL          */
+        /* ============================================== */
+
+        .usage-widget {
+            transition: all 0.3s ease;
+        }
+
+        /* RTL Support for Usage Widget */
+        [dir="rtl"] .usage-widget {
+            direction: rtl;
+        }
+
+        [dir="rtl"] #usage-plan-badge {
+            margin-left: 0;
+            margin-right: 10px;
+        }
+
+        [dir="rtl"] .usage-days-section {
+            text-align: left !important;
+        }
+
+        /* Mobile Responsive for Usage Widget */
+        @media (max-width: 768px) {
+            .usage-widget>div:first-child {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .usage-widget .usage-days-section {
+                text-align: center !important;
+            }
+
+            #usage-features {
+                justify-content: center;
+            }
+
+            #usage-plan-name {
+                font-size: 1.1rem !important;
+            }
+
+            #usage-days-remaining {
+                font-size: 1.6rem !important;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .usage-widget {
+                padding: 16px !important;
+            }
+
+            #usage-features span {
+                font-size: 0.75rem !important;
+                padding: 4px 8px !important;
+            }
+
+            #usage-upgrade-btn {
+                width: 100%;
+                padding: 10px 20px !important;
+            }
+        }
     </style>
 </head>
 
@@ -4268,7 +4331,17 @@
             dashboard: {
                 welcome: "Welcome back,",
                 stats: { conversations: "Total Conversations", messages: "Total Messages", leads: "Total Leads", reviews: "Total Reviews" },
-                headers: { recent_activity: "Recent Activity", agent_performance: "Agent Performance" }
+                headers: { recent_activity: "Recent Activity", agent_performance: "Agent Performance" },
+                usage: {
+                    loading: "Loading...",
+                    days_remaining: "days remaining",
+                    conversations: "Conversations",
+                    upgrade_plan: "⚡ Upgrade Plan",
+                    status_active: "ACTIVE",
+                    status_trial: "TRIAL",
+                    status_canceled: "CANCELED",
+                    status_expired: "EXPIRED"
+                }
             },
             insights: { title: "Live Insights", empty_title: "No Data Available", empty_text: "Connect your platform accounts to see live performance insights.", btn_connect: "Connect Insights", empty_posts_title: "No Posts Yet", btn_connect_posts: "Connect Posts", loading: "Loading..." },
             inbox: { empty_title: "No Conversations Yet", empty_text: "Connect your social channels to start chatting with your customers.", btn_connect: "Connect Channels", label_platform: "Select Platform", header_select: "Select a conversation", loading: "Loading...", no_chats: "No chats found.", chat_with: "Chat with {name}", loading_history: "Loading history...", no_messages: "No messages yet.", error_loading: "Error loading contacts." },
@@ -4370,7 +4443,17 @@
             dashboard: {
                 welcome: "مرحباً بك،",
                 stats: { conversations: "إجمالي المحادثات", messages: "إجمالي الرسائل", leads: "إجمالي العملاء", reviews: "إجمالي التقييمات" },
-                headers: { recent_activity: "النشاط الأخير", agent_performance: "أداء الوكيل" }
+                headers: { recent_activity: "النشاط الأخير", agent_performance: "أداء الوكيل" },
+                usage: {
+                    loading: "جاري التحميل...",
+                    days_remaining: "يوم متبقي",
+                    conversations: "المحادثات",
+                    upgrade_plan: "ترقية الخطة",
+                    status_active: "نشط",
+                    status_trial: "تجريبي",
+                    status_canceled: "ملغي",
+                    status_expired: "منتهي"
+                }
             },
             insights: { title: "رؤى مباشرة", empty_title: "لا توجد بيانات", empty_text: "قم بربط حساباتك لرؤية الأداء.", btn_connect: "ربط الرؤى", empty_posts_title: "لا توجد منشورات", btn_connect_posts: "ربط المنشورات", loading: "جاري التحميل..." },
             inbox: { empty_title: "لا توجد محادثات", empty_text: "قم بربط قنواتك للبدء في الدردشة.", btn_connect: "ربط القنوات", label_platform: "اختر المنصة", header_select: "اختر محادثة", loading: "جاري التحميل...", no_chats: "لا توجد محادثات.", chat_with: "محادثة مع {name}", loading_history: "جاري تحميل السجل...", no_messages: "لا توجد رسائل بعد.", error_loading: "خطأ في تحميل جهات الاتصال." },
@@ -5084,16 +5167,16 @@
                             </h3>
                             <p style="margin: 5px 0 0 0; color: #94a3b8; font-size: 0.9rem;" id="usage-plan-description">Plan description</p>
                         </div>
-                        <div style="text-align: right;">
+                        <div style="text-align: right;" class="usage-days-section">
                             <div id="usage-days-remaining" style="font-size: 2rem; font-weight: 700; background: linear-gradient(90deg, #fff, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">--</div>
-                            <div style="color: #94a3b8; font-size: 0.85rem;">days remaining</div>
+                            <div id="usage-days-label" style="color: #94a3b8; font-size: 0.85rem;">days remaining</div>
                         </div>
                     </div>
                     
                     <!-- Conversations Usage -->
                     <div style="margin-bottom: 16px;">
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-                            <span style="color: #e2e8f0; font-size: 0.95rem;">💬 Conversations</span>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
+                            <span id="usage-conversations-label" style="color: #e2e8f0; font-size: 0.95rem;">💬 Conversations</span>
                             <span style="color: #94a3b8; font-size: 0.9rem;">
                                 <span id="usage-conversations-used" style="color: white; font-weight: 600;">0</span> / 
                                 <span id="usage-conversations-limit">500</span>
@@ -6643,30 +6726,35 @@
                 document.getElementById('usage-plan-name').innerText = usage.plan?.name || 'Free';
                 document.getElementById('usage-plan-description').innerText = usage.plan?.description || '';
 
-                // Status Badge
+                // Status Badge with i18n
                 const badge = document.getElementById('usage-plan-badge');
                 if (usage.subscription?.is_trial) {
-                    badge.innerText = 'TRIAL';
+                    badge.innerText = t('dashboard.usage.status_trial');
                     badge.style.background = 'linear-gradient(135deg, #f59e0b, #d97706)';
                 } else if (usage.subscription?.status === 'active') {
-                    badge.innerText = 'ACTIVE';
+                    badge.innerText = t('dashboard.usage.status_active');
                     badge.style.background = 'linear-gradient(135deg, #4ade80, #22c55e)';
                 } else if (usage.subscription?.status === 'canceled') {
-                    badge.innerText = 'CANCELED';
+                    badge.innerText = t('dashboard.usage.status_canceled');
                     badge.style.background = 'linear-gradient(135deg, #ef4444, #dc2626)';
+                } else if (usage.subscription?.status === 'expired') {
+                    badge.innerText = t('dashboard.usage.status_expired');
+                    badge.style.background = '#6b7280';
                 } else {
                     badge.innerText = usage.subscription?.status?.toUpperCase() || 'UNKNOWN';
                     badge.style.background = '#6b7280';
                 }
 
-                // Days Remaining
+                // Days Remaining with i18n label
                 document.getElementById('usage-days-remaining').innerText = Math.floor(usage.subscription?.days_remaining || 0);
+                document.getElementById('usage-days-label').innerText = t('dashboard.usage.days_remaining');
 
-                // Conversations Usage
+                // Conversations Usage with i18n label
                 const used = usage.usage?.conversations_used || 0;
                 const limit = usage.usage?.conversations_limit || 500;
                 const percent = usage.usage?.conversations_percent || 0;
 
+                document.getElementById('usage-conversations-label').innerText = '💬 ' + t('dashboard.usage.conversations');
                 document.getElementById('usage-conversations-used').innerText = used.toLocaleString();
                 document.getElementById('usage-conversations-limit').innerText = limit.toLocaleString();
                 document.getElementById('usage-conversations-bar').style.width = Math.min(percent, 100) + '%';
