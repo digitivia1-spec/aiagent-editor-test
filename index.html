@@ -7274,7 +7274,7 @@
                         plan_slug: planSlug,
                         currency: currentCurrency,
                         org_id: orgMember.org_id,
-                        success_url: window.location.href.split('?')[0] + '?payment=success',
+                        success_url: window.location.href.split('?')[0] + `?payment=success&plan=${planSlug}`,
                         cancel_url: window.location.href.split('?')[0] + '?payment=cancel'
                     }
                 });
