@@ -7280,6 +7280,12 @@
                 });
 
                 if (error) throw error;
+
+                // Handle 200 OK with custom error payload
+                if (data && data.error) {
+                    throw new Error("Stripe Error: " + data.error + (data.details ? "\n" + JSON.stringify(data.details) : ""));
+                }
+
                 if (data && data.url) {
                     window.location.href = data.url;
                 } else {
