@@ -7147,7 +7147,18 @@
 
             } catch (err) {
                 console.error('Checkout Error:', err);
-                alert('Checkout failed: ' + (err.message || "Unknown error"));
+                let errorMsg = err.message || "Unknown error";
+
+                // If it's a FunctionsHttpError, try to read the response JSON
+                if (err && typeof err === 'object' && 'context' in err) {
+                    // Sometimes the body is in err.context.json() or similar, but often it's just the status.
+                    // Supabase JS V2 usually populates message from the body if possible, but let's be sure.
+                }
+
+                // If the edge function returns { error: "..." }, supabase-js might map it.
+                // Let's alert the full object if possible
+                alert('Checkout Failed: ' + errorMsg + '\n\nDetails: ' + JSON.stringify(err));
+
                 btn.innerText = oldText;
                 btn.disabled = false;
             }
