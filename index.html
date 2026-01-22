@@ -6726,35 +6726,47 @@
                 document.getElementById('usage-plan-name').innerText = usage.plan?.name || 'Free';
                 document.getElementById('usage-plan-description').innerText = usage.plan?.description || '';
 
-                // Status Badge with i18n
+                // Get translations directly from language object with fallbacks
+                const lang = getLangStrings();
+                const usageStrings = lang?.dashboard?.usage || {
+                    status_active: currentLang === 'ar' ? 'نشط' : 'ACTIVE',
+                    status_trial: currentLang === 'ar' ? 'تجريبي' : 'TRIAL',
+                    status_canceled: currentLang === 'ar' ? 'ملغي' : 'CANCELED',
+                    status_expired: currentLang === 'ar' ? 'منتهي' : 'EXPIRED',
+                    days_remaining: currentLang === 'ar' ? 'يوم متبقي' : 'days remaining',
+                    conversations: currentLang === 'ar' ? 'المحادثات' : 'Conversations',
+                    upgrade_plan: currentLang === 'ar' ? 'ترقية الخطة' : '⚡ Upgrade Plan'
+                };
+
+                // Status Badge
                 const badge = document.getElementById('usage-plan-badge');
                 if (usage.subscription?.is_trial) {
-                    badge.innerText = t('dashboard.usage.status_trial');
+                    badge.innerText = usageStrings.status_trial;
                     badge.style.background = 'linear-gradient(135deg, #f59e0b, #d97706)';
                 } else if (usage.subscription?.status === 'active') {
-                    badge.innerText = t('dashboard.usage.status_active');
+                    badge.innerText = usageStrings.status_active;
                     badge.style.background = 'linear-gradient(135deg, #4ade80, #22c55e)';
                 } else if (usage.subscription?.status === 'canceled') {
-                    badge.innerText = t('dashboard.usage.status_canceled');
+                    badge.innerText = usageStrings.status_canceled;
                     badge.style.background = 'linear-gradient(135deg, #ef4444, #dc2626)';
                 } else if (usage.subscription?.status === 'expired') {
-                    badge.innerText = t('dashboard.usage.status_expired');
+                    badge.innerText = usageStrings.status_expired;
                     badge.style.background = '#6b7280';
                 } else {
                     badge.innerText = usage.subscription?.status?.toUpperCase() || 'UNKNOWN';
                     badge.style.background = '#6b7280';
                 }
 
-                // Days Remaining with i18n label
+                // Days Remaining
                 document.getElementById('usage-days-remaining').innerText = Math.floor(usage.subscription?.days_remaining || 0);
-                document.getElementById('usage-days-label').innerText = t('dashboard.usage.days_remaining');
+                document.getElementById('usage-days-label').innerText = usageStrings.days_remaining;
 
-                // Conversations Usage with i18n label
+                // Conversations Usage
                 const used = usage.usage?.conversations_used || 0;
                 const limit = usage.usage?.conversations_limit || 500;
                 const percent = usage.usage?.conversations_percent || 0;
 
-                document.getElementById('usage-conversations-label').innerText = '💬 ' + t('dashboard.usage.conversations');
+                document.getElementById('usage-conversations-label').innerText = '💬 ' + usageStrings.conversations;
                 document.getElementById('usage-conversations-used').innerText = used.toLocaleString();
                 document.getElementById('usage-conversations-limit').innerText = limit.toLocaleString();
                 document.getElementById('usage-conversations-bar').style.width = Math.min(percent, 100) + '%';
