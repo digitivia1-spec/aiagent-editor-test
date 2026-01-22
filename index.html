@@ -4094,6 +4094,7 @@
         // Initialize Supabase Client
         // NEW (Fixed)
         const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        window.supabaseClient = supabaseClient; // Expose globally
 
         // Update ALL references in your code from 'supabase' to 'supabaseClient'
         // Example:
@@ -6174,7 +6175,7 @@
             label.style.opacity = "0.5";
 
             try {
-                const { error } = await supabase
+                const { error } = await supabaseClient
                     .from('agent_configs')
                     .upsert({
                         org_id: currentUserOrgId,
