@@ -4137,6 +4137,126 @@
         const WHATSAPP_CONTACT_URL = 'placeholder'; // Replace with actual WhatsApp URL
         const CALENDAR_URL = 'https://calendar.app.google/XdqxGf6QDTHr4xts9';
 
+        // --- PAYMENT SUCCESS HANDLING ---
+        (async function checkPaymentCallback() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const paymentStatus = urlParams.get('payment');
+
+            if (paymentStatus === 'success') {
+                window.history.replaceState({}, document.title, window.location.pathname);
+                showProcessingPaymentModal();
+                await waitForSubscriptionUpdate();
+            } else if (paymentStatus === 'cancel') {
+                // We need to wait for formatting/toast lib to load? 
+                // Simple alert for now or setTimeout
+                setTimeout(() => showToast("Payment cancelled", "info"), 1000);
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }
+        })();
+
+        async function waitForSubscriptionUpdate() {
+            let attempts = 0;
+            const maxAttempts = 15; // 30 seconds
+
+            const interval = setInterval(async () => {
+                attempts++;
+                const statusLabel = document.getElementById('payment-processing-status');
+                if (statusLabel) statusLabel.innerText = `Verifying purchase... (${attempts})`;
+
+                try {
+                    const { data: { user } } = await supabaseClient.auth.getUser();
+                    if (!user) return;
+
+                    // Fetch Org ID
+                    const { data: profile } = await supabaseClient.from('profiles').select('org_id').eq('user_id', user.id).single();
+                    if (!profile || !profile.org_id) return;
+
+                    // Fetch Subscription
+                    const { data: sub } = await supabaseClient
+                        .from('org_subscriptions')
+                        .select('status, plan_id')
+                        .eq('org_id', profile.org_id)
+                        .eq('status', 'active')
+                        .maybeSingle();
+
+                    if (sub && sub.plan_id) {
+                        // Get plan name
+                        const { data: plan } = await supabaseClient
+                            .from('billing_plans')
+                            .select('plan_name')
+                            .eq('id', sub.plan_id)
+                            .single();
+
+                        if (plan) {
+                            clearInterval(interval);
+                            closeProcessingModal();
+                            showSuccessPaymentModal(plan.plan_name);
+
+                            // Refresh page data
+                            if (typeof loadDashboard === 'function') loadDashboard();
+                            if (typeof updateProfileModalData === 'function') updateProfileModalData();
+
+                            // Also reload window after a delay to ensure everything is fresh
+                            // setTimeout(() => window.location.reload(), 3000);
+                        }
+                    }
+                } catch (e) { console.error("Polling error", e); }
+
+                if (attempts >= maxAttempts) {
+                    clearInterval(interval);
+                    closeProcessingModal();
+                    // Alert polling timeout
+                    alert("Payment received! Your plan is updating in the background. Please refresh the page in a moment.");
+                }
+            }, 2000);
+        }
+
+        function showProcessingPaymentModal() {
+            const div = document.createElement('div');
+            div.id = 'payment-processing-modal';
+            div.style.cssText = `
+                position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+                background: rgba(0,0,0,0.85); z-index: 9999; display: flex;
+                justify-content: center; align-items: center; flex-direction: column;
+                color: white; font-family: 'Inter', sans-serif;
+            `;
+            div.innerHTML = `
+                <div class="spinner" style="width: 50px; height: 50px; border-width: 4px; margin-bottom: 20px; border: 4px solid #f3f3f3; border-top: 4px solid #4ade80; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+                <h2>Finalizing your Upgrade...</h2>
+                <p id="payment-processing-status" style="color: #aaa;">Connecting to database...</p>
+                <style>@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }</style>
+            `;
+            document.body.appendChild(div);
+        }
+
+        function closeProcessingModal() {
+            const el = document.getElementById('payment-processing-modal');
+            if (el) el.remove();
+        }
+
+        function showSuccessPaymentModal(planName) {
+            const div = document.createElement('div');
+            div.id = 'payment-success-modal';
+            div.style.cssText = `
+                position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+                background: rgba(0,0,0,0.85); z-index: 9999; display: flex;
+                justify-content: center; align-items: center;
+                font-family: 'Inter', sans-serif;
+            `;
+            div.innerHTML = `
+                <div style="background: #1e1e2e; padding: 40px; border-radius: 16px; text-align: center; border: 1px solid #4ade80; max-width: 400px; box-shadow: 0 0 30px rgba(74, 222, 128, 0.2);">
+                    <div style="font-size: 60px; margin-bottom: 20px;">🎉</div>
+                    <h2 style="color: white; margin-bottom: 10px;">Upgrade Successful!</h2>
+                    <p style="color: #ccc; margin-bottom: 30px;">You are now on the <strong style="color: #4ade80;">${planName}</strong> plan.</p>
+                    <button onclick="document.getElementById('payment-success-modal').remove(); window.location.reload();" 
+                        style="background: #4ade80; color: black; border: none; padding: 12px 30px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 1rem;">
+                        Let's Go!
+                    </button>
+                </div>
+            `;
+            document.body.appendChild(div);
+        }
+
         // --- INTERNATIONALIZATION (i18n) SYSTEM ---
 
         // English Language Strings
