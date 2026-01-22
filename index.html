@@ -6779,12 +6779,28 @@
                     document.getElementById('usage-conversations-bar').style.background = 'linear-gradient(90deg, #f59e0b, #d97706)';
                 }
 
-                // Features
+                // Features - with translation mapping
+                const featureTranslations = {
+                    'Basic Auto Replies': 'ردود تلقائية أساسية',
+                    'Standard Dashboard': 'لوحة تحكم قياسية',
+                    '24/7 Auto Replies': 'ردود تلقائية على مدار الساعة',
+                    'Lead Qualification': 'تأهيل العملاء المحتملين',
+                    'Advanced Lead Qualify': 'تأهيل متقدم للعملاء',
+                    'Order Confirmation': 'تأكيد الطلبات',
+                    'CRM Integration': 'تكامل مع CRM',
+                    'Priority Support': 'دعم أولوية',
+                    '500 conversations': '500 محادثة',
+                    '5,000 conversations': '5,000 محادثة',
+                    '12,000 conversations': '12,000 محادثة',
+                    '30,000 conversations': '30,000 محادثة'
+                };
+
                 const featuresContainer = document.getElementById('usage-features');
                 if (usage.plan?.features && Array.isArray(usage.plan.features)) {
-                    featuresContainer.innerHTML = usage.plan.features.map(f =>
-                        `<span style="background: rgba(99, 102, 241, 0.2); color: #a5b4fc; padding: 6px 12px; border-radius: 20px; font-size: 0.8rem;">✓ ${f}</span>`
-                    ).join('');
+                    featuresContainer.innerHTML = usage.plan.features.map(f => {
+                        const translatedFeature = currentLang === 'ar' ? (featureTranslations[f] || f) : f;
+                        return `<span style="background: rgba(99, 102, 241, 0.2); color: #a5b4fc; padding: 6px 12px; border-radius: 20px; font-size: 0.8rem;">✓ ${translatedFeature}</span>`;
+                    }).join('');
                 }
 
                 // Hide Upgrade button if on Pro
@@ -7358,6 +7374,50 @@
         }
 
         function createPlanCard(plan) {
+            // Translation mapping for Arabic
+            const planTranslations = {
+                plan_names: {
+                    'Free Trial': 'تجربة مجانية',
+                    'Starter': 'المبتدئ',
+                    'Growth': 'النمو',
+                    'Pro': 'الاحترافي'
+                },
+                plan_descriptions: {
+                    'Experience the power of AI with zero risk.': 'جرب قوة الذكاء الاصطناعي بدون أي مخاطر.',
+                    'Smart AI Kickstart': 'بداية ذكية مع الذكاء الاصطناعي',
+                    'Accelerate & Convert': 'تسريع وتحويل',
+                    'Powerhouse': 'القوة الكاملة'
+                },
+                features: {
+                    'Basic Auto Replies': 'ردود تلقائية أساسية',
+                    'Standard Dashboard': 'لوحة تحكم قياسية',
+                    '24/7 Auto Replies': 'ردود تلقائية على مدار الساعة',
+                    'Lead Qualification': 'تأهيل العملاء المحتملين',
+                    'Advanced Lead Qualify': 'تأهيل متقدم للعملاء',
+                    'Order Confirmation': 'تأكيد الطلبات',
+                    'CRM Integration': 'تكامل مع CRM',
+                    'Priority Support': 'دعم أولوية',
+                    '500 conversations': '500 محادثة',
+                    '5,000 conversations': '5,000 محادثة',
+                    '12,000 conversations': '12,000 محادثة',
+                    '30,000 conversations': '30,000 محادثة'
+                },
+                ui: {
+                    'Start Free Trial': 'ابدأ التجربة المجانية',
+                    'Upgrade': 'ترقية',
+                    'MOST POPULAR': 'الأكثر شيوعاً',
+                    'Prices include VAT': 'الأسعار شاملة الضريبة',
+                    'month': 'شهر',
+                    'IDEAL IF:': 'مثالي إذا:'
+                }
+            };
+
+            // Helper to translate
+            const translateText = (text, category = 'features') => {
+                if (currentLang !== 'ar') return text;
+                return planTranslations[category]?.[text] || text;
+            };
+
             // Logic to distinguish popular etc
             const isPopular = plan.plan_slug === 'growth';
             const isFree = plan.plan_slug.includes('free') || plan.unit_amount_cents === 0;
@@ -7386,35 +7446,45 @@
                 pro: '🏛️'
             };
 
-            // Features
+            // Features - with translation
             const featuresList = (plan.features || []).map(f => `
         <li>
             <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
-            ${f}
+            ${translateText(f, 'features')}
         </li>
     `).join('');
 
+            // Translated texts
+            const planName = translateText(plan.plan_name, 'plan_names');
+            const planDesc = translateText(plan.plan_description, 'plan_descriptions');
+            const billingPeriod = translateText(plan.billing_interval || 'month', 'ui');
+            const vatText = translateText('Prices include VAT', 'ui');
+            const idealLabel = currentLang === 'ar' ? '💡 مثالي إذا:' : '💡 IDEAL IF:';
+            const mostPopularText = translateText('MOST POPULAR', 'ui');
+
             let actionBtn = '';
             if (isFree) {
-                actionBtn = `<button class="pc-btn" onclick="activateFreeTrial('${plan.plan_slug}')">Start Free Trial</button>`;
+                const btnText = translateText('Start Free Trial', 'ui');
+                actionBtn = `<button class="pc-btn" onclick="activateFreeTrial('${plan.plan_slug}')">${btnText}</button>`;
             } else {
-                actionBtn = `<button class="pc-btn" onclick="initiateStripeCheckout('${plan.plan_slug}')">Upgrade</button>`;
+                const btnText = translateText('Upgrade', 'ui');
+                actionBtn = `<button class="pc-btn" onclick="initiateStripeCheckout('${plan.plan_slug}')">${btnText}</button>`;
             }
 
             div.innerHTML = `
-        ${isPopular ? '<div class="most-popular-badge">MOST POPULAR</div>' : ''}
+        ${isPopular ? `<div class="most-popular-badge">${mostPopularText}</div>` : ''}
         <div class="pc-icon">${icons[plan.plan_slug] || '✨'}</div>
-        <div class="pc-title">${plan.plan_name}</div>
-        <div class="pc-desc">${plan.plan_description || ''}</div>
+        <div class="pc-title">${planName}</div>
+        <div class="pc-desc">${planDesc}</div>
         
         <div class="pc-price-area">
             <span class="pc-price">${priceDisplay}</span>
-            <span class="pc-period">/ ${plan.billing_interval || 'month'}</span>
-            <span class="pc-vat">Prices include VAT</span>
+            <span class="pc-period">/ ${billingPeriod}</span>
+            <span class="pc-vat">${vatText}</span>
         </div>
 
         <div class="pc-ideal">
-            💡 IDEAL IF: <br/> 
+            ${idealLabel} <br/> 
             ${getIdealText(plan.plan_slug)}
         </div>
 
